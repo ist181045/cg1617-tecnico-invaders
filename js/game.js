@@ -5,7 +5,7 @@ var friction = 500;
 
 function createAlliedShip(x, y, z) {
 	AShip = new THREE.Object3D();
-  AShip.userData = {direction: 0, velocity: 0, aceleration: 500};
+  	AShip.userData = {direction: 0, velocity: 0, aceleration: 500};
 	material = new THREE.MeshBasicMaterial({ color: 0xbfbfbf, wireframe: false });
 
 	addASCenter(AShip, 0, 0, 0);
@@ -193,16 +193,16 @@ function onResize() {
 }
 
 function onKeyUp(e) {
-  switch(e.keycode) {
-    case 37:
-    case 39:
-      AShip.userData.direction = 0;
-      break;
-  }
+  	switch(e.keycode) {
+    	case 37:
+    	case 39:
+      		AShip.userData.direction = 0;
+      		break;
+  	}
 }
 
 function onKeyDown(e) {
-  var interval = clock.getDelta();
+  	var interval = clock.getDelta();
 
 	switch(e.keyCode) {
 	case 65:
@@ -214,14 +214,14 @@ function onKeyDown(e) {
 		});
 		break;
 	case 37:
-	  AShip.userData.direction = -1;
-	  AShip.userData.velocity += AShip.userData.direction * AShip.userData.aceleration * interval;
+	  	AShip.userData.direction = -1;
+	  	AShip.userData.velocity += AShip.userData.direction * AShip.userData.aceleration * interval;
 		break;
-  case 39:
-    AShip.userData.direction = 1;
-    AShip.userData.velocity += AShip.userData.direction * AShip.userData.aceleration * interval;
+  	case 39:
+    	AShip.userData.direction = 1;
+    	AShip.userData.velocity += AShip.userData.direction * AShip.userData.aceleration * interval;
 		break;
-  }
+ 	}
 }
 
 function animate() {
@@ -236,11 +236,11 @@ function init() {
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	document.body.appendChild(renderer.domElement);
 	createScene();
-  //createMileniumFalcon();
+  	//createMileniumFalcon();
 	createCamera();
 	render();
 
-  window.addEventListener("keyup", onKeyUp);
+ 	window.addEventListener("keyup", onKeyUp);
 	window.addEventListener("keydown", onKeyDown);
 	window.addEventListener("resize", onResize);
 }
