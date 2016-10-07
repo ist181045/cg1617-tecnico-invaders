@@ -1,6 +1,6 @@
 /**
  * CG Space Invaders
- * RC45179 16'17
+ * CG45179 16'17
  *
  * @author: Rui Ventura (ist181045)
  * @author: Diogo Freitas (ist181586)
