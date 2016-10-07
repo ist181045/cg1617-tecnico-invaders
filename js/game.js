@@ -14,9 +14,9 @@ var friction = 500;
 function createCamera() {
 	/*camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
 	camera.position.x = 75;
-	camera.position.y = 75;
-	camera.position.z = -75;*/
-	camera = new THREE.OrthographicCamera(-window.innerWidth / 2, window.innerWidth / 2, window.innerHeight / 2, -window.innerHeight / 2, -500, 1000);
+	camera.position.y = -75;
+	camera.position.z = 75;*/
+	camera = new THREE.OrthographicCamera(-1600, 1600, 820, -820, 1, 1000);
 	camera.position.x = 0;
 	camera.position.y = 100;
 	camera.position.z = 0;
@@ -24,11 +24,11 @@ function createCamera() {
 }
 
 function createScene() {
-  var rows = 3, columns = 8;
+  	var rows = 2, columns = 4;
 	scene = new THREE.Scene();
 	scene.add(new THREE.AxisHelper(100));
 	createAlliedShip(0, 0, 250);
-	var xDist = -75 * (columns - 1), zDist = 0;
+	var xDist = -75 * (columns - 1), zDist = -300;
 	for (var i = 0; i < rows; i++){
 		for (var e = 0; e < columns; e++){
 			createEnemieShip(xDist, 0, zDist);
@@ -37,6 +37,12 @@ function createScene() {
 		zDist -= 100;
 		xDist = -75 * (columns - 1);
 	}
+}
+
+function createSceneMF() {
+	scene = new THREE.Scene();
+	scene.add(new THREE.AxisHelper(100));
+	createAlliedShip(0, 0, 0);
 }
 
 function render() {
