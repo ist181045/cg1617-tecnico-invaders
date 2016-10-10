@@ -13,7 +13,7 @@ var material2 = new THREE.MeshBasicMaterial({ color: 0x404040, wireframe: false 
 
 function createAlliedShip(x, y, z) {
 	AShip = new THREE.Object3D();
-  	AShip.userData = {direction: 0, velocity: 0, aceleration: 500};
+  	AShip.userData = {direction: 0, velocity: 0, aceleration: 5000};
 
 	addASCenter(AShip, 0, 0, 0);
 	addASPropulsor(AShip, 0, 0, 10);
@@ -30,32 +30,32 @@ function createAlliedShip(x, y, z) {
 	AShip.position.z = z;
 
 	function addASCenter(obj, x, y, z) {
-		geometry = new THREE.CylinderGeometry(40, 40, 10, 100, 10, false);
-		mesh = new THREE.Mesh(geometry, material1);
+		var geometry = new THREE.CylinderGeometry(40, 40, 10, 100, 10, false);
+		var mesh = new THREE.Mesh(geometry, material1);
 		mesh.position.set(x, y, z);
 
 		obj.add(mesh);
 	}
 
 	function addASPropulsor(obj, x, y, z) {
-		geometry = new THREE.CylinderGeometry(35, 35, 7, 100, 10, false);
-		mesh = new THREE.Mesh(geometry, material2);
+		var geometry = new THREE.CylinderGeometry(35, 35, 7, 100, 10, false);
+		var mesh = new THREE.Mesh(geometry, material2);
 		mesh.position.set(x, y, z);
 
 		obj.add(mesh);
 	}
 
 	function addASCanon(obj, x, y, z) {
-		geometry = new THREE.CubeGeometry(10, 10, 35);
-		mesh = new THREE.Mesh(geometry, material1);
+		var geometry = new THREE.CubeGeometry(10, 10, 35);
+		var mesh = new THREE.Mesh(geometry, material1);
 		mesh.position.set(x, y, z);
 
 		obj.add(mesh);
 	}
 
 	function addASGun(obj, x, y, z) {
-		geometry = new THREE.CubeGeometry(4, 10, 36);
-		mesh = new THREE.Mesh(geometry, material1);
+		var geometry = new THREE.CubeGeometry(4, 10, 36);
+		var mesh = new THREE.Mesh(geometry, material1);
 		mesh.position.set(x, y, z);
 
 		obj.add(mesh);
@@ -68,8 +68,8 @@ function createAlliedShip(x, y, z) {
 		triangleShape.lineTo(36, 0);
 		triangleShape.lineTo(0, 0);
 
-		geometry = new THREE.ExtrudeGeometry(triangleShape, { amount: 10, bevelEnabled: false });
-		mesh = new THREE.Mesh(geometry, material1);
+		var geometry = new THREE.ExtrudeGeometry(triangleShape, { amount: 10, bevelEnabled: false });
+		var mesh = new THREE.Mesh(geometry, material1);
 		mesh.rotation.x = -Math.PI/2;
 		mesh.rotation.z = Math.PI/2;
 		mesh.position.set(x, y, z);
@@ -84,8 +84,8 @@ function createAlliedShip(x, y, z) {
 		triangleShape.lineTo(36, 0);
 		triangleShape.lineTo(0, 0);
 
-		geometry = new THREE.ExtrudeGeometry(triangleShape, { amount: -10, bevelEnabled: false });
-		mesh = new THREE.Mesh(geometry, material1);
+		var geometry = new THREE.ExtrudeGeometry(triangleShape, { amount: -10, bevelEnabled: false });
+		var mesh = new THREE.Mesh(geometry, material1);
 		mesh.rotation.x = Math.PI/2;
 		mesh.rotation.z = -Math.PI/2;
 		mesh.position.set(x, y, z);
@@ -94,12 +94,12 @@ function createAlliedShip(x, y, z) {
 	}
 
 	function addASLeg(obj, x, y, z) {
-		geometry = new THREE.CubeGeometry(4, 1, 4);
-		mesh = new THREE.Mesh(geometry, material1);
+		var geometry = new THREE.CubeGeometry(4, 1, 4);
+		var mesh = new THREE.Mesh(geometry, material1);
 		mesh.position.set(x, (y - 2.5), z);
 
-		geometry1 = new THREE.CylinderGeometry(2, 2, 4, 20, 4, false);
-		mesh1 = new THREE.Mesh(geometry1, material1);
+		var geometry1 = new THREE.CylinderGeometry(2, 2, 4, 20, 4, false);
+		var mesh1 = new THREE.Mesh(geometry1, material1);
 		mesh1.position.set(x, y, z);
 
 		obj.add(mesh);
