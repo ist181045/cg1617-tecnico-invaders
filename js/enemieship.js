@@ -7,7 +7,7 @@
  * @author: Sara Azinhal (ist181700)
  */
 
-var material3 = new THREE.MeshBasicMaterial({ color: 0x404040, wireframe: false });
+var material3 = new THREE.MeshBasicMaterial({ color: 0x404040, wireframe: true });
 
 function createEnemieShip(x, y, z) {
 	var ship = new THREE.Object3D();
