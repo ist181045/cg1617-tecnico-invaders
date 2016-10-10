@@ -9,7 +9,7 @@
 
 var camera, scene, renderer;
 var clock = new THREE.Clock(true);
-var friction = 5000;
+var MAX_SPEED = 750;
 
 function createOrtographicCamera() {
 	camera = new THREE.OrthographicCamera(-1600, 1600, 820, -820, 1, 1000);
@@ -22,8 +22,8 @@ function createOrtographicCamera() {
 function createPerspectiveCamera() {
 	camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
 	camera.position.x = 75;
-	camera.position.y = -75;
-	camera.position.z = 75;
+	camera.position.y = 75;
+	camera.position.z = -75;
 	camera.lookAt(scene.position);
 }
 
@@ -31,7 +31,8 @@ function createScene() {
   	var rows = 2, columns = 4;
 	scene = new THREE.Scene();
 	scene.add(new THREE.AxisHelper(100));
-	createAlliedShip(0, 0, 250);
+	createField(0, 0, 0);
+	createAlliedShip(0, 0, 600);
 	var xDist = -75 * (columns - 1), zDist = -300;
 	for (var i = 0; i < rows; i++){
 		for (var e = 0; e < columns; e++){
@@ -69,32 +70,33 @@ function onResize() {
 }
 
 function onKeyUp(e) {
-  	switch(e.keycode) {
+	console.log("onKeyUp");
+  	switch(e.keyCode) {
     	case 37:
     	case 39:
-    		AShip.userData.velocity += !AShip.userData.direction * friction * interval;
-      		AShip.userData.direction = 0;
-      		break;
+	    	AShip.userData.braking = true;
+	    	break;
   	}
 }
 
 function onKeyDown(e) {
-  	var interval = clock.getDelta();
-
+  	console.log("onKeyDown");
 	switch(e.keyCode) {
 		case 65:
 		case 97:
 			material1.wireframe = !material1.wireframe;
 			material2.wireframe = !material2.wireframe;
 			material3.wireframe = !material3.wireframe;
+			material4.wireframe = !material4.wireframe;
+			material5.wireframe = !material5.wireframe;
 			break;
 		case 37:
-		  	AShip.userData.direction = -1;
-		  	AShip.userData.velocity += AShip.userData.direction * AShip.userData.aceleration * interval;
+			AShip.userData.direction = -1;
+			//AShip.userData.braking = false;
 			break;
 	  	case 39:
-	    	AShip.userData.direction = 1;
-	    	AShip.userData.velocity += AShip.userData.direction * AShip.userData.aceleration * interval;
+	  		AShip.userData.direction = 1;
+	  		//AShip.userData.braking = false;
 			break;
 		case 67:
 			if (camera instanceof THREE.PerspectiveCamera){
@@ -115,7 +117,42 @@ function onKeyDown(e) {
 
 function animate() {
   	var interval = clock.getDelta();
-    AShip.position.x += AShip.userData.velocity * interval;
+
+  	if(AShip.userData.braking == false){
+	  	if(AShip.userData.velocity > -MAX_SPEED && AShip.userData.velocity < MAX_SPEED){
+			AShip.userData.velocity += AShip.userData.direction * AShip.userData.aceleration * interval;
+		}
+	}
+
+	if(AShip.userData.braking == true){
+		if((AShip.userData.direction == 1 && AShip.userData.velocity < 0) 
+			|| (AShip.userData.direction == -1 && AShip.userData.velocity > 0)) {
+			AShip.userData.velocity = 0;
+			AShip.userData.direction = 0;
+			AShip.userData.braking = false;
+		}
+
+		else {
+			AShip.userData.velocity += -AShip.userData.direction * AShip.userData.aceleration * interval;
+		}
+	}
+
+  	AShip.position.x += AShip.userData.velocity * interval;
+
+  	if(AShip.position.x > 905){
+  		AShip.position.x = 905;
+  		AShip.userData.velocity = 0;
+  		AShip.userData.direction = 0;
+  		AShip.userData.braking = false;
+  	}
+
+  	if(AShip.position.x < -905){
+  		AShip.position.x = -905;
+  		AShip.userData.velocity = 0;
+  		AShip.userData.direction = 0;
+  		AShip.userData.braking = false;
+  	}
+   	
   	render();
 	requestAnimationFrame(animate);
 }
@@ -126,7 +163,6 @@ function init() {
 	document.body.appendChild(renderer.domElement);
 	createScene();
 	createOrtographicCamera();
-	render();
 
  	window.addEventListener("keyup", onKeyUp);
 	window.addEventListener("keydown", onKeyDown);

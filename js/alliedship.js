@@ -8,12 +8,12 @@
  */
 
 var AShip;
-var	material1 = new THREE.MeshBasicMaterial({ color: 0xbfbfbf, wireframe: false });
-var material2 = new THREE.MeshBasicMaterial({ color: 0x404040, wireframe: false });
+var	material1 = new THREE.MeshBasicMaterial({ color: 0xbfbfbf, wireframe: true });
+var material2 = new THREE.MeshBasicMaterial({ color: 0x404040, wireframe: true });
 
 function createAlliedShip(x, y, z) {
 	AShip = new THREE.Object3D();
-  	AShip.userData = {direction: 0, velocity: 0, aceleration: 5000};
+  	AShip.userData = {direction: 0, velocity: 0, braking: false, aceleration: 200};
 
 	addASCenter(AShip, 0, 0, 0);
 	addASPropulsor(AShip, 0, 0, 10);
