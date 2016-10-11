@@ -10,7 +10,7 @@
 var camera, scene, renderer;
 var clock = new THREE.Clock(true);
 var MAX_SPEED = 750;
-var velDirectionFlag = 0;
+var velflag = 0; //1 right -1 left
 
 function createOrtographicCamera() {
 	camera = new THREE.OrthographicCamera(-1600, 1600, 820, -820, 1, 1000);
@@ -76,6 +76,7 @@ function onKeyUp(e) {
     	case 37:
     	case 39:
 	    	AShip.userData.braking = true;
+	    	console.log("braking on");
 	    	break;
   	}
 }
@@ -92,9 +93,13 @@ function onKeyDown(e) {
 			break;
 		case 37:
 			AShip.userData.direction = -1;
+			console.log("onKeyDown - arrow left");
+			//AShip.userData.braking = false;
 			break;
 	  	case 39:
 	  		AShip.userData.direction = 1;
+	  		console.log("onKeyDown - arrow right");
+	  		//AShip.userData.braking = false;
 			break;
 		case 67:
 			if (camera instanceof THREE.PerspectiveCamera){
@@ -123,31 +128,46 @@ function animate() {
 	}
 
 	if((AShip.userData.direction == 1 && AShip.userData.velocity < 0) 
-	  || (AShip.userData.direction == -1 && AShip.userData.velocity > 0)) {
+		|| (AShip.userData.direction == -1 && AShip.userData.velocity > 0)) {
+		/*AShip.userData.velocity = 0;
+		AShip.userData.direction = 0;*/
 		AShip.userData.braking = true;
+		//console.log("rip me");
 	}
 
-	if(AShip.userData.braking == true){
-		if (AShip.userData.braking) {
-			if(velDirectionFlag == 0) {
-				if(AShip.userData.velocity > 0) {
-					velDirectionFlag = 1;
-				}
 
+	if(AShip.userData.braking == true){
+		
+		/*if((AShip.userData.direction == 1 && AShip.userData.velocity == 0) 
+			|| (AShip.userData.direction == -1 && AShip.userData.velocity == 0)) {
+			AShip.userData.velocity = 0;
+			AShip.userData.direction = 0;
+			AShip.userData.braking = false;
+			//console.log("rip me");
+		}*/
+
+		if (AShip.userData.braking) {
+			if(velflag==0) {
+				if(AShip.userData.velocity > 0) {
+					velflag=1;
+				}
 				else {
-					velDirectionFlag = -1;
+					velflag=-1;
 				}
 			}
 
-			AShip.userData.velocity += -velDirectionFlag * AShip.userData.aceleration * interval;
+			//Key up brake	
+			AShip.userData.velocity += -velflag * AShip.userData.aceleration * interval;
+			console.log("braking");
 
-			if((velDirectionFlag == -1 && AShip.userData.velocity > 0)
-			  || (velDirectionFlag == 1 && AShip.userData.velocity < 0)) {
+			if((velflag==-1 && AShip.userData.velocity > 0) || (velflag==1 && AShip.userData.velocity < 0)) {
 				AShip.userData.velocity = 0;
 				AShip.userData.direction = 0;
 				AShip.userData.braking = false;
-				velDirectionFlag = 0;
-			}			
+				velflag=0;
+				console.log("stopped");
+			}
+			
 		}
 	}
 
