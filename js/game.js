@@ -7,10 +7,23 @@
  * @author: Sara Azinhal (ist181700)
  */
 
+//IMPORTS
+
+
+
+//MATERIALS
+
+var	material1 = new THREE.MeshBasicMaterial({ color: 0xbfbfbf, wireframe: true });
+var material2 = new THREE.MeshBasicMaterial({ color: 0x404040, wireframe: true });
+var material3 = new THREE.MeshBasicMaterial({ color: 0x404040, wireframe: true });
+var	material4 = new THREE.MeshBasicMaterial({ color: 0x1a1a1a, wireframe: true });
+var material5 = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
+
+//GLOBAL VARIABLES
+
 var camera, scene, renderer;
 var clock = new THREE.Clock(true);
-var MAX_SPEED = 750;
-var velDirectionFlag = 0;
+var AShip;
 
 function createOrtographicCamera() {
 	camera = new THREE.OrthographicCamera(-1600, 1600, 820, -820, 1, 1000);
@@ -32,12 +45,12 @@ function createScene() {
   	var rows = 2, columns = 4;
 	scene = new THREE.Scene();
 	scene.add(new THREE.AxisHelper(100));
-	createField(0, 0, 0);
-	createAlliedShip(0, 0, 600);
+	new Field(0, 0, 0);
+	AShip = new AlliedShip(0, 0, 600);
 	var xDist = -75 * (columns - 1), zDist = -300;
 	for (var i = 0; i < rows; i++){
 		for (var e = 0; e < columns; e++){
-			createEnemieShip(xDist, 0, zDist);
+			new EnemyShip(xDist, 0, zDist);
 			xDist += 150;
 		}
 		zDist -= 100;
@@ -48,33 +61,24 @@ function createScene() {
 function createSceneMF() {
 	scene = new THREE.Scene();
 	scene.add(new THREE.AxisHelper(100));
-	createAlliedShip(0, 0, 0);
+	var AShip = AlliedShip(0, 0, 0);
 }
 
 function createSceneTF() {
 	scene = new THREE.Scene();
 	scene.add(new THREE.AxisHelper(100));
-	createEnemieShip(0, 0, 0);
+	EnemieShip(0, 0, 0);
 }
 
 function render() {
 	renderer.render(scene, camera);
 }
 
-function onResize() {
-	renderer.setSize(window.innerWidth, window.innerHeight);
-
-	if (window.innerWidth > 0 && window.innerHeight > 0) {
-		camera.aspect = renderer.getSize().width / renderer.getSize().height;
-		camera.updateProjectionMatrix();
-	}
-}
-
 function onKeyUp(e) {
   	switch(e.keyCode) {
     	case 37:
     	case 39:
-	    	AShip.userData.braking = true;
+	    	AShip.direction = "none";
 	    	console.log("Braking ON - onKeyUp");
 	    	break;
   	}
@@ -91,13 +95,11 @@ function onKeyDown(e) {
 			material5.wireframe = !material5.wireframe;
 			break;
 		case 37:
-			AShip.userData.direction = -1;
-			AShip.userData.braking = false;
+			AShip.direction = "left";
 			console.log("Arrow Left - onKeyDown");
 			break;
 	  	case 39:
-	  		AShip.userData.direction = 1;
-	  		AShip.userData.braking = false;
+	  		AShip.direction = "right";
 	  		console.log("Arrow Right - onKeyDown");
 			break;
 		case 67:
@@ -118,66 +120,10 @@ function onKeyDown(e) {
 }
 
 function animate() {
-  	var interval = clock.getDelta();
+	var interval = clock.getDelta();
 
-  	if(AShip.userData.braking == false){
-	  	if(AShip.userData.velocity > -MAX_SPEED && AShip.userData.velocity < MAX_SPEED){
-			AShip.userData.velocity += AShip.userData.direction * AShip.userData.aceleration * interval;
-		}
-	}
-
-	if((AShip.userData.direction == 1 && AShip.userData.velocity < 0) 
-	  || (AShip.userData.direction == -1 && AShip.userData.velocity > 0)) {
-		AShip.userData.braking = true;
-		console.log("Braking ON")
-	}
-
-	if(AShip.userData.braking == true){
-		if (AShip.userData.braking) {
-			if(velDirectionFlag == 0) {
-				if(AShip.userData.velocity > 0) {
-					velDirectionFlag = 1;
-				}
-
-				else {
-					velDirectionFlag = -1;
-				}
-			}
-
-			AShip.userData.velocity += -velDirectionFlag * AShip.userData.aceleration * interval;
-
-			if((velDirectionFlag == -1 && AShip.userData.velocity > 0)
-			  || (velDirectionFlag == 1 && AShip.userData.velocity < 0)) {
-				AShip.userData.velocity = 0;
-				AShip.userData.direction = 0;
-				AShip.userData.braking = false;
-				velDirectionFlag = 0;
-				console.log("Ship Stopped");
-			}			
-		}
-	}
-
-  	AShip.position.x += AShip.userData.velocity * interval;
-
-  	if(AShip.position.x > 905){
-  		AShip.position.x = 905;
-  		AShip.userData.velocity = 0;
-  		AShip.userData.direction = 0;
-  		AShip.userData.braking = false;
-  		velDirectionFlag = 0;
-  		console.log("Ship Stopped - Field Limit Hit");
-  	}
-
-  	if(AShip.position.x < -905){
-  		AShip.position.x = -905;
-  		AShip.userData.velocity = 0;
-  		AShip.userData.direction = 0;
-  		AShip.userData.braking = false;
-  		velDirectionFlag = 0;
-  		console.log("Ship Stopped - Field Limit Hit");
-  	}
-   	
-  	render();
+	AShip.move(interval);
+	render();
 	requestAnimationFrame(animate);
 }
 
@@ -190,5 +136,5 @@ function init() {
 
  	window.addEventListener("keyup", onKeyUp);
 	window.addEventListener("keydown", onKeyDown);
-	window.addEventListener("resize", onResize);
+	//window.addEventListener("resize", onResize);
 }
