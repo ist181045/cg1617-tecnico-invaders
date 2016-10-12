@@ -7,23 +7,24 @@
  * @author: Sara Azinhal (ist181700)
  */
 
-var material3 = new THREE.MeshBasicMaterial({ color: 0x404040, wireframe: true });
+class EnemyShip {
 
-function createEnemieShip(x, y, z) {
-	var ship = new THREE.Object3D();
+	constructor(x, y, z) {
+		var ship = new THREE.Object3D();
 
-	addESCockpit(ship, 0, 0, 0);
-	addESWingConector1(ship, 27, 0, 0);
-	addESWingConector2(ship, -27, 0, 0);
-	addESWing(ship, -39, -30, -17.5);
-	addESWing(ship, 39, -30, -17.5);
+		this.addESCockpit(ship, 0, 0, 0);
+		this.addESWingConector1(ship, 27, 0, 0);
+		this.addESWingConector2(ship, -27, 0, 0);
+		this.addESWing(ship, -39, -30, -17.5);
+		this.addESWing(ship, 39, -30, -17.5);
 
-	scene.add(ship);
-	ship.position.x = x;
-	ship.position.y = y;
-	ship.position.z = z;
+		scene.add(ship);
+		ship.position.x = x;
+		ship.position.y = y;
+		ship.position.z = z;
+	}
 
-	function addESCockpit(obj, x, y, z) {
+	addESCockpit(obj, x, y, z) {
 		var geometry = new THREE.SphereGeometry(20, 100, 100);
 		var mesh = new THREE.Mesh(geometry, material3);
 		mesh.position.set(x, y, z);
@@ -31,7 +32,7 @@ function createEnemieShip(x, y, z) {
 		obj.add(mesh);
 	}
 
-	function addESWingConector1(obj, x, y, z) {
+	addESWingConector1(obj, x, y, z) {
 		var geometry = new THREE.CylinderGeometry(5, 10, 25, 100, 10, false);
 		var mesh = new THREE.Mesh(geometry, material3);
 		mesh.rotation.z = -Math.PI/2;
@@ -40,7 +41,7 @@ function createEnemieShip(x, y, z) {
 		obj.add(mesh);
 	}
 
-	function addESWingConector2(obj, x, y, z) {
+	addESWingConector2(obj, x, y, z) {
 		var geometry = new THREE.CylinderGeometry(5, 10, 25, 100, 10, false);
 		var mesh = new THREE.Mesh(geometry, material3);
 		mesh.rotation.z = Math.PI/2;
@@ -49,7 +50,7 @@ function createEnemieShip(x, y, z) {
 		obj.add(mesh);
 	}
 
-	function addESWing(obj, x, y, z) {
+	addESWing(obj, x, y, z) {
 		var hexagonShape = new THREE.Shape();
 		hexagonShape.moveTo(0, 0);
 		hexagonShape.lineTo(35, 0);
