@@ -7,29 +7,39 @@
  * @author: Sara Azinhal (ist181700)
  */
 
-var AShip;
-var	material1 = new THREE.MeshBasicMaterial({ color: 0xbfbfbf, wireframe: true });
-var material2 = new THREE.MeshBasicMaterial({ color: 0x404040, wireframe: true });
+class AlliedShip {
 
-function createAlliedShip(x, y, z) {
-	AShip = new THREE.Object3D();
-  	AShip.userData = {direction: 0, velocity: 0, braking: false, aceleration: 200};
+	constructor(x, y, z) {
+		this.max_speed = 750;
+		this.acceleration = 200;
+		this.friction = 75;
+		this.direction = "none";
+		this.velocity = 0;
+		this.braking = false;
+		this.accelarating = false;
 
-	addASCenter(AShip, 0, 0, 0);
-	addASPropulsor(AShip, 0, 0, 10);
-	addASCanon(AShip, 0, 0, -30);
-	addASGun(AShip, 8, 0, -48);
-	addASGun(AShip, -8, 0, -48);
-	addASGunCockpit1(AShip, -10, -5, -30);
-	addASGunCockpit2(AShip, 10, -5, -30);
-	/*addASLeg(AShip, 0, 0, 0);*/
+		this.AS = new THREE.Object3D();
 
-	scene.add(AShip);
-	AShip.position.x = x;
-	AShip.position.y = y;
-	AShip.position.z = z;
+		this.addASCenter(this.AS, 0, 0, 0);
+		this.addASPropulsor(this.AS, 0, 0, 10);
+		this.addASCanon(this.AS, 0, 0, -30);
+		this.addASGun(this.AS, 8, 0, -48);
+		this.addASGun(this.AS, -8, 0, -48);
+		this.addASGunCockpit1(this.AS, -10, -5, -30);
+		this.addASGunCockpit2(this.AS, 10, -5, -30);
+		/*this.addASLeg(this.AS, 0, 0, 0);*/
 
-	function addASCenter(obj, x, y, z) {
+		scene.add(this.AS);
+		this.AS.position.x = x;
+		this.AS.position.y = y;
+		this.AS.position.z = z;
+	}
+
+	getObj() {
+		return this.AS;
+	}
+
+	addASCenter(obj, x, y, z) {
 		var geometry = new THREE.CylinderGeometry(40, 40, 10, 100, 10, false);
 		var mesh = new THREE.Mesh(geometry, material1);
 		mesh.position.set(x, y, z);
@@ -37,7 +47,7 @@ function createAlliedShip(x, y, z) {
 		obj.add(mesh);
 	}
 
-	function addASPropulsor(obj, x, y, z) {
+	addASPropulsor(obj, x, y, z) {
 		var geometry = new THREE.CylinderGeometry(35, 35, 7, 100, 10, false);
 		var mesh = new THREE.Mesh(geometry, material2);
 		mesh.position.set(x, y, z);
@@ -45,7 +55,7 @@ function createAlliedShip(x, y, z) {
 		obj.add(mesh);
 	}
 
-	function addASCanon(obj, x, y, z) {
+	addASCanon(obj, x, y, z) {
 		var geometry = new THREE.CubeGeometry(10, 10, 35);
 		var mesh = new THREE.Mesh(geometry, material1);
 		mesh.position.set(x, y, z);
@@ -53,7 +63,7 @@ function createAlliedShip(x, y, z) {
 		obj.add(mesh);
 	}
 
-	function addASGun(obj, x, y, z) {
+	addASGun(obj, x, y, z) {
 		var geometry = new THREE.CubeGeometry(4, 10, 36);
 		var mesh = new THREE.Mesh(geometry, material1);
 		mesh.position.set(x, y, z);
@@ -61,7 +71,7 @@ function createAlliedShip(x, y, z) {
 		obj.add(mesh);
 	}
 
-	function addASGunCockpit1(obj, x, y, z) {
+	addASGunCockpit1(obj, x, y, z) {
 		var triangleShape = new THREE.Shape();
 		triangleShape.moveTo(0, 0);
 		triangleShape.lineTo(0, 16);
@@ -77,7 +87,7 @@ function createAlliedShip(x, y, z) {
 		obj.add(mesh);
 	}
 
-	function addASGunCockpit2(obj, x, y, z) {
+	addASGunCockpit2(obj, x, y, z) {
 		var triangleShape = new THREE.Shape();
 		triangleShape.moveTo(0, 0);
 		triangleShape.lineTo(0, 16);
@@ -93,7 +103,7 @@ function createAlliedShip(x, y, z) {
 		obj.add(mesh);
 	}
 
-	function addASLeg(obj, x, y, z) {
+	addASLeg(obj, x, y, z) {
 		var geometry = new THREE.CubeGeometry(4, 1, 4);
 		var mesh = new THREE.Mesh(geometry, material1);
 		mesh.position.set(x, (y - 2.5), z);
@@ -104,5 +114,27 @@ function createAlliedShip(x, y, z) {
 
 		obj.add(mesh);
 		obj.add(mesh1);
+	}
+
+	move(interval) {
+		if(this.direction == "left") {
+			this.velocity -= (this.acceleration - this.friction) * interval;
+		}
+
+		if(this.direction == "right") {
+			this.velocity += (this.acceleration - this.friction)  * interval;
+		}
+
+		if(this.direction == "none") {
+			if(this.velocity < 0) {
+				this.velocity += (this.friction) * interval;
+			}
+
+			if(this.velocity > 0) {
+				this.velocity -= (this.friction) * interval;
+			}
+		}
+		console.log(this.direction ,this.velocity);
+		this.AS.position.x += this.velocity * interval;
 	}
 }
