@@ -92,9 +92,11 @@ function onKeyDown(e) {
 			break;
 		case 37:
 			AShip.userData.direction = -1;
+			AShip.userData.braking = false;
 			break;
 	  	case 39:
 	  		AShip.userData.direction = 1;
+	  		AShip.userData.braking = false;
 			break;
 		case 67:
 			if (camera instanceof THREE.PerspectiveCamera){
