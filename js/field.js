@@ -14,7 +14,7 @@ var material5 = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true }
 function createField(x, y, z) {
 	field = new THREE.Object3D();
 
-	addBottom(field, 0, -100, 0);
+	addBottom(field, 0, -75, 0);
 	addVerticalBarriers(field, -975, 0, 0);
 	addVerticalBarriers(field, 975, 0, 0);
 	addHorizontalBarriers(field, 0, 0, -725);
@@ -34,7 +34,7 @@ function createField(x, y, z) {
 	}
 
 	function addVerticalBarriers(obj, x, y, z) {
-		var geometry = new THREE.CubeGeometry(50, 200, 1500);
+		var geometry = new THREE.CubeGeometry(50, 150, 1500);
 		var mesh = new THREE.Mesh(geometry, material5);
 		mesh.position.set(x, y, z);
 
@@ -42,7 +42,7 @@ function createField(x, y, z) {
 	}
 
 	function addHorizontalBarriers(obj, x, y, z) {
-		var geometry = new THREE.CubeGeometry(2000, 200, 50);
+		var geometry = new THREE.CubeGeometry(2000, 150, 50);
 		var mesh = new THREE.Mesh(geometry, material5);
 		mesh.position.set(x, y, z);
 
