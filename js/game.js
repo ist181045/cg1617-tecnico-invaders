@@ -71,11 +71,11 @@ function onResize() {
 }
 
 function onKeyUp(e) {
-	console.log("onKeyUp");
   	switch(e.keyCode) {
     	case 37:
     	case 39:
 	    	AShip.userData.braking = true;
+	    	console.log("Braking ON - onKeyUp");
 	    	break;
   	}
 }
@@ -93,10 +93,12 @@ function onKeyDown(e) {
 		case 37:
 			AShip.userData.direction = -1;
 			AShip.userData.braking = false;
+			console.log("Arrow Left - onKeyDown");
 			break;
 	  	case 39:
 	  		AShip.userData.direction = 1;
 	  		AShip.userData.braking = false;
+	  		console.log("Arrow Right - onKeyDown");
 			break;
 		case 67:
 			if (camera instanceof THREE.PerspectiveCamera){
@@ -127,6 +129,7 @@ function animate() {
 	if((AShip.userData.direction == 1 && AShip.userData.velocity < 0) 
 	  || (AShip.userData.direction == -1 && AShip.userData.velocity > 0)) {
 		AShip.userData.braking = true;
+		console.log("Braking ON")
 	}
 
 	if(AShip.userData.braking == true){
@@ -149,6 +152,7 @@ function animate() {
 				AShip.userData.direction = 0;
 				AShip.userData.braking = false;
 				velDirectionFlag = 0;
+				console.log("Ship Stopped");
 			}			
 		}
 	}
@@ -160,6 +164,8 @@ function animate() {
   		AShip.userData.velocity = 0;
   		AShip.userData.direction = 0;
   		AShip.userData.braking = false;
+  		velDirectionFlag = 0;
+  		console.log("Ship Stopped - Field Limit Hit");
   	}
 
   	if(AShip.position.x < -905){
@@ -167,6 +173,8 @@ function animate() {
   		AShip.userData.velocity = 0;
   		AShip.userData.direction = 0;
   		AShip.userData.braking = false;
+  		velDirectionFlag = 0;
+  		console.log("Ship Stopped - Field Limit Hit");
   	}
    	
   	render();
