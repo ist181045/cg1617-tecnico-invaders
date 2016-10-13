@@ -11,12 +11,10 @@ class AlliedShip {
 
 	constructor(x, y, z) {
 		this.max_speed = 750;
-		this.acceleration = 200;
-		this.friction = 75;
+		this.acceleration = 400;
+		this.friction = 150;
 		this.direction = "none";
 		this.velocity = 0;
-		this.braking = false;
-		this.accelarating = false;
 
 		this.AS = new THREE.Object3D();
 
@@ -27,7 +25,7 @@ class AlliedShip {
 		this.addASGun(this.AS, -8, 0, -48);
 		this.addASGunCockpit1(this.AS, -10, -5, -30);
 		this.addASGunCockpit2(this.AS, 10, -5, -30);
-		/*this.addASLeg(this.AS, 0, 0, 0);*/
+		//this.addASLeg(this.AS, 0, -9, 0);
 
 		scene.add(this.AS);
 		this.AS.position.x = x;
@@ -104,11 +102,11 @@ class AlliedShip {
 	}
 
 	addASLeg(obj, x, y, z) {
-		var geometry = new THREE.CubeGeometry(4, 1, 4);
+		var geometry = new THREE.CubeGeometry(8, 2, 8);
 		var mesh = new THREE.Mesh(geometry, material1);
-		mesh.position.set(x, (y - 2.5), z);
+		mesh.position.set(x, (y - 5), z);
 
-		var geometry1 = new THREE.CylinderGeometry(2, 2, 4, 20, 4, false);
+		var geometry1 = new THREE.CylinderGeometry(4, 4, 8, 40, 8, false);
 		var mesh1 = new THREE.Mesh(geometry1, material1);
 		mesh1.position.set(x, y, z);
 
@@ -127,14 +125,35 @@ class AlliedShip {
 
 		if(this.direction == "none") {
 			if(this.velocity < 0) {
-				this.velocity += (this.friction) * interval;
+				this.velocity += (this.friction * 2) * interval;
+				if(this.velocity > 0) {
+					this.velocity = 0;
+				}
 			}
 
 			if(this.velocity > 0) {
-				this.velocity -= (this.friction) * interval;
+				this.velocity -= (this.friction * 2) * interval;
+				if(this.velocity < 0) {
+					this.velocity = 0;
+				}
 			}
 		}
-		console.log(this.direction ,this.velocity);
+
 		this.AS.position.x += this.velocity * interval;
+		this.collision();
+	}
+
+	collision() {
+		if(this.AS.position.x > 910) {
+			this.AS.position.x = 910;
+			this.velocity = 0;
+			this.direction = "none";
+		}
+
+		if(this.AS.position.x < -910) {
+			this.AS.position.x = -910;
+			this.velocity = 0;
+			this.direction = "none";
+		}
 	}
 }

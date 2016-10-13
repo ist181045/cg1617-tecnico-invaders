@@ -7,23 +7,22 @@
  * @author: Sara Azinhal (ist181700)
  */
 
-//IMPORTS
-
-
-
 //MATERIALS
 
-var	material1 = new THREE.MeshBasicMaterial({ color: 0xbfbfbf, wireframe: true });
-var material2 = new THREE.MeshBasicMaterial({ color: 0x404040, wireframe: true });
-var material3 = new THREE.MeshBasicMaterial({ color: 0x404040, wireframe: true });
-var	material4 = new THREE.MeshBasicMaterial({ color: 0x1a1a1a, wireframe: true });
-var material5 = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
+var	material1 = new THREE.MeshBasicMaterial({ color: 0xbfbfbf, wireframe: false });
+var material2 = new THREE.MeshBasicMaterial({ color: 0x404040, wireframe: false });
+var material3 = new THREE.MeshBasicMaterial({ color: 0x404040, wireframe: false });
+var	material4 = new THREE.MeshBasicMaterial({ color: 0x1a1a1a, wireframe: false });
+var material5 = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: false });
 
 //GLOBAL VARIABLES
 
-var camera, scene, renderer;
+var camera1, camera2;
+var scene, renderer;
 var clock = new THREE.Clock(true);
 var AShip;
+
+//CAMERAS
 
 function createOrtographicCamera() {
 	camera = new THREE.OrthographicCamera(-1600, 1600, 820, -820, 1, 1000);
@@ -40,6 +39,8 @@ function createPerspectiveCamera() {
 	camera.position.z = -75;
 	camera.lookAt(scene.position);
 }
+
+//SCENES
 
 function createScene() {
   	var rows = 2, columns = 4;
@@ -61,14 +62,16 @@ function createScene() {
 function createSceneMF() {
 	scene = new THREE.Scene();
 	scene.add(new THREE.AxisHelper(100));
-	var AShip = AlliedShip(0, 0, 0);
+	AShip = new AlliedShip(0, 0, 0);
 }
 
 function createSceneTF() {
 	scene = new THREE.Scene();
 	scene.add(new THREE.AxisHelper(100));
-	EnemieShip(0, 0, 0);
+	new EnemyShip(0, 0, 0);
 }
+
+//
 
 function render() {
 	renderer.render(scene, camera);
