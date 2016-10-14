@@ -22,14 +22,16 @@ var scene, renderer;
 var clock = new THREE.Clock(true);
 var AShip;
 
+var X = 1920, Y = 1080;
+
 //CAMERAS
 
 function createOrtographicCamera() {
-	camera = new THREE.OrthographicCamera(-1600, 1600, 820, -820, 1, 1000);
-	camera.position.x = 0;
-	camera.position.y = 100;
-	camera.position.z = 0;
+	camera = new THREE.OrthographicCamera(-X/2, X/2, Y/2, -Y/2, 1, 1000);
+	camera.position.set(0, 100, 0);
+	camera.zoom = 0.6;
 	camera.lookAt(scene.position);
+	camera.updateProjectionMatrix();
 }
 
 function createPerspectiveCamera() {
@@ -43,7 +45,7 @@ function createPerspectiveCamera() {
 //SCENES
 
 function createScene() {
-  	var rows = 2, columns = 4;
+  var rows = 2, columns = 4;
 	scene = new THREE.Scene();
 	scene.add(new THREE.AxisHelper(100));
 	new Field(0, 0, 0);
@@ -122,11 +124,30 @@ function onKeyDown(e) {
  	}
 }
 
+/*function onResize(e) {
+	var screenratio = window.innerWidth / window.innerHeight;
+	var renderratio = renderer.getSize().width / renderer.getSize().height;
+	
+	if(screenratio / renderratio > 1) {
+		camera.left = -(Y/2) * screenratio;
+		camera.right = (Y/2) * screenratio;
+	}
+	if(screenratio / renderratio < 1) {
+		camera.top = (X/2) / screenratio;
+		camera.bottom = -(X/2) / screenratio;
+	}
+
+	camera.aspect = screenratio;
+	camera.updateProjectionMatrix();
+	renderer.setSize(window.innerWidth, window.innerHeight);
+}*/
+
 function animate() {
 	var interval = clock.getDelta();
 
 	AShip.move(interval);
 	render();
+
 	requestAnimationFrame(animate);
 }
 
@@ -139,5 +160,5 @@ function init() {
 
  	window.addEventListener("keyup", onKeyUp);
 	window.addEventListener("keydown", onKeyDown);
-	//window.addEventListener("resize", onResize);
+	/*window.addEventListener("resize", onResize);*/
 }
