@@ -34,9 +34,9 @@ function createOrtographicCamera() {
 
 function createPerspectiveCamera() {
 	camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
-	camera.position.x = 75;
-	camera.position.y = 75;
-	camera.position.z = -75;
+	camera.position.x = 0;
+	camera.position.y = 100;
+	camera.position.z = -0;
 	camera.lookAt(scene.position);
 }
 
