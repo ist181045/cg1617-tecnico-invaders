@@ -40,6 +40,7 @@ function createStaticBackCamera() {
 	camera.position.y = 300;
 	camera.position.z = 900;
 	camera.lookAt(scene.position);
+	camera.updateProjectionMatrix();
 }
 
 function createDynamicBackCamera() {
@@ -53,7 +54,7 @@ function createDynamicBackCamera() {
 //SCENES
 
 function createScene() {
-  	var rows = 2, columns = 4;
+  var rows = 2, columns = 4;
 	scene = new THREE.Scene();
 	scene.add(new THREE.AxisHelper(100));
 	new Field(0, 0, 0);
@@ -150,11 +151,30 @@ function onKeyDown(e) {
  	}
 }
 
+/*function onResize(e) {
+	var screenratio = window.innerWidth / window.innerHeight;
+	var renderratio = renderer.getSize().width / renderer.getSize().height;
+	
+	if(screenratio / renderratio > 1) {
+		camera.left = -(Y/2) * screenratio;
+		camera.right = (Y/2) * screenratio;
+	}
+	if(screenratio / renderratio < 1) {
+		camera.top = (X/2) / screenratio;
+		camera.bottom = -(X/2) / screenratio;
+	}
+
+	camera.aspect = screenratio;
+	camera.updateProjectionMatrix();
+	renderer.setSize(window.innerWidth, window.innerHeight);
+}*/
+
 function animate() {
 	var interval = clock.getDelta();
 
 	AShip.move(interval);
 	render();
+
 	requestAnimationFrame(animate);
 }
 
