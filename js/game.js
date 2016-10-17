@@ -30,7 +30,7 @@ function createOrtographicCamera () {
 	camera = new THREE.OrthographicCamera(
 		X / -2, X /  2, /* left / right */
 		Y /  2, Y / -2, /* top / bottom */
-		1, 1000 /* near / far */
+		1, 100 /* near / far */
 	);
 
 	camera.position.set( 0, 100, 0 );
@@ -76,8 +76,8 @@ function createScene () {
 
 	let [ xDist, zDist ] = [ -75 * ( columns - 1 ), -300 ];
 
-	for ( let i = 0; i < rows; i++ ){
-		for ( let e = 0; e < columns; e++ ){
+	for ( let i = 0; i < rows; i++ ) {
+		for ( let e = 0; e < columns; e++ ) {
 			new EnemyShip( xDist, 0, zDist );
 			xDist += 150;
 		}
@@ -92,7 +92,7 @@ function onKeyUp ( event ) {
     	case 37:
     	case 39:
 	    	AShip.direction = "none";
-	    	console.log("Braking ON - onKeyUp");
+	    	console.log( "Braking ON - onKeyUp" );
 
 	    	break;
 
@@ -118,14 +118,14 @@ function onKeyDown ( event ) {
 		case 37:
 
 			AShip.direction = "left";
-			console.log("Arrow Left - onKeyDown");
+			console.log( "Arrow Left - onKeyDown" );
 
 			break;
 
   	case 39:
 
 			AShip.direction = "right";
-  		console.log("Arrow Right - onKeyDown");
+  		console.log( "Arrow Right - onKeyDown" );
 
 			break;
 
@@ -190,8 +190,8 @@ function init () {
 	createScene();
 	createOrtographicCamera();
 
- 	window.addEventListener("keyup", onKeyUp);
-	window.addEventListener("keydown", onKeyDown);
-	window.addEventListener("resize", onResize);
+ 	window.addEventListener( "keyup",   onKeyUp );
+	window.addEventListener( "keydown", onKeyDown );
+	window.addEventListener( "resize",  onResize );
 
 }
