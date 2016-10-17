@@ -22,7 +22,7 @@ var camera, scene, renderer;
 var clock = new THREE.Clock(true);
 var AShip;
 
-var X = 1920, Y = 1080;
+var X = 400, Y = 300;
 
 //CAMERAS
 
@@ -91,7 +91,7 @@ function render() {
 /*function onResize(e) {
 	var screenratio = window.innerWidth / window.innerHeight;
 	var renderratio = renderer.getSize().width / renderer.getSize().height;
-	
+
 	if(screenratio / renderratio > 1) {
 		camera.left = -(Y/2) * screenratio;
 		camera.right = (Y/2) * screenratio;
@@ -154,7 +154,7 @@ function onKeyDown(e) {
 /*function onResize(e) {
 	var screenratio = window.innerWidth / window.innerHeight;
 	var renderratio = renderer.getSize().width / renderer.getSize().height;
-	
+
 	if(screenratio / renderratio > 1) {
 		camera.left = -(Y/2) * screenratio;
 		camera.right = (Y/2) * screenratio;
