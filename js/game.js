@@ -32,7 +32,6 @@ function createOrtographicCamera () {
 		Y /  2, Y / -2, /* top / bottom */
 		1, 1000 /* near / far */
 	);
-	camera.zoom = 0.6;
 
 	camera.position.set( 0, 100, 0 );
   camera.lookAt( scene.position );
@@ -193,6 +192,6 @@ function init () {
 
  	window.addEventListener("keyup", onKeyUp);
 	window.addEventListener("keydown", onKeyDown);
-	window.addEventListener("resize", onResize);}
+	window.addEventListener("resize", onResize);
 
 }
