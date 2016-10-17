@@ -1,1 +1,12 @@
-This is a change to the README.md
+# Space Invaders
+### Projecto de CG - 16'17
+
+---
+
+### Descrição do Problema
+
+*coming soon*
+
+---
+
+Mais informação no Enunciado do Projecto (a publicar)
