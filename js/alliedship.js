@@ -141,6 +141,10 @@ class AlliedShip {
 
 		this.AS.position.x += this.velocity * interval;
 		this.collision();
+
+		if (CAMERA_MOVEMENT){
+			camera.position.x += this.velocity * interval;
+		}
 	}
 
 	collision() {
