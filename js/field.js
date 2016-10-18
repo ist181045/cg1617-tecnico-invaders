@@ -43,8 +43,6 @@ class Field extends THREE.Object3D {
 		let w = this._width;
 		let l = this._length;
 
-		console.log( `${w} : ${l}` );
-
 		let barriers = new THREE.Group();
 
 		let barrierMaterial = new THREE.MeshBasicMaterial( {
@@ -68,7 +66,6 @@ class Field extends THREE.Object3D {
 
 	}
 
-
 	_addFloor ( obj, x, y, z, material ) {
 
 		let geometry = new THREE.PlaneGeometry( this._width, this._length );
@@ -76,7 +73,7 @@ class Field extends THREE.Object3D {
 
 		mesh.position.set( x, y, z );
 		mesh.rotateX( Math.PI / -2 );
-		
+
 		obj.add( mesh );
 
 	}
