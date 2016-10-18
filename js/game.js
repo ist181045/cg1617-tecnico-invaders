@@ -47,7 +47,7 @@ function createOrtographicCamera () {
 
 function createStaticBackCamera () {
 	cameraStatic = new THREE.PerspectiveCamera(
-		70, window.innerWidth / window.innerHeight, 1, 1500
+		75, window.innerWidth / window.innerHeight, 1, 1500
 	);
 
 	cameraStatic.position.set( 0, 300, 900 );
@@ -58,13 +58,13 @@ function createStaticBackCamera () {
 
 function createDynamicBackCamera () {
 	cameraDynamic = new THREE.PerspectiveCamera(
-		70, window.innerWidth / window.innerHeight, 1, 1000
+		75, window.innerWidth / window.innerHeight, 1, 1000
 	);
 
 	cameraDynamic.position.set( AShip.AS.position.x, 0, 700 );
 	cameraDynamic.lookAt( AShip.AS.position );
 
-	cameraDynamic.updateProjectionMatrix;
+	cameraDynamic.updateProjectionMatrix();
 }
 
 /* Event Handler */
@@ -113,6 +113,7 @@ function onKeyDown ( event ) {
 
 			activeCamera = cameraOrtho;
 			CAMERA_MOVEMENT = false;
+			resizeCamera();
 
 			break;
 
@@ -120,7 +121,7 @@ function onKeyDown ( event ) {
 
 			activeCamera = cameraStatic;
 			CAMERA_MOVEMENT = false;
-			onResize();
+			resizeCamera();
 
 			break;
 
@@ -128,6 +129,7 @@ function onKeyDown ( event ) {
 
 			activeCamera = cameraDynamic;
 			CAMERA_MOVEMENT = true;
+			resizeCamera();
 
 			break;
 
@@ -136,6 +138,14 @@ function onKeyDown ( event ) {
 }
 
 function onResize () {
+
+	resizeCamera();
+
+	renderer.setSize( window.innerWidth, window.innerHeight );
+
+}
+
+function resizeCamera () {
 
 	let ratio = window.innerWidth / window.innerHeight;
 
@@ -165,9 +175,9 @@ function onResize () {
 
 	activeCamera.updateProjectionMatrix();
 
-	renderer.setSize( window.innerWidth, window.innerHeight );
-
 }
+
+
 
 /* Scene */
 function createScene () {
@@ -192,6 +202,7 @@ function createScene () {
 	}
 }
 
+/* Animate */
 function animate () {
 
 	let delta = clock.getDelta();
@@ -222,12 +233,10 @@ function init () {
 
 	clock = new THREE.Clock( true );
 
-	onResize();
+	resizeCamera();
 
  	window.addEventListener( 'keyup',   onKeyUp );
 	window.addEventListener( 'keydown', onKeyDown );
 	window.addEventListener( 'resize',  onResize );
-
-	activeCamera.addEventListener( 'rescale', onResize );
 
 }
