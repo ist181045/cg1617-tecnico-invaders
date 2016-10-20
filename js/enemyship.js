@@ -10,22 +10,27 @@
 class EnemyShip {
 
 	constructor ( x, y, z ) {
-		var ship = new THREE.Object3D();
+		this.max_speed = 750;
+		this.acceleration = 100;
+		this.direction = new THREE.Vector2(0, 0);
+		this.velocity = new THREE.Vector2(0, 0);
 
-		this.addESCockpit( ship, 0, 0, 0 );
-		this.addESWingConector1( ship, 27, 0, 0 );
-		this.addESWingConector2( ship, -27, 0, 0 );
-		this.addESWing( ship, -39, -30, -17.5 );
-		this.addESWing( ship, 39, -30, -17.5 );
+		this.ES = new THREE.Object3D();
 
-		scene.add( ship );
-		ship.position.x = x;
-		ship.position.y = y;
-		ship.position.z = z;
+		this.addESCockpit( this.ES, 0, 0, 0 );
+		this.addESWingConector1( this.ES, 6.75, 0, 0 );
+		this.addESWingConector2( this.ES, -6.75, 0, 0 );
+		this.addESWing( this.ES, -9.75, -7.5, -4.375 );
+		this.addESWing( this.ES, 9.75, -7.5, -4.375 );
+
+		scene.add( this.ES );
+		this.ES.position.x = x;
+		this.ES.position.y = y;
+		this.ES.position.z = z;
 	}
 
 	addESCockpit ( obj, x, y, z ) {
-		var geometry = new THREE.SphereGeometry( 20, 100, 100 );
+		var geometry = new THREE.SphereGeometry( 5, 25, 25 );
 		var mesh = new THREE.Mesh( geometry, material3 );
 		mesh.position.set( x, y, z );
 
@@ -33,7 +38,7 @@ class EnemyShip {
 	}
 
 	addESWingConector1 ( obj, x, y, z ) {
-		var geometry = new THREE.CylinderGeometry( 5, 10, 25, 100, 10, false );
+		var geometry = new THREE.CylinderGeometry( 1.25, 2.5, 6.25, 50, 2.5, false );
 		var mesh = new THREE.Mesh( geometry, material3 );
 		mesh.rotation.z = -Math.PI/2;
 		mesh.position.set( x, y, z );
@@ -42,7 +47,7 @@ class EnemyShip {
 	}
 
 	addESWingConector2 ( obj, x, y, z ) {
-		var geometry = new THREE.CylinderGeometry( 5, 10, 25, 100, 10, false );
+		var geometry = new THREE.CylinderGeometry( 1.25, 2.5, 6.25, 50, 2.5, false );
 		var mesh = new THREE.Mesh( geometry, material3 );
 		mesh.rotation.z = Math.PI/2;
 		mesh.position.set( x, y, z );
@@ -53,18 +58,43 @@ class EnemyShip {
 	addESWing ( obj, x, y, z ) {
 		var hexagonShape = new THREE.Shape();
 		hexagonShape.moveTo( 0, 0 );
-		hexagonShape.lineTo( 35, 0 );
-		hexagonShape.lineTo( 43, 30 );
-		hexagonShape.lineTo( 35, 60 );
-		hexagonShape.lineTo( 0, 60 );
-		hexagonShape.lineTo(-8, 30);
+		hexagonShape.lineTo( 8.75, 0 );
+		hexagonShape.lineTo( 10.75, 7.5 );
+		hexagonShape.lineTo( 8.75, 15 );
+		hexagonShape.lineTo( 0, 15 );
+		hexagonShape.lineTo(-2, 7.5);
 		hexagonShape.lineTo( 0, 0 );
 
-		var geometry = new THREE.ExtrudeGeometry( hexagonShape, { amount: -2, bevelEnabled: false } );
+		var geometry = new THREE.ExtrudeGeometry( hexagonShape, { amount: -0.5, bevelEnabled: false } );
 		var mesh = new THREE.Mesh( geometry, material3 );
 		mesh.rotation.y = -Math.PI/2;
 		mesh.position.set( x, y, z );
 
 		obj.add( mesh );
+	}
+
+	calcRandomDirection () {
+		this.direction.x = Math.random() * 2 - 1;
+		this.direction.y = Math.random() * 2 - 1;
+	}
+
+	move ( interval ) {
+		if ( this.direction.x < 0 ) {
+			this.velocity.x -= this.acceleration * interval;
+		}
+
+		if ( this.direction.x > 0 ) {
+			this.velocity.x += this.acceleration * interval;
+		}
+
+		if ( this.direction.y < 0 ) {
+			this.velocity.y -= this.acceleration * interval;
+		}
+
+		if ( this.direction.y > 0 ) {
+			this.velocity.y += this.acceleration * interval;
+		}
+
+		this.ES.position.x += this.velocity * interval;
 	}
 }

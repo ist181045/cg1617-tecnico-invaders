@@ -11,20 +11,20 @@ class AlliedShip {
 
 	constructor ( x, y, z ) {
 		this.max_speed = 750;
-		this.acceleration = 400;
-		this.friction = 150;
+		this.acceleration = 100;
+		this.friction = 37.5;
 		this.direction = "none";
 		this.velocity = 0;
 
 		this.AS = new THREE.Object3D();
 
 		this.addASCenter( this.AS, 0, 0, 0 );
-		this.addASPropulsor( this.AS, 0, 0, 10 );
-		this.addASCanon( this.AS, 0, 0, -30 );
-		this.addASGun( this.AS, 8, 0, -48 );
-		this.addASGun( this.AS, -8, 0, -48 );
-		this.addASGunCockpit1( this.AS, -10, -5, -30 );
-		this.addASGunCockpit2( this.AS, 10, -5, -30 );
+		this.addASPropulsor( this.AS, 0, 0, 2.5 );
+		this.addASCanon( this.AS, 0, 0, -7.5 );
+		this.addASGun( this.AS, 2, 0, -12 );
+		this.addASGun( this.AS, -2, 0, -12 );
+		this.addASGunCockpit1( this.AS, -2.5, -1.25, -7.5 );
+		this.addASGunCockpit2( this.AS, 2.5, -1.25, -7.5 );
 		//this.addASLeg( this.AS, 0, -9, 0 );
 
 		scene.add( this.AS );
@@ -38,7 +38,7 @@ class AlliedShip {
 	}
 
 	addASCenter ( obj, x, y, z ) {
-		var geometry = new THREE.CylinderGeometry( 40, 40, 10, 100, 10, false );
+		var geometry = new THREE.CylinderGeometry( 10, 10, 2.5, 50, 2.5, false );
 		var mesh = new THREE.Mesh( geometry, material1 );
 		mesh.position.set( x, y, z );
 
@@ -46,7 +46,7 @@ class AlliedShip {
 	}
 
 	addASPropulsor ( obj, x, y, z ) {
-		var geometry = new THREE.CylinderGeometry( 35, 35, 7, 100, 10, false );
+		var geometry = new THREE.CylinderGeometry( 8.75, 8.75, 1.75, 50, 1.75, false );
 		var mesh = new THREE.Mesh( geometry, material2 );
 		mesh.position.set( x, y, z );
 
@@ -54,7 +54,7 @@ class AlliedShip {
 	}
 
 	addASCanon ( obj, x, y, z ) {
-		var geometry = new THREE.CubeGeometry( 10, 10, 35 );
+		var geometry = new THREE.CubeGeometry( 2.5, 2.5, 8.75 );
 		var mesh = new THREE.Mesh( geometry, material1 );
 		mesh.position.set( x, y, z );
 
@@ -62,7 +62,7 @@ class AlliedShip {
 	}
 
 	addASGun ( obj, x, y, z ) {
-		var geometry = new THREE.CubeGeometry( 4, 10, 36 );
+		var geometry = new THREE.CubeGeometry( 1, 2.5, 9 );
 		var mesh = new THREE.Mesh( geometry, material1 );
 		mesh.position.set( x, y, z );
 
@@ -72,11 +72,11 @@ class AlliedShip {
 	addASGunCockpit1 ( obj, x, y, z ) {
 		var triangleShape = new THREE.Shape();
 		triangleShape.moveTo( 0, 0 );
-		triangleShape.lineTo( 0, 16 );
-		triangleShape.lineTo( 36, 0 );
+		triangleShape.lineTo( 0, 4 );
+		triangleShape.lineTo( 9, 0 );
 		triangleShape.lineTo( 0, 0 );
 
-		var geometry = new THREE.ExtrudeGeometry( triangleShape, { amount: 10, bevelEnabled: false } );
+		var geometry = new THREE.ExtrudeGeometry( triangleShape, { amount: 2.5, bevelEnabled: false } );
 		var mesh = new THREE.Mesh( geometry, material1 );
 		mesh.rotation.x = -Math.PI/2;
 		mesh.rotation.z = Math.PI/2;
@@ -88,11 +88,11 @@ class AlliedShip {
 	addASGunCockpit2 ( obj, x, y, z ) {
 		var triangleShape = new THREE.Shape();
 		triangleShape.moveTo( 0, 0 );
-		triangleShape.lineTo( 0, 16 );
-		triangleShape.lineTo( 36, 0 );
+		triangleShape.lineTo( 0, 4 );
+		triangleShape.lineTo( 9, 0 );
 		triangleShape.lineTo( 0, 0 );
 
-		var geometry = new THREE.ExtrudeGeometry( triangleShape, { amount: -10, bevelEnabled: false } );
+		var geometry = new THREE.ExtrudeGeometry( triangleShape, { amount: -2.5, bevelEnabled: false } );
 		var mesh = new THREE.Mesh( geometry, material1 );
 		mesh.rotation.x = Math.PI/2;
 		mesh.rotation.z = -Math.PI/2;
@@ -102,11 +102,11 @@ class AlliedShip {
 	}
 
 	addASLeg ( obj, x, y, z ) {
-		var geometry = new THREE.CubeGeometry( 8, 2, 8 );
+		var geometry = new THREE.CubeGeometry( 2, 0.5, 2 );
 		var mesh = new THREE.Mesh( geometry, material1 );
 		mesh.position.set( x, (y - 5), z );
 
-		var geometry1 = new THREE.CylinderGeometry( 4, 4, 8, 40, 8, false );
+		var geometry1 = new THREE.CylinderGeometry( 1, 1, 2, 20, 2, false );
 		var mesh1 = new THREE.Mesh( geometry1, material1 );
 		mesh1.position.set( x, y, z );
 
@@ -142,20 +142,19 @@ class AlliedShip {
 		this.AS.position.x += this.velocity * interval;
 		this.collision();
 
-		/*if (CAMERA_MOVEMENT){
-			camera.position.x += this.velocity * interval;
-		}*/
+		cameraDynamic.position.x += this.velocity * interval;
+		
 	}
 
 	collision () {
-		if ( this.AS.position.x > 910 ) {
-			this.AS.position.x = 910;
+		if ( this.AS.position.x > 111 ) {
+			this.AS.position.x = 111;
 			this.velocity = 0;
 			this.direction = "none";
 		}
 
-		if ( this.AS.position.x < -910 ) {
-			this.AS.position.x = -910;
+		if ( this.AS.position.x < -111 ) {
+			this.AS.position.x = -111;
 			this.velocity = 0;
 			this.direction = "none";
 		}
