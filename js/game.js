@@ -25,7 +25,7 @@ var clock;
 
 var AShip;
 
-var CAMERA_MOVEMENT = false;
+var EShips;
 
 var X = 400, Y = 300;
 
@@ -39,32 +39,36 @@ function createOrtographicCamera () {
 	);
 
 	cameraOrtho.position.set( 0, 100, 0 );
-  cameraOrtho.lookAt( new THREE.Vector3( 0, -1, 0 ) );
+  	cameraOrtho.lookAt( new THREE.Vector3( 0, -1, 0 ) );
 
 	cameraOrtho.updateProjectionMatrix();
 
 }
 
 function createStaticBackCamera () {
+	
 	cameraStatic = new THREE.PerspectiveCamera(
 		75, window.innerWidth / window.innerHeight, 1, 1500
 	);
 
-	cameraStatic.position.set( 0, 300, 900 );
-	cameraStatic.lookAt( scene.position );
+	cameraStatic.position.set( 0, 75, 170 ); cameraStatic.lookAt(
+	scene.position );
 
 	cameraStatic.updateProjectionMatrix();
+
 }
 
 function createDynamicBackCamera () {
+
 	cameraDynamic = new THREE.PerspectiveCamera(
 		75, window.innerWidth / window.innerHeight, 1, 1000
 	);
 
-	cameraDynamic.position.set( AShip.AS.position.x, 0, 700 );
+	cameraDynamic.position.set( AShip.AS.position.x, 20	, 125 );
 	cameraDynamic.lookAt( AShip.AS.position );
 
 	cameraDynamic.updateProjectionMatrix();
+
 }
 
 /* Event Handler */
@@ -102,17 +106,16 @@ function onKeyDown ( event ) {
 
 			break;
 
-  	case 39:
+  		case 39:
 
 			AShip.direction = 'right';
-  		console.log( 'Arrow Right - onKeyDown' );
+  			console.log( 'Arrow Right - onKeyDown' );
 
 			break;
 
 		case 49:
 
 			activeCamera = cameraOrtho;
-			CAMERA_MOVEMENT = false;
 			resizeCamera();
 
 			break;
@@ -120,7 +123,6 @@ function onKeyDown ( event ) {
 		case 50:
 
 			activeCamera = cameraStatic;
-			CAMERA_MOVEMENT = false;
 			resizeCamera();
 
 			break;
@@ -128,7 +130,6 @@ function onKeyDown ( event ) {
 		case 51:
 
 			activeCamera = cameraDynamic;
-			CAMERA_MOVEMENT = true;
 			resizeCamera();
 
 			break;
@@ -177,29 +178,29 @@ function resizeCamera () {
 
 }
 
-
-
 /* Scene */
 function createScene () {
 
-  let [ rows, columns ] = [ 2, 4 ];
+  	let [ rows, columns ] = [ 1, 1 ];
 
 	scene = new THREE.Scene();
 	scene.add( new THREE.AxisHelper( 100 ) );
 
 	scene.add( new Field( 0, 0, 0 ) );
-	AShip = new AlliedShip( 0, 0, 600 );
+	AShip = new AlliedShip( 0, 10, 100 );
+	EShips = new Array();
 
-	let [ xDist, zDist ] = [ -75 * ( columns - 1 ), -300 ];
+	let [ xDist, zDist ] = [ -18.75 * ( columns - 1 ), -75 ];
 
 	for ( let i = 0; i < rows; i++ ) {
 		for ( let e = 0; e < columns; e++ ) {
-			new EnemyShip( xDist, 0, zDist );
-			xDist += 150;
+			EShips.push( new EnemyShip( xDist, 10, zDist ) );
+			xDist += 37.5;
 		}
-		zDist -= 100;
-		xDist = -75 * ( columns - 1 );
+		zDist -= 25;
+		xDist = -18.75 * ( columns - 1 );
 	}
+
 }
 
 /* Animate */
@@ -208,6 +209,8 @@ function animate () {
 	let delta = clock.getDelta();
 
 	AShip.move( delta );
+
+	EShips.forEach( function(s) { s.move( delta ); } );
 
 	renderer.render( scene, activeCamera );
 	requestAnimationFrame( animate );
