@@ -9,6 +9,7 @@
 
 //MATERIALS
 
+var abbmaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, transparent: true , opacity: 0} );
 var	material1 = new THREE.MeshBasicMaterial( { color: 0xbfbfbf, wireframe: false } );
 var material2 = new THREE.MeshBasicMaterial( { color: 0x404040, wireframe: false } );
 var material3 = new THREE.MeshBasicMaterial( { color: 0x404040, wireframe: false } );
@@ -181,7 +182,7 @@ function resizeCamera () {
 /* Scene */
 function createScene () {
 
-  	let [ rows, columns ] = [ 1, 1 ];
+  	let [ rows, columns ] = [ 2, 4 ];
 
 	scene = new THREE.Scene();
 	scene.add( new THREE.AxisHelper( 100 ) );
