@@ -239,18 +239,17 @@ function animate () {
 	GameField.EShips.children.forEach( function(s) { s.move( delta ); } );
 	GameField.Bullets.forEach( function(b) { b.move( delta ); } );
 
-	objectCollision();
+	//objectCollision();
 
 	renderer.render( scene, activeCamera );
 	requestAnimationFrame( animate );
 
 }
 
-function objectCollision () {
+/*function objectCollision () {
+	var s1collided = false;
 	GameField.EShips.children.forEach(
 		function(s1) {
-			console.log(s1);
-			var s1collided = false;
 			if ( s1.boundingSphere.intersectsSphere( GameField.AShip.boundingSphere ) ){
 				if ( s1.boundingBox.intersectsBox( GameField.AShip.boundingBox ) ){
 					s1.direction.x = -s1.direction.x;
@@ -281,10 +280,10 @@ function objectCollision () {
 						}
 					}
 				}
-			)
+			);
 		} 
 	);
-}
+}*/
 
 function init () {
 

@@ -43,7 +43,7 @@ class Field extends THREE.Object3D {
 		this.EShips = new THREE.Group();
 		this.Bullets = new Array();
 
-		let [ rows, columns ] = [ 1, 2 ];
+		let [ rows, columns ] = [ 2, 4 ];
 		let [ xDist, zDist ] = [ -18.75 * ( columns - 1 ), -75 ];
 
 		for ( let i = 0; i < rows; i++ ) {
