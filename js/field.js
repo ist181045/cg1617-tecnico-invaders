@@ -21,7 +21,7 @@ class Field extends THREE.Object3D {
 		this._length = l;
 
 		this._buildField( 0, 0, 0 );
-
+		
 		this.position.set( x, y, z );
 
 	}
@@ -36,6 +36,24 @@ class Field extends THREE.Object3D {
 
 		return this._length;
 
+	}
+
+	_buildFieldContents ( x, y, z ) {
+		this.AShip = new AlliedShip( x, y + 10, z + 100 );;
+		this.EShips = new THREE.Group();
+		this.Bullets = new Array();
+
+		let [ rows, columns ] = [ 1, 2 ];
+		let [ xDist, zDist ] = [ -18.75 * ( columns - 1 ), -75 ];
+
+		for ( let i = 0; i < rows; i++ ) {
+			for ( let e = 0; e < columns; e++ ) {
+				this.EShips.add( new EnemyShip( x + xDist, y + 10, z + zDist ) );
+				xDist += 37.5;
+			}
+			zDist -= 25;
+			xDist = -18.75 * ( columns - 1 );
+		}
 	}
 
 	_buildField ( x, y, z ) {
@@ -64,7 +82,11 @@ class Field extends THREE.Object3D {
 		this._addHorizontalBarrier( barriers, x, y + 10, z + l / -2, barrierMaterial );
 		this._addHorizontalBarrier( barriers, x, y + 10, z + l /  2, barrierMaterial );
 
+		this._buildFieldContents( x, y, z );
+
 		this.add( barriers );
+		this.add( this.AShip );
+		this.add( this.EShips );
 
 	}
 

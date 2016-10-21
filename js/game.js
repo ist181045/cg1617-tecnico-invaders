@@ -9,7 +9,7 @@
 
 //MATERIALS
 
-var abbmaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, transparent: true , opacity: 0} );
+var abbmaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe: true, transparent: true , opacity: 0 } );
 var	material1 = new THREE.MeshBasicMaterial( { color: 0xbfbfbf, wireframe: false } );
 var material2 = new THREE.MeshBasicMaterial( { color: 0x404040, wireframe: false } );
 var material3 = new THREE.MeshBasicMaterial( { color: 0x404040, wireframe: false } );
@@ -18,19 +18,34 @@ var material3 = new THREE.MeshBasicMaterial( { color: 0x404040, wireframe: false
 
 var container;
 
-var cameraOrtho, cameraStatic, cameraDynamic;
+var cameraOrtho, cameraStatic, cameraDynamic, cameraDevel;
 
 var activeCamera, scene, renderer;
 
 var clock;
 
-var AShip;
-
-var EShips;
+var GameField;
 
 var X = 400, Y = 300;
 
+//FLAGS
+
+var WEAPONS_SYSTEM = 1;
+
 /* Camera creation */
+function createDevelopingCamera () {
+	
+	cameraDevel = new THREE.PerspectiveCamera(
+		75, window.innerWidth / window.innerHeight, 1, 1500
+	);
+
+	cameraDevel.position.set( 25, 25, 25 ); cameraDevel.lookAt(
+	scene.position );
+
+	cameraDevel.updateProjectionMatrix();
+
+}
+
 function createOrtographicCamera () {
 
 	cameraOrtho = new THREE.OrthographicCamera(
@@ -65,8 +80,8 @@ function createDynamicBackCamera () {
 		75, window.innerWidth / window.innerHeight, 1, 1000
 	);
 
-	cameraDynamic.position.set( AShip.AS.position.x, 20	, 125 );
-	cameraDynamic.lookAt( AShip.AS.position );
+	cameraDynamic.position.set( GameField.AShip.position.x, 20	, 125 );
+	cameraDynamic.lookAt( GameField.AShip.position );
 
 	cameraDynamic.updateProjectionMatrix();
 
@@ -80,11 +95,8 @@ function onKeyUp ( event ) {
     	case 37:
     	case 39:
 
-	    	AShip.direction = 'none';
-	    	console.log( 'Braking ON - onKeyUp' );
-
+	    	GameField.AShip.direction = 'none';
 	    	break;
-
   	}
 
 }
@@ -97,44 +109,61 @@ function onKeyDown ( event ) {
 		case 97:
 
 			/* wireframe toggling: later... */
-
 			break;
 
 		case 37:
 
-			AShip.direction = 'left';
-			console.log( 'Arrow Left - onKeyDown' );
-
+			GameField.AShip.direction = 'left';
 			break;
 
   		case 39:
 
-			AShip.direction = 'right';
-  			console.log( 'Arrow Right - onKeyDown' );
-
+			GameField.AShip.direction = 'right';
 			break;
 
 		case 49:
 
 			activeCamera = cameraOrtho;
 			resizeCamera();
-
 			break;
 
 		case 50:
 
 			activeCamera = cameraStatic;
 			resizeCamera();
-
 			break;
 
 		case 51:
 
 			activeCamera = cameraDynamic;
 			resizeCamera();
-
 			break;
 
+		case 52:
+			 activeCamera = cameraDevel;
+			 resizeCamera();
+			 break;
+
+		case 66:
+			GameField.AShip.fire();
+			break;
+
+		case 77:
+			createSceneMF();
+			break;
+
+		case 84:
+			createSceneTF();
+			break;
+
+		case 87:
+			if (WEAPONS_SYSTEM == 1){ 
+				WEAPONS_SYSTEM = 2;
+			}
+			else{
+				WEAPONS_SYSTEM = 1;
+			}
+			break;
  	}
 
 }
@@ -182,26 +211,23 @@ function resizeCamera () {
 /* Scene */
 function createScene () {
 
-  	let [ rows, columns ] = [ 2, 4 ];
-
 	scene = new THREE.Scene();
 	scene.add( new THREE.AxisHelper( 100 ) );
 
-	scene.add( new Field( 0, 0, 0 ) );
-	AShip = new AlliedShip( 0, 10, 100 );
-	EShips = new Array();
+	GameField = new Field( 0, 0, 0 );
+	scene.add( GameField );
+}
 
-	let [ xDist, zDist ] = [ -18.75 * ( columns - 1 ), -75 ];
+function createSceneMF () {
+	scene = new THREE.Scene();
+	scene.add( new THREE.AxisHelper( 100 ) );
+	new AlliedShip( 0, 0, 0 );
+}
 
-	for ( let i = 0; i < rows; i++ ) {
-		for ( let e = 0; e < columns; e++ ) {
-			EShips.push( new EnemyShip( xDist, 10, zDist ) );
-			xDist += 37.5;
-		}
-		zDist -= 25;
-		xDist = -18.75 * ( columns - 1 );
-	}
-
+function createSceneTF () {
+	scene = new THREE.Scene();
+	scene.add( new THREE.AxisHelper( 100 ) );
+	new EnemyShip( 0, 0, 0 );
 }
 
 /* Animate */
@@ -209,13 +235,55 @@ function animate () {
 
 	let delta = clock.getDelta();
 
-	AShip.move( delta );
+	GameField.AShip.move( delta );
+	GameField.EShips.children.forEach( function(s) { s.move( delta ); } );
+	GameField.Bullets.forEach( function(b) { b.move( delta ); } );
 
-	EShips.forEach( function(s) { s.move( delta ); } );
+	objectCollision();
 
 	renderer.render( scene, activeCamera );
 	requestAnimationFrame( animate );
 
+}
+
+function objectCollision () {
+	GameField.EShips.children.forEach(
+		function(s1) {
+			console.log(s1);
+			var s1collided = false;
+			if ( s1.boundingSphere.intersectsSphere( GameField.AShip.boundingSphere ) ){
+				if ( s1.boundingBox.intersectsBox( GameField.AShip.boundingBox ) ){
+					s1.direction.x = -s1.direction.x;
+					s1.direction.y = -s1.direction.y;
+					s1.velocity.x = -s1.velocity.x;
+					s1.velocity.y = -s1.velocity.y;
+				}
+			}
+
+			GameField.EShips.children.forEach(
+				function(s2) {
+					if ( !s1.boundingSphere.equals(s2.boundingSphere) && s1collided == false ){
+						if ( s1.boundingSphere.intersectsSphere( s2.boundingSphere ) ){
+							if ( s1.boundingBox.intersectsBox( s2.boundingBox ) ){
+								console.log("hooray", s1.direction.x, s2.direction.x, s1.velocity.x, s2.velocity.x);
+								s1.direction.x = -s1.direction.x;
+								s1.direction.y = -s1.direction.y;
+								s1.velocity.x = -s1.velocity.x;
+								s1.velocity.y = -s1.velocity.y;
+								s2.direction.x = -s2.direction.x;
+								s2.direction.y = -s2.direction.y;
+								s2.velocity.x = -s2.velocity.x;
+								s2.velocity.y = -s2.velocity.y;
+								s1collided = true;
+								console.log("hooray end", s1.direction.x, s2.direction.x, s1.velocity.x, s2.velocity.x);
+								
+							}
+						}
+					}
+				}
+			)
+		} 
+	);
 }
 
 function init () {
@@ -232,6 +300,7 @@ function init () {
 	createOrtographicCamera();
 	createStaticBackCamera();
 	createDynamicBackCamera();
+	createDevelopingCamera();
 
 	activeCamera = cameraOrtho;
 

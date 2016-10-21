@@ -7,26 +7,35 @@
  * @author: Sara Azinhal ( ist181700 )
  */
 
-class EnemyShip {
+class EnemyShip extends THREE.Object3D {
 
 	constructor ( x, y, z ) {
-		this.max_speed = 200;
-		this.acceleration = 10;
+
+		super();
+
+		this.max_speed = 30;
+		this.acceleration = 50;
 		this.direction = new THREE.Vector2(0, 0);
 		this.velocity = new THREE.Vector2(0, 0);
 
-		this.ES = new THREE.Object3D();
+		this.addESCockpit( this, 0, 0, 0 );
+		this.addESWingConector1( this, 6.75, 0, 0 );
+		this.addESWingConector2( this, -6.75, 0, 0 );
+		this.addESWing( this, -9.75, -7.5, -4.375 );
+		this.addESWing( this, 9.75, -7.5, -4.375 );
 
-		this.addESCockpit( this.ES, 0, 0, 0 );
-		this.addESWingConector1( this.ES, 6.75, 0, 0 );
-		this.addESWingConector2( this.ES, -6.75, 0, 0 );
-		this.addESWing( this.ES, -9.75, -7.5, -4.375 );
-		this.addESWing( this.ES, 9.75, -7.5, -4.375 );
+		scene.add( this );
+		this.position.x = x;
+		this.position.y = y;
+		this.position.z = z;
 
-		scene.add( this.ES );
-		this.ES.position.x = x;
-		this.ES.position.y = y;
-		this.ES.position.z = z;
+		//this.collisionSphere ( this, 0, 0, 0 );
+		//this.collisionBox ( this, 0, 0, 0 );
+		
+		this.boundingBox = new THREE.Box3();
+		this.boundingBox.setFromObject(this);
+		this.boundingSphere = new THREE.Sphere();
+		this.boundingBox.getBoundingSphere(this.boundingSphere);
 
 		this.calcRandomDirection ();
 	}
@@ -81,11 +90,76 @@ class EnemyShip {
 		this.direction.normalize();
 	}
 
-	move ( interval ) {
-		this.velocity.x += this.direction.x * this.acceleration * interval;
-		this.velocity.y += this.direction.y * this.acceleration * interval;
+	/*collisionSphere ( obj, x, y, z) {
+		var geometry = new THREE.SphereGeometry( 13, 25, 25 );
+		var mesh = new THREE.Mesh( geometry, abbmaterial );
+		mesh.position.set( x, y, z );
 
-		this.ES.position.x += this.velocity.x * interval;
-		this.ES.position.z += this.velocity.y * interval;
+		obj.add( mesh );
+	}
+
+	collisionBox ( obj, x, y, z ) {
+		var geometry = new THREE.CubeGeometry( 19.75, 15, 12.75 );
+		var mesh = new THREE.Mesh( geometry, abbmaterial );
+		mesh.position.set( x, y, z );
+
+		obj.add( mesh );
+	}*/
+
+	updateBoundingBox() {
+		this.boundingBox = new THREE.Box3();
+		this.boundingBox.setFromObject(this);
+		this.boundingSphere = new THREE.Sphere();
+		this.boundingBox.getBoundingSphere(this.boundingSphere);
+	}
+
+	move ( interval ) {
+		if ( this.velocity.x > -this.max_speed && this.velocity.x < this.max_speed ) {
+			this.velocity.x += this.direction.x * this.acceleration * interval;
+		}
+		
+		if ( this.velocity.y > -this.max_speed && this.velocity.y < this.max_speed ) {
+			this.velocity.y += this.direction.y * this.acceleration * interval;
+		}
+
+		this.position.x += this.velocity.x * interval;
+		this.position.z += this.velocity.y * interval;
+		this.updateBoundingBox();
+
+		this.wallCollision();
+	}
+
+	wallCollision () {
+		if ( this.position.x > 111 ) {
+			this.position.x = 111;
+			this.direction.x = -this.direction.x;
+			this.direction.y = this.direction.y;
+			this.velocity.x = -this.velocity.x;
+			this.velocity.y = this.velocity.y;
+		}
+
+		if ( this.position.x < -111 ) {
+			this.position.x = -111;
+			this.direction.x = -this.direction.x;
+			this.direction.y = this.direction.y;
+			this.velocity.x = -this.velocity.x;
+			this.velocity.y = this.velocity.y;
+		}
+
+		if ( this.position.z > 114.75 ) {
+			this.position.z = 114.75;
+			this.direction.x = this.direction.x;
+			this.direction.y = -this.direction.y;
+			this.velocity.x = this.velocity.x;
+			this.velocity.y = -this.velocity.y;
+		}
+
+		if ( this.position.z < -114.75 ) {
+			this.position.z = -114.75;
+			this.direction.x = this.direction.x;
+			this.direction.y = -this.direction.y;
+			this.velocity.x = this.velocity.x;
+			this.velocity.y = -this.velocity.y;
+		}
 	}
 }
