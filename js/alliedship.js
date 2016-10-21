@@ -26,6 +26,9 @@ class AlliedShip {
 		this.addASGunCockpit1( this.AS, -2.5, -1.25, -7.5 );
 		this.addASGunCockpit2( this.AS, 2.5, -1.25, -7.5 );
 		//this.addASLeg( this.AS, 0, -9, 0 );
+	
+		this.collisionSphere ( this.AS, 0, 0, -2.8 );
+		this.collisionBox ( this.AS, 0, 0, -2.8 );
 
 		scene.add( this.AS );
 		this.AS.position.x = x;
@@ -112,6 +115,22 @@ class AlliedShip {
 
 		obj.add( mesh );
 		obj.add( mesh1 );
+	}
+
+	collisionSphere ( obj, x, y, z) {
+		var geometry = new THREE.SphereGeometry( 14.1875, 25, 25 );
+		var mesh = new THREE.Mesh( geometry, abbmaterial );
+		mesh.position.set( x, y, z );
+
+		obj.add( mesh );
+	}
+
+	collisionBox ( obj, x, y, z ) {
+		var geometry = new THREE.CubeGeometry( 20, 2.5, 28.375 );
+		var mesh = new THREE.Mesh( geometry, abbmaterial );
+		mesh.position.set( x, y, z );
+
+		obj.add( mesh );
 	}
 
 	move ( interval ) {

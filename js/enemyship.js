@@ -10,8 +10,8 @@
 class EnemyShip {
 
 	constructor ( x, y, z ) {
-		this.max_speed = 750;
-		this.acceleration = 100;
+		this.max_speed = 200;
+		this.acceleration = 10;
 		this.direction = new THREE.Vector2(0, 0);
 		this.velocity = new THREE.Vector2(0, 0);
 
@@ -27,6 +27,8 @@ class EnemyShip {
 		this.ES.position.x = x;
 		this.ES.position.y = y;
 		this.ES.position.z = z;
+
+		this.calcRandomDirection ();
 	}
 
 	addESCockpit ( obj, x, y, z ) {
@@ -76,25 +78,14 @@ class EnemyShip {
 	calcRandomDirection () {
 		this.direction.x = Math.random() * 2 - 1;
 		this.direction.y = Math.random() * 2 - 1;
+		this.direction.normalize();
 	}
 
 	move ( interval ) {
-		if ( this.direction.x < 0 ) {
-			this.velocity.x -= this.acceleration * interval;
-		}
+		this.velocity.x += this.direction.x * this.acceleration * interval;
+		this.velocity.y += this.direction.y * this.acceleration * interval;
 
-		if ( this.direction.x > 0 ) {
-			this.velocity.x += this.acceleration * interval;
-		}
-
-		if ( this.direction.y < 0 ) {
-			this.velocity.y -= this.acceleration * interval;
-		}
-
-		if ( this.direction.y > 0 ) {
-			this.velocity.y += this.acceleration * interval;
-		}
-
-		this.ES.position.x += this.velocity * interval;
+		this.ES.position.x += this.velocity.x * interval;
+		this.ES.position.z += this.velocity.y * interval;
 	}
 }
