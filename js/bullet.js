@@ -21,17 +21,49 @@ class Bullet extends THREE.Object3D {
 
 		mesh.position.set( x, y, z );
 		this.add(mesh);
+
+		this.boundingBox = new THREE.Box3();
+		this.boundingBox.setFromObject(this);
+		this.boundingSphere = new THREE.Sphere();
+		this.boundingBox.getBoundingSphere(this.boundingSphere);
+		console.log(this.boundingSphere);
+	}
+
+	updateBoundingBox() {
+		this.boundingBox.setFromObject(this);
+		this.boundingBox.getBoundingSphere(this.boundingSphere);
 	}
 
 	move ( interval ) {
 		this.position.z -= this.velocity * interval;
+		this.updateBoundingBox();
 
 		this.wallCollision ();
+		this.shipCollision();
 	}
 
 	wallCollision () {
 		if ( this.position.z < -205 ) {
 			scene.remove(this);
 		}
+	}
+
+	shipCollision () {
+						console.log(this.boundingBox);
+
+		GameField.EShips.children.forEach(
+			function(s1) {
+				console.log(this.boundingBox);
+				if ( !this.boundingSphere.equals(s1.boundingSphere)){
+					if ( this.boundingSphere.intersectsSphere( s1.boundingSphere ) ){
+						if ( this.boundingBox.intersectsBox( s1.boundingBox ) ){
+							scene.remove(this);
+							scene.remove(s1);
+							GameField.EShips.remove(s1);
+						}
+					}
+				}
+			}
+		);
 	}
 }

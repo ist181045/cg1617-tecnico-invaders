@@ -138,9 +138,7 @@ class AlliedShip extends THREE.Object3D {
 	}*/
 
 	updateBoundingBox() {
-		this.boundingBox = new THREE.Box3();
 		this.boundingBox.setFromObject(this);
-		this.boundingSphere = new THREE.Sphere();
 		this.boundingBox.getBoundingSphere(this.boundingSphere);
 	}
 
