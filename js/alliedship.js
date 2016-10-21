@@ -7,37 +7,41 @@
  * @author: Sara Azinhal ( ist181700 )
  */
 
-class AlliedShip {
+class AlliedShip extends THREE.Object3D {
 
 	constructor ( x, y, z ) {
+
+		super();
+
 		this.max_speed = 750;
 		this.acceleration = 100;
 		this.friction = 37.5;
 		this.direction = "none";
 		this.velocity = 0;
 
-		this.AS = new THREE.Object3D();
-
-		this.addASCenter( this.AS, 0, 0, 0 );
-		this.addASPropulsor( this.AS, 0, 0, 2.5 );
-		this.addASCanon( this.AS, 0, 0, -7.5 );
-		this.addASGun( this.AS, 2, 0, -12 );
-		this.addASGun( this.AS, -2, 0, -12 );
-		this.addASGunCockpit1( this.AS, -2.5, -1.25, -7.5 );
-		this.addASGunCockpit2( this.AS, 2.5, -1.25, -7.5 );
-		//this.addASLeg( this.AS, 0, -9, 0 );
+		this.addASCenter( this, 0, 0, 0 );
+		this.addASPropulsor( this, 0, 0, 2.5 );
+		this.addASCanon( this, 0, 0, -7.5 );
+		this.addASGun( this, 2, 0, -12 );
+		this.addASGun( this, -2, 0, -12 );
+		this.addASGunCockpit1( this, -2.5, -1.25, -7.5 );
+		this.addASGunCockpit2( this, 2.5, -1.25, -7.5 );
+		//this.addASLeg( this, 0, -9, 0 );
 	
-		this.collisionSphere ( this.AS, 0, 0, -2.8 );
-		this.collisionBox ( this.AS, 0, 0, -2.8 );
+		/*this.collisionSphere ( this, 0, 0, -2.8 );
+		this.collisionBox ( this, 0, 0, -2.8 );*/
 
-		scene.add( this.AS );
-		this.AS.position.x = x;
-		this.AS.position.y = y;
-		this.AS.position.z = z;
+		this.boundingBox = new THREE.Box3();
+		this.boundingBox.setFromObject(this);
+		this.boundingSphere = new THREE.Sphere();
+		this.boundingBox.getBoundingSphere(this.boundingSphere);
+
+		scene.add( this );
+		this.position.set( x, y, z );
 	}
 
 	getObj () {
-		return this.AS;
+		return this;
 	}
 
 	addASCenter ( obj, x, y, z ) {
@@ -117,7 +121,7 @@ class AlliedShip {
 		obj.add( mesh1 );
 	}
 
-	collisionSphere ( obj, x, y, z) {
+	/*collisionSphere ( obj, x, y, z) {
 		var geometry = new THREE.SphereGeometry( 14.1875, 25, 25 );
 		var mesh = new THREE.Mesh( geometry, abbmaterial );
 		mesh.position.set( x, y, z );
@@ -131,6 +135,13 @@ class AlliedShip {
 		mesh.position.set( x, y, z );
 
 		obj.add( mesh );
+	}*/
+
+	updateBoundingBox() {
+		this.boundingBox = new THREE.Box3();
+		this.boundingBox.setFromObject(this);
+		this.boundingSphere = new THREE.Sphere();
+		this.boundingBox.getBoundingSphere(this.boundingSphere);
 	}
 
 	move ( interval ) {
@@ -158,22 +169,40 @@ class AlliedShip {
 			}
 		}
 
-		this.AS.position.x += this.velocity * interval;
-		this.collision();
+		this.position.x += this.velocity * interval;
+		this.updateBoundingBox();
 
-		cameraDynamic.position.x += this.velocity * interval;
-		
+		this.wallCollision();
+
+		cameraDynamic.position.x += this.velocity * interval;	
 	}
 
-	collision () {
-		if ( this.AS.position.x > 111 ) {
-			this.AS.position.x = 111;
+	fire () {
+		if (WEAPONS_SYSTEM == 1){
+			var b = new Bullet(this.position.x, 10, this.position.z - 14.5);
+			scene.add(b);
+			GameField.Bullets.push(b);
+		}
+			
+		if (WEAPONS_SYSTEM == 2){
+			var b1 = new Bullet(this.position.x - 2, 10, this.position.z - 18);
+			var b2 = new Bullet(this.position.x + 2, 10, this.position.z - 18);
+			scene.add(b1);
+			scene.add(b2);
+			GameField.Bullets.push(b1);
+			GameField.Bullets.push(b2);
+		}
+	}
+
+	wallCollision () {
+		if ( this.position.x > 111 ) {
+			this.position.x = 111;
 			this.velocity = 0;
 			this.direction = "none";
 		}
 
-		if ( this.AS.position.x < -111 ) {
-			this.AS.position.x = -111;
+		if ( this.position.x < -111 ) {
+			this.position.x = -111;
 			this.velocity = 0;
 			this.direction = "none";
 		}
