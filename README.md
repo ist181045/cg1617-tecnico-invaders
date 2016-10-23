@@ -1,4 +1,4 @@
-# Space Invaders
+# Técnico Invaders
 ### Projecto de CG - 16'17
 
 ---
