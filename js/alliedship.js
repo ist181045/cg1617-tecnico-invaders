@@ -27,16 +27,12 @@ class AlliedShip extends THREE.Object3D {
 		this.addASGunCockpit1( this, -2.5, -1.25, -7.5 );
 		this.addASGunCockpit2( this, 2.5, -1.25, -7.5 );
 		//this.addASLeg( this, 0, -9, 0 );
-	
-		/*this.collisionSphere ( this, 0, 0, -2.8 );
-		this.collisionBox ( this, 0, 0, -2.8 );*/
 
 		this.boundingBox = new THREE.Box3();
 		this.boundingBox.setFromObject(this);
 		this.boundingSphere = new THREE.Sphere();
 		this.boundingBox.getBoundingSphere(this.boundingSphere);
 
-		scene.add( this );
 		this.position.set( x, y, z );
 	}
 
@@ -121,22 +117,6 @@ class AlliedShip extends THREE.Object3D {
 		obj.add( mesh1 );
 	}
 
-	/*collisionSphere ( obj, x, y, z) {
-		var geometry = new THREE.SphereGeometry( 14.1875, 25, 25 );
-		var mesh = new THREE.Mesh( geometry, abbmaterial );
-		mesh.position.set( x, y, z );
-
-		obj.add( mesh );
-	}
-
-	collisionBox ( obj, x, y, z ) {
-		var geometry = new THREE.CubeGeometry( 20, 2.5, 28.375 );
-		var mesh = new THREE.Mesh( geometry, abbmaterial );
-		mesh.position.set( x, y, z );
-
-		obj.add( mesh );
-	}*/
-
 	updateBoundingBox() {
 		this.boundingBox.setFromObject(this);
 		this.boundingBox.getBoundingSphere(this.boundingSphere);
@@ -193,14 +173,14 @@ class AlliedShip extends THREE.Object3D {
 	}
 
 	wallCollision () {
-		if ( this.position.x > 111 ) {
-			this.position.x = 111;
+		if ( this.boundingBox.intersectsBox(GameField.rbbb) ) {
+			this.position.x = GameField.rbbb.min.x - 10;
 			this.velocity = 0;
 			this.direction = "none";
 		}
 
-		if ( this.position.x < -111 ) {
-			this.position.x = -111;
+		if ( this.boundingBox.intersectsBox(GameField.lbbb) ) {
+			this.position.x = GameField.lbbb.max.x + 10;
 			this.velocity = 0;
 			this.direction = "none";
 		}
