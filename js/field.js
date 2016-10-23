@@ -40,7 +40,7 @@ class Field extends THREE.Object3D {
 
 	_buildFieldContents ( x, y, z ) {
 		this.AShip = new AlliedShip( x, y + 10, z + 100 );;
-		this.EShips = new THREE.Group();
+		this.EShips = new Array();
 		this.Bullets = new Array();
 
 		let [ rows, columns ] = [ 2, 4 ];
@@ -48,7 +48,7 @@ class Field extends THREE.Object3D {
 
 		for ( let i = 0; i < rows; i++ ) {
 			for ( let e = 0; e < columns; e++ ) {
-				this.EShips.add( new EnemyShip( x + xDist, y + 10, z + zDist ) );
+				this.EShips.push( new EnemyShip( x + xDist, y + 10, z + zDist ) );
 				xDist += 37.5;
 			}
 			zDist -= 25;
@@ -60,7 +60,11 @@ class Field extends THREE.Object3D {
 
 		let w = this._width;
 		let l = this._length;
-
+		
+		let leftBarrier = new THREE.Object3D();
+		let rightBarrier = new THREE.Object3D();
+		let bottomBarrier = new THREE.Object3D();
+		let topBarrier = new THREE.Object3D();
 		let barriers = new THREE.Group();
 
 		let barrierMaterial = new THREE.MeshBasicMaterial( {
@@ -77,16 +81,27 @@ class Field extends THREE.Object3D {
 		this.children.splice( 0, this.children.length );
 
 		this._addFloor( this, x, y, z, floorMaterial );
-		this._addVerticalBarrier( barriers, x + w / -2, y + 10, z, barrierMaterial );
-		this._addVerticalBarrier( barriers, x + w /  2, y + 10, z, barrierMaterial );
-		this._addHorizontalBarrier( barriers, x, y + 10, z + l / -2, barrierMaterial );
-		this._addHorizontalBarrier( barriers, x, y + 10, z + l /  2, barrierMaterial );
+		this._addVerticalBarrier( leftBarrier, x + w / -2, y + 10, z, barrierMaterial ); barriers.add(leftBarrier);
+		this._addVerticalBarrier( rightBarrier, x + w /  2, y + 10, z, barrierMaterial ); barriers.add(rightBarrier);
+		this._addHorizontalBarrier( bottomBarrier, x, y + 10, z + l /  2, barrierMaterial ); barriers.add(topBarrier);
+		this._addHorizontalBarrier( topBarrier, x, y + 10, z + l / -2, barrierMaterial ); barriers.add(bottomBarrier);
 
 		this._buildFieldContents( x, y, z );
 
 		this.add( barriers );
 		this.add( this.AShip );
-		this.add( this.EShips );
+		for (var i = 0; i < this.EShips.length; i++) {
+			this.add( this.EShips[i]);
+		}
+
+		this.lbbb = new THREE.Box3();
+		this.lbbb.setFromObject(leftBarrier);
+		this.rbbb = new THREE.Box3();
+		this.rbbb.setFromObject(rightBarrier);
+		this.bbbb = new THREE.Box3();
+		this.bbbb.setFromObject(bottomBarrier);
+		this.tbbb = new THREE.Box3();
+		this.tbbb.setFromObject(topBarrier);
 
 	}
 

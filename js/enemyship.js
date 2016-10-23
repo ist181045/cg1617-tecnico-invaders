@@ -24,18 +24,12 @@ class EnemyShip extends THREE.Object3D {
 		this.addESWing( this, -9.75, -7.5, -4.375 );
 		this.addESWing( this, 9.75, -7.5, -4.375 );
 
-		scene.add( this );
-		this.position.x = x;
-		this.position.y = y;
-		this.position.z = z;
-
-		//this.collisionSphere ( this, 0, 0, 0 );
-		//this.collisionBox ( this, 0, 0, 0 );
-		
 		this.boundingBox = new THREE.Box3();
 		this.boundingBox.setFromObject(this);
 		this.boundingSphere = new THREE.Sphere();
 		this.boundingBox.getBoundingSphere(this.boundingSphere);
+
+		this.position.set( x, y, z );
 
 		this.calcRandomDirection ();
 	}
@@ -90,22 +84,6 @@ class EnemyShip extends THREE.Object3D {
 		this.direction.normalize();
 	}
 
-	/*collisionSphere ( obj, x, y, z) {
-		var geometry = new THREE.SphereGeometry( 13, 25, 25 );
-		var mesh = new THREE.Mesh( geometry, abbmaterial );
-		mesh.position.set( x, y, z );
-
-		obj.add( mesh );
-	}
-
-	collisionBox ( obj, x, y, z ) {
-		var geometry = new THREE.CubeGeometry( 19.75, 15, 12.75 );
-		var mesh = new THREE.Mesh( geometry, abbmaterial );
-		mesh.position.set( x, y, z );
-
-		obj.add( mesh );
-	}*/
-
 	updateBoundingBox() {
 		this.boundingBox.setFromObject(this);
 		this.boundingBox.getBoundingSphere(this.boundingSphere);
@@ -128,32 +106,16 @@ class EnemyShip extends THREE.Object3D {
 	}
 
 	wallCollision () {
-		if ( this.position.x > 111 ) {
-			this.position.x = 111;
+		if ( this.boundingBox.intersectsBox(GameField.rbbb) ||
+			 this.boundingBox.intersectsBox(GameField.lbbb) ) {
 			this.direction.x = -this.direction.x;
 			this.direction.y = this.direction.y;
 			this.velocity.x = -this.velocity.x;
 			this.velocity.y = this.velocity.y;
 		}
 
-		if ( this.position.x < -111 ) {
-			this.position.x = -111;
-			this.direction.x = -this.direction.x;
-			this.direction.y = this.direction.y;
-			this.velocity.x = -this.velocity.x;
-			this.velocity.y = this.velocity.y;
-		}
-
-		if ( this.position.z > 114.75 ) {
-			this.position.z = 114.75;
-			this.direction.x = this.direction.x;
-			this.direction.y = -this.direction.y;
-			this.velocity.x = this.velocity.x;
-			this.velocity.y = -this.velocity.y;
-		}
-
-		if ( this.position.z < -114.75 ) {
-			this.position.z = -114.75;
+		if ( this.boundingBox.intersectsBox(GameField.tbbb) ||
+			 this.boundingBox.intersectsBox(GameField.bbbb) ) {
 			this.direction.x = this.direction.x;
 			this.direction.y = -this.direction.y;
 			this.velocity.x = this.velocity.x;
