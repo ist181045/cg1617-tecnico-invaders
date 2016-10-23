@@ -34,6 +34,7 @@ class AlliedShip extends THREE.Object3D {
 		this.boundingBox.getBoundingSphere(this.boundingSphere);
 
 		this.position.set( x, y, z );
+		//a
 	}
 
 	getObj () {
