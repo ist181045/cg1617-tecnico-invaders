@@ -9,7 +9,6 @@
 
 //MATERIALS
 
-var abbmaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe: true, transparent: true , opacity: 0 } );
 var	material1 = new THREE.MeshBasicMaterial( { color: 0xbfbfbf, wireframe: false } );
 var material2 = new THREE.MeshBasicMaterial( { color: 0x404040, wireframe: false } );
 var material3 = new THREE.MeshBasicMaterial( { color: 0x404040, wireframe: false } );
@@ -22,17 +21,20 @@ var cameraOrtho, cameraStatic, cameraDynamic, cameraDevel;
 
 var activeCamera, scene, renderer;
 
-var clock;
+var clock, fireRateClock;
 
 var GameField;
+
+var collisionsArray = new Array();
 
 var X = 400, Y = 300;
 
 //FLAGS
 
 var WEAPONS_SYSTEM = 1;
+var BREAK_FIRERATE = false;
 
-/* Camera creation */
+//CAMERA CREATION
 function createDevelopingCamera () {
 	
 	cameraDevel = new THREE.PerspectiveCamera(
@@ -87,7 +89,7 @@ function createDynamicBackCamera () {
 
 }
 
-/* Event Handler */
+//EVENT HANDLER
 function onKeyUp ( event ) {
 
   	switch ( event.keyCode ) {
@@ -97,6 +99,10 @@ function onKeyUp ( event ) {
 
 	    	GameField.AShip.direction = 'none';
 	    	break;
+
+	    case 66:
+
+	    	BREAK_FIRERATE = true;
   	}
 
 }
@@ -140,12 +146,18 @@ function onKeyDown ( event ) {
 			break;
 
 		case 52:
+
 			 activeCamera = cameraDevel;
 			 resizeCamera();
 			 break;
 
 		case 66:
-			GameField.AShip.fire();
+
+			if (fireRateClock.getElapsedTime() >= 0.3 || BREAK_FIRERATE){
+				GameField.AShip.fire();
+				fireRateClock = new THREE.Clock( true );
+			}
+			BREAK_FIRERATE = false;
 			break;
 
 		case 77:
@@ -208,7 +220,7 @@ function resizeCamera () {
 
 }
 
-/* Scene */
+//SCENES
 function createScene () {
 
 	scene = new THREE.Scene();
@@ -216,66 +228,58 @@ function createScene () {
 
 	GameField = new Field( 0, 0, 0 );
 	scene.add( GameField );
+
 }
 
 function createSceneMF () {
 	scene = new THREE.Scene();
 	scene.add( new THREE.AxisHelper( 100 ) );
 	new AlliedShip( 0, 0, 0 );
+
 }
 
 function createSceneTF () {
 	scene = new THREE.Scene();
 	scene.add( new THREE.AxisHelper( 100 ) );
 	new EnemyShip( 0, 0, 0 );
+
 }
 
-/* Animate */
+//ANIMATE
 function animate () {
 
 	let delta = clock.getDelta();
 
 	GameField.AShip.move( delta );
-	GameField.EShips.children.forEach( function(s) { s.move( delta ); } );
+	GameField.EShips.forEach( function(s) { s.move( delta ); } );
 	GameField.Bullets.forEach( function(b) { b.move( delta ); } );
 
-	//objectCollision();
+	objectCollision();
 
 	renderer.render( scene, activeCamera );
 	requestAnimationFrame( animate );
 
 }
 
-/*function objectCollision () {
-	var s1collided = false;
-	GameField.EShips.children.forEach(
+function objectCollision () {
+	GameField.EShips.forEach(
 		function(s1) {
-			if ( s1.boundingSphere.intersectsSphere( GameField.AShip.boundingSphere ) ){
+			/*if ( s1.boundingSphere.intersectsSphere( GameField.AShip.boundingSphere ) ){
 				if ( s1.boundingBox.intersectsBox( GameField.AShip.boundingBox ) ){
 					s1.direction.x = -s1.direction.x;
 					s1.direction.y = -s1.direction.y;
 					s1.velocity.x = -s1.velocity.x;
 					s1.velocity.y = -s1.velocity.y;
 				}
-			}
+			}*/
 
-			GameField.EShips.children.forEach(
+			GameField.EShips.forEach(
 				function(s2) {
-					if ( !s1.boundingSphere.equals(s2.boundingSphere) && s1collided == false ){
+					if ( !s1.boundingSphere.equals(s2.boundingSphere)){
 						if ( s1.boundingSphere.intersectsSphere( s2.boundingSphere ) ){
 							if ( s1.boundingBox.intersectsBox( s2.boundingBox ) ){
-								console.log("hooray", s1.direction.x, s2.direction.x, s1.velocity.x, s2.velocity.x);
-								s1.direction.x = -s1.direction.x;
-								s1.direction.y = -s1.direction.y;
-								s1.velocity.x = -s1.velocity.x;
-								s1.velocity.y = -s1.velocity.y;
-								s2.direction.x = -s2.direction.x;
-								s2.direction.y = -s2.direction.y;
-								s2.velocity.x = -s2.velocity.x;
-								s2.velocity.y = -s2.velocity.y;
-								s1collided = true;
-								console.log("hooray end", s1.direction.x, s2.direction.x, s1.velocity.x, s2.velocity.x);
-								
+								if (!collisionsArray.includes(s1)) collisionsArray.push(s1);
+								if (!collisionsArray.includes(s2)) collisionsArray.push(s2);
 							}
 						}
 					}
@@ -283,7 +287,16 @@ function animate () {
 			);
 		} 
 	);
-}*/
+
+	while (collisionsArray.length != 0) {
+		collisionsArray[0].direction.x = -collisionsArray[0].direction.x;
+		collisionsArray[0].direction.y = -collisionsArray[0].direction.y;
+		collisionsArray[0].velocity.x = -collisionsArray[0].velocity.x;
+		collisionsArray[0].velocity.y = -collisionsArray[0].velocity.y;
+		collisionsArray.shift();
+	}
+
+}
 
 function init () {
 
@@ -304,6 +317,7 @@ function init () {
 	activeCamera = cameraOrtho;
 
 	clock = new THREE.Clock( true );
+	fireRateClock = new THREE.Clock( true );
 
 	resizeCamera();
 

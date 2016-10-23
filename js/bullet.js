@@ -13,7 +13,7 @@ class Bullet extends THREE.Object3D {
 
 		super();
 
-		this.velocity = 60;
+		this.velocity = 90;
 		this.direction = new THREE.Vector2(0, 0);
 
 		var geometry = new THREE.CubeGeometry (1, 1, 4);
@@ -26,7 +26,6 @@ class Bullet extends THREE.Object3D {
 		this.boundingBox.setFromObject(this);
 		this.boundingSphere = new THREE.Sphere();
 		this.boundingBox.getBoundingSphere(this.boundingSphere);
-		console.log(this.boundingSphere);
 	}
 
 	updateBoundingBox() {
@@ -43,27 +42,25 @@ class Bullet extends THREE.Object3D {
 	}
 
 	wallCollision () {
-		if ( this.position.z < -205 ) {
+		if ( this.boundingBox.intersectsBox(GameField.tbbb)) {
 			scene.remove(this);
+			GameField.Bullets.shift();
 		}
 	}
 
 	shipCollision () {
-						console.log(this.boundingBox);
-
-		GameField.EShips.children.forEach(
-			function(s1) {
-				console.log(this.boundingBox);
-				if ( !this.boundingSphere.equals(s1.boundingSphere)){
-					if ( this.boundingSphere.intersectsSphere( s1.boundingSphere ) ){
-						if ( this.boundingBox.intersectsBox( s1.boundingBox ) ){
-							scene.remove(this);
-							scene.remove(s1);
-							GameField.EShips.remove(s1);
-						}
+		for (var i = 0; i < GameField.EShips.length; i++) {
+			var s =  GameField.EShips[i];
+			if ( !this.boundingSphere.equals(s.boundingSphere)){
+				if ( this.boundingSphere.intersectsSphere( s.boundingSphere ) ){
+					if ( this.boundingBox.intersectsBox( s.boundingBox ) ){
+						scene.remove(this);
+						scene.remove(s);
+						GameField.Bullets.splice(GameField.Bullets.indexOf(this), 1);
+						GameField.EShips.splice(GameField.EShips.indexOf(s), 1);
 					}
 				}
 			}
-		);
+		}
 	}
 }
