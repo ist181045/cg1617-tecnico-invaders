@@ -12,29 +12,29 @@
   },
   "keywords": [
     "tecnico",
-		"ist",
+    "ist",
     "invaders",
     "game",
     "webgl",
     "threejs"
   ],
-	"contributors": [
-		{
-			"name": "Rui Ventura",
-			"email": "rui.ventura@tecnico.ulisboa.pt",
-			"url": "http://web.tecnico.ulisboa.pt/rui.ventura"
-		},
-		{
-			"name": "Diogo Freitas",
-			"email": "diogo.maria.freitas@tecnico.ulisboa.pt",
-			"url": "http://web.tecnico.ulisboa.pt/diogo.maria.freitas"
-		},
-		{
-			"name": "Sara Azinhal",
-			"email": "sara.azinhal@tecnico.ulisboa.pt",
-			"url": "http://web.tecnico.ulisboa.pt/sara.azinhal"
-		}
-	],
+  "contributors": [
+    {
+      "name": "Rui Ventura",
+      "email": "rui.ventura@tecnico.ulisboa.pt",
+      "url": "http://web.tecnico.ulisboa.pt/rui.ventura"
+    },
+    {
+      "name": "Diogo Freitas",
+      "email": "diogo.maria.freitas@tecnico.ulisboa.pt",
+      "url": "http://web.tecnico.ulisboa.pt/diogo.maria.freitas"
+    },
+    {
+      "name": "Sara Azinhal",
+      "email": "sara.azinhal@tecnico.ulisboa.pt",
+      "url": "http://web.tecnico.ulisboa.pt/sara.azinhal"
+    }
+  ],
   "license": "UNLICENSED",
   "bugs": {
     "url": "https://github.com/rgcv/cg1617-tecnico-invaders/issues"
@@ -43,6 +43,8 @@
   "devDependencies": {
     "babel-preset-es2015-rollup": "^1.2.0",
     "rollup": "^0.36.3",
-    "rollup-plugin-babel": "^2.6.1"
+    "rollup-plugin-babel": "^2.6.1",
+    "rollup-plugin-eslint": "^3.0.0",
+    "rollup-plugin-uglify": "^1.0.1"
   }
 }
