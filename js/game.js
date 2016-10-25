@@ -1,3 +1,4 @@
+/*global THREE*/
 /**
  * CG Space Invaders
  * CG45179 16'17
@@ -36,7 +37,7 @@ var BREAK_FIRERATE = false;
 
 //CAMERA CREATION
 function createDevelopingCamera () {
-	
+
 	cameraDevel = new THREE.PerspectiveCamera(
 		75, window.innerWidth / window.innerHeight, 1, 1500
 	);
@@ -57,14 +58,14 @@ function createOrtographicCamera () {
 	);
 
 	cameraOrtho.position.set( 0, 100, 0 );
-  	cameraOrtho.lookAt( new THREE.Vector3( 0, -1, 0 ) );
+	cameraOrtho.lookAt( new THREE.Vector3( 0, -1, 0 ) );
 
 	cameraOrtho.updateProjectionMatrix();
 
 }
 
 function createStaticBackCamera () {
-	
+
 	cameraStatic = new THREE.PerspectiveCamera(
 		75, window.innerWidth / window.innerHeight, 1, 1500
 	);
@@ -92,18 +93,18 @@ function createDynamicBackCamera () {
 //EVENT HANDLER
 function onKeyUp ( event ) {
 
-  	switch ( event.keyCode ) {
+		switch ( event.keyCode ) {
 
-    	case 37:
-    	case 39:
+			case 37:
+			case 39:
 
-	    	GameField.AShip.direction = 'none';
-	    	break;
+				GameField.AShip.direction = 'none';
+				break;
 
-	    case 66:
+			case 66:
 
-	    	BREAK_FIRERATE = true;
-  	}
+				BREAK_FIRERATE = true;
+		}
 
 }
 
@@ -122,7 +123,7 @@ function onKeyDown ( event ) {
 			GameField.AShip.direction = 'left';
 			break;
 
-  		case 39:
+		case 39:
 
 			GameField.AShip.direction = 'right';
 			break;
@@ -147,9 +148,9 @@ function onKeyDown ( event ) {
 
 		case 52:
 
-			 activeCamera = cameraDevel;
-			 resizeCamera();
-			 break;
+			activeCamera = cameraDevel;
+			resizeCamera();
+			break;
 
 		case 66:
 
@@ -169,14 +170,14 @@ function onKeyDown ( event ) {
 			break;
 
 		case 87:
-			if (WEAPONS_SYSTEM == 1){ 
+			if (WEAPONS_SYSTEM == 1){
 				WEAPONS_SYSTEM = 2;
 			}
 			else{
 				WEAPONS_SYSTEM = 1;
 			}
 			break;
- 	}
+	}
 
 }
 
@@ -285,7 +286,7 @@ function objectCollision () {
 					}
 				}
 			);
-		} 
+		}
 	);
 
 	while (collisionsArray.length != 0) {
@@ -321,7 +322,7 @@ function init () {
 
 	resizeCamera();
 
- 	window.addEventListener( 'keyup',   onKeyUp );
+	window.addEventListener( 'keyup',   onKeyUp );
 	window.addEventListener( 'keydown', onKeyDown );
 	window.addEventListener( 'resize',  onResize );
 
