@@ -9,9 +9,9 @@
 
 //MATERIALS
 
-var	material1 = new THREE.MeshBasicMaterial( { color: 0xbfbfbf, wireframe: false } );
-var material2 = new THREE.MeshBasicMaterial( { color: 0x404040, wireframe: false } );
-var material3 = new THREE.MeshBasicMaterial( { color: 0x404040, wireframe: false } );
+var	material1 = new THREE.MeshBasicMaterial( { color: 0xbfbfbf, wireframe: true } );
+var material2 = new THREE.MeshBasicMaterial( { color: 0x404040, wireframe: true } );
+var material3 = new THREE.MeshBasicMaterial( { color: 0x404040, wireframe: true } );
 
 //GLOBAL VARIABLES
 
@@ -41,7 +41,7 @@ function createDevelopingCamera () {
 		75, window.innerWidth / window.innerHeight, 1, 1500
 	);
 
-	cameraDevel.position.set( 25, 25, 25 ); cameraDevel.lookAt(
+	cameraDevel.position.set( 5, 5, -5 ); cameraDevel.lookAt(
 	scene.position );
 
 	cameraDevel.updateProjectionMatrix();
@@ -82,7 +82,7 @@ function createDynamicBackCamera () {
 		75, window.innerWidth / window.innerHeight, 1, 1000
 	);
 
-	cameraDynamic.position.set( GameField.AShip.position.x, 20	, 125 );
+	cameraDynamic.position.set( GameField.AShip.position.x, 20, 125 );
 	cameraDynamic.lookAt( GameField.AShip.position );
 
 	cameraDynamic.updateProjectionMatrix();
@@ -97,12 +97,19 @@ function onKeyUp ( event ) {
     	case 37:
     	case 39:
 
-	    	GameField.AShip.direction = 'none';
+	    	GameField.AShip.movementDir = "none";
+	    	break;
+
+	    case 81:
+	    case 69:
+
+	    	GameField.AShip.pointingDir[0] = "none";
 	    	break;
 
 	    case 66:
 
 	    	BREAK_FIRERATE = true;
+	    	break;
   	}
 
 }
@@ -119,12 +126,22 @@ function onKeyDown ( event ) {
 
 		case 37:
 
-			GameField.AShip.direction = 'left';
+			GameField.AShip.movementDir = 'left';
 			break;
 
   		case 39:
 
-			GameField.AShip.direction = 'right';
+			GameField.AShip.movementDir = 'right';
+			break;
+
+		case 81:
+
+			GameField.AShip.pointingDir[0] = 'left';
+			break;
+
+		case 69:
+			
+			GameField.AShip.pointingDir[0] = 'right';
 			break;
 
 		case 49:
@@ -234,14 +251,14 @@ function createScene () {
 function createSceneMF () {
 	scene = new THREE.Scene();
 	scene.add( new THREE.AxisHelper( 100 ) );
-	new AlliedShip( 0, 0, 0 );
+	scene.add( new Bullet( 0, 0, 0 ) );
 
 }
 
 function createSceneTF () {
 	scene = new THREE.Scene();
 	scene.add( new THREE.AxisHelper( 100 ) );
-	new EnemyShip( 0, 0, 0 );
+	scene.add( new EnemyShip( 0, 0, 0 ) );
 
 }
 
@@ -264,14 +281,21 @@ function animate () {
 function objectCollision () {
 	GameField.EShips.forEach(
 		function(s1) {
-			/*if ( s1.boundingSphere.intersectsSphere( GameField.AShip.boundingSphere ) ){
+			if ( s1.boundingSphere.intersectsSphere( GameField.AShip.boundingSphere ) ){
 				if ( s1.boundingBox.intersectsBox( GameField.AShip.boundingBox ) ){
 					s1.direction.x = -s1.direction.x;
 					s1.direction.y = -s1.direction.y;
 					s1.velocity.x = -s1.velocity.x;
 					s1.velocity.y = -s1.velocity.y;
+
+					if ( s1.direction.x > 0 ) {
+						GameField.AShip.velocity = -40;
+					}
+					if ( s1.direction.x < 0 ) {
+						GameField.AShip.velocity = 40;
+					}
 				}
-			}*/
+			}
 
 			GameField.EShips.forEach(
 				function(s2) {
