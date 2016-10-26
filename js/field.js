@@ -11,7 +11,7 @@
 
 class Field extends THREE.Object3D {
 
-	constructor( x, y, z, w = 250, l = 250 ) {
+	constructor( x, y, z, w = 400, l = 250 ) {
 
 		super();
 
@@ -80,7 +80,7 @@ class Field extends THREE.Object3D {
 
 		this.children.splice( 0, this.children.length );
 
-		this._addFloor( this, x, y, z, floorMaterial );
+		//this._addFloor( this, x, y, z, floorMaterial );
 		this._addVerticalBarrier( leftBarrier, x + w / -2, y + 10, z, barrierMaterial ); barriers.add(leftBarrier);
 		this._addVerticalBarrier( rightBarrier, x + w /  2, y + 10, z, barrierMaterial ); barriers.add(rightBarrier);
 		this._addHorizontalBarrier( bottomBarrier, x, y + 10, z + l /  2, barrierMaterial ); barriers.add(topBarrier);
@@ -105,7 +105,7 @@ class Field extends THREE.Object3D {
 
 	}
 
-	_addFloor ( obj, x, y, z, material ) {
+	/*_addFloor ( obj, x, y, z, material ) {
 
 		let geometry = new THREE.PlaneGeometry( this._width, this._length );
 		let mesh = new THREE.Mesh( geometry, material );
@@ -115,7 +115,7 @@ class Field extends THREE.Object3D {
 
 		obj.add( mesh );
 
-	}
+	}*/
 
 	_addVerticalBarrier ( obj, x, y, z, material ) {
 

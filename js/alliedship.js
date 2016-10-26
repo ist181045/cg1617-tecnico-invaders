@@ -162,15 +162,15 @@ class AlliedShip extends THREE.Object3D {
 	rotate ( interval ) {
 		if ( this.pointingDir[0] == "left" ) {
 			this.rotation.y += 1.5 * interval;
-			cameraDynamic.position.x += Math.cos(this.rotation.y);
-			cameraDynamic.position.z -= Math.sin(this.rotation.y);
+			cameraDynamic.position.x += Math.cos(this.rotation.y) / 1.5;
+			cameraDynamic.position.z -= Math.sin(this.rotation.y) / 1.5;
 			cameraDynamic.lookAt( GameField.AShip.position );
 			cameraDynamic.updateProjectionMatrix();
 		}
 		if ( this.pointingDir[0] == "right" ) {
 			this.rotation.y -= 1.5 * interval;
-			cameraDynamic.position.x -= Math.cos(this.rotation.y);
-			cameraDynamic.position.z += Math.sin(this.rotation.y);
+			cameraDynamic.position.x -= Math.cos(this.rotation.y) / 1.5;
+			cameraDynamic.position.z += Math.sin(this.rotation.y) / 1.5;
 			cameraDynamic.lookAt( GameField.AShip.position );
 			cameraDynamic.updateProjectionMatrix();
 		}
@@ -198,13 +198,13 @@ class AlliedShip extends THREE.Object3D {
 
 	wallCollision () {
 		if ( this.boundingBox.intersectsBox(GameField.rbbb) ) {
-			this.position.x = GameField.rbbb.min.x - 10;
+			this.position.x += GameField.rbbb.min.x - GameField.AShip.boundingBox.max.x;
 			this.velocity = 0;
 			this.movementDir = "none";
 		}
 
 		if ( this.boundingBox.intersectsBox(GameField.lbbb) ) {
-			this.position.x = GameField.lbbb.max.x + 10;
+			this.position.x += GameField.lbbb.max.x - GameField.AShip.boundingBox.min.x;
 			this.velocity = 0;
 			this.movementDir = "none";
 		}

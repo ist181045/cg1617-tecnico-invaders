@@ -80,9 +80,9 @@ class EnemyShip extends THREE.Object3D {
 
 	calcRandomDirection () {
 		var angle = Math.random() * Math.PI * 2;
-		this.direction.x = -Math.sin(angle);
-		this.direction.y = -Math.cos(angle);
-		this.direction.normalize();
+		this.direction.x = Math.cos(angle);
+		this.direction.y = Math.sin(angle);
+		//this.direction.normalize();
 	}
 
 	updateBoundingBox() {
@@ -91,14 +91,11 @@ class EnemyShip extends THREE.Object3D {
 	}
 
 	move ( interval ) {
-		if ( this.velocity.x > -this.max_speed && this.velocity.x < this.max_speed ) {
+		if ( this.velocity.length() < this.max_speed ) {
 			this.velocity.x += this.direction.x * this.acceleration * interval;
-		}
-		
-		if ( this.velocity.y > -this.max_speed && this.velocity.y < this.max_speed ) {
 			this.velocity.y += this.direction.y * this.acceleration * interval;
 		}
-
+		
 		this.position.x += this.velocity.x * interval;
 		this.position.z += this.velocity.y * interval;
 		this.updateBoundingBox();
