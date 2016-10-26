@@ -79,8 +79,9 @@ class EnemyShip extends THREE.Object3D {
 	}
 
 	calcRandomDirection () {
-		this.direction.x = Math.random() * 2 - 1;
-		this.direction.y = Math.random() * 2 - 1;
+		var angle = Math.random() * Math.PI * 2;
+		this.direction.x = -Math.sin(angle);
+		this.direction.y = -Math.cos(angle);
 		this.direction.normalize();
 	}
 

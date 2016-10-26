@@ -16,7 +16,8 @@ class AlliedShip extends THREE.Object3D {
 		this.max_speed = 750;
 		this.acceleration = 100;
 		this.friction = 37.5;
-		this.direction = "none";
+		this.movementDir = "none";
+		this.pointingDir = ["none", new THREE.Vector2(0, 0)];
 		this.velocity = 0;
 
 		this.addASCenter( this, 0, 0, 0 );
@@ -57,7 +58,7 @@ class AlliedShip extends THREE.Object3D {
 	}
 
 	addASCanon ( obj, x, y, z ) {
-		var geometry = new THREE.CubeGeometry( 2.5, 2.5, 8.75 );
+		var geometry = new THREE.CubeGeometry( 2, 2.5, 8.75 );
 		var mesh = new THREE.Mesh( geometry, material1 );
 		mesh.position.set( x, y, z );
 
@@ -123,15 +124,15 @@ class AlliedShip extends THREE.Object3D {
 	}
 
 	move ( interval ) {
-		if ( this.direction == "left" ) {
+		if ( this.movementDir == "left" ) {
 			this.velocity -= ( this.acceleration - this.friction ) * interval;
 		}
 
-		if ( this.direction == "right" ) {
+		if ( this.movementDir == "right" ) {
 			this.velocity += ( this.acceleration - this.friction )  * interval;
 		}
 
-		if ( this.direction == "none" ) {
+		if ( this.movementDir == "none" ) {
 			if ( this.velocity < 0 ) {
 				this.velocity += ( this.friction * 2 ) * interval;
 				if ( this.velocity > 0 ) {
@@ -148,23 +149,46 @@ class AlliedShip extends THREE.Object3D {
 		}
 
 		this.position.x += this.velocity * interval;
+		this.rotate( interval );
 		this.updateBoundingBox();
 
 		this.wallCollision();
 
-		cameraDynamic.position.x += this.velocity * interval;	
+		cameraDynamic.position.x += this.velocity * interval;
+		cameraDynamic.lookAt( GameField.AShip.position );
+		cameraDynamic.updateProjectionMatrix();
+	}
+
+	rotate ( interval ) {
+		if ( this.pointingDir[0] == "left" ) {
+			this.rotation.y += 1.5 * interval;
+			cameraDynamic.position.x += Math.cos(this.rotation.y);
+			cameraDynamic.position.z -= Math.sin(this.rotation.y);
+			cameraDynamic.lookAt( GameField.AShip.position );
+			cameraDynamic.updateProjectionMatrix();
+		}
+		if ( this.pointingDir[0] == "right" ) {
+			this.rotation.y -= 1.5 * interval;
+			cameraDynamic.position.x -= Math.cos(this.rotation.y);
+			cameraDynamic.position.z += Math.sin(this.rotation.y);
+			cameraDynamic.lookAt( GameField.AShip.position );
+			cameraDynamic.updateProjectionMatrix();
+		}
+
+		this.pointingDir[1].x = -Math.sin(this.rotation.y);
+		this.pointingDir[1].y = -Math.cos(this.rotation.y);
 	}
 
 	fire () {
 		if (WEAPONS_SYSTEM == 1){
-			var b = new Bullet(this.position.x, 10, this.position.z - 14.5);
+			var b = new Bullet(this.children[2].matrixWorld.elements[12], 10, this.children[2].matrixWorld.elements[14]);
 			scene.add(b);
 			GameField.Bullets.push(b);
 		}
 			
 		if (WEAPONS_SYSTEM == 2){
-			var b1 = new Bullet(this.position.x - 2, 10, this.position.z - 18);
-			var b2 = new Bullet(this.position.x + 2, 10, this.position.z - 18);
+			var b1 = new Bullet(this.children[3].matrixWorld.elements[12], 10, this.children[3].matrixWorld.elements[14]);
+			var b2 = new Bullet(this.children[4].matrixWorld.elements[12], 10, this.children[4].matrixWorld.elements[14]);
 			scene.add(b1);
 			scene.add(b2);
 			GameField.Bullets.push(b1);
@@ -176,13 +200,13 @@ class AlliedShip extends THREE.Object3D {
 		if ( this.boundingBox.intersectsBox(GameField.rbbb) ) {
 			this.position.x = GameField.rbbb.min.x - 10;
 			this.velocity = 0;
-			this.direction = "none";
+			this.movementDir = "none";
 		}
 
 		if ( this.boundingBox.intersectsBox(GameField.lbbb) ) {
 			this.position.x = GameField.lbbb.max.x + 10;
 			this.velocity = 0;
-			this.direction = "none";
+			this.movementDir = "none";
 		}
 	}
 }

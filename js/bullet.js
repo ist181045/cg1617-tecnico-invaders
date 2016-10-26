@@ -14,12 +14,14 @@ class Bullet extends THREE.Object3D {
 		super();
 
 		this.velocity = 90;
-		this.direction = new THREE.Vector2(0, 0);
+		this.direction = new THREE.Vector2(GameField.AShip.pointingDir[1].x, GameField.AShip.pointingDir[1].y);
+		this.direction.normalize();
 
 		var geometry = new THREE.CubeGeometry (1, 1, 4);
 		var mesh = new THREE.Mesh( geometry , material1 );
 
 		mesh.position.set( x, y, z );
+		mesh.rotation.y = GameField.AShip.rotation.y;
 		this.add(mesh);
 
 		this.boundingBox = new THREE.Box3();
@@ -34,7 +36,9 @@ class Bullet extends THREE.Object3D {
 	}
 
 	move ( interval ) {
-		this.position.z -= this.velocity * interval;
+		this.position.x += this.direction.x * this.velocity * interval;
+		this.position.z += this.direction.y * this.velocity * interval;
+		
 		this.updateBoundingBox();
 
 		this.wallCollision ();
@@ -42,9 +46,12 @@ class Bullet extends THREE.Object3D {
 	}
 
 	wallCollision () {
-		if ( this.boundingBox.intersectsBox(GameField.tbbb)) {
+		if ( this.boundingBox.intersectsBox(GameField.tbbb) ||
+			 this.boundingBox.intersectsBox(GameField.bbbb) ||
+			 this.boundingBox.intersectsBox(GameField.rbbb) ||
+			 this.boundingBox.intersectsBox(GameField.lbbb) ) {
 			scene.remove(this);
-			GameField.Bullets.shift();
+			GameField.Bullets.splice(GameField.Bullets.indexOf(this), 1);
 		}
 	}
 
@@ -55,7 +62,7 @@ class Bullet extends THREE.Object3D {
 				if ( this.boundingSphere.intersectsSphere( s.boundingSphere ) ){
 					if ( this.boundingBox.intersectsBox( s.boundingBox ) ){
 						scene.remove(this);
-						scene.remove(s);
+						GameField.remove(s);
 						GameField.Bullets.splice(GameField.Bullets.indexOf(this), 1);
 						GameField.EShips.splice(GameField.EShips.indexOf(s), 1);
 					}
