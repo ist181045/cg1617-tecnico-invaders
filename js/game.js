@@ -9,9 +9,9 @@
 
 //MATERIALS
 
-var	material1 = new THREE.MeshBasicMaterial( { color: 0xbfbfbf, wireframe: true } );
-var material2 = new THREE.MeshBasicMaterial( { color: 0x404040, wireframe: true } );
-var material3 = new THREE.MeshBasicMaterial( { color: 0x404040, wireframe: true } );
+var	material1 = new THREE.MeshBasicMaterial( { color: 0xbfbfbf, wireframe: false } );
+var material2 = new THREE.MeshBasicMaterial( { color: 0x404040, wireframe: false } );
+var material3 = new THREE.MeshBasicMaterial( { color: 0x404040, wireframe: false } );
 
 //GLOBAL VARIABLES
 
@@ -27,12 +27,12 @@ var GameField;
 
 var collisionsArray = new Array();
 
-var X = 400, Y = 300;
+var X = 500, Y = 300;
 
 //FLAGS
 
 var WEAPONS_SYSTEM = 1;
-var BREAK_FIRERATE = false;
+var BREAK_FIRERATE = true;
 
 //CAMERA CREATION
 function createDevelopingCamera () {
@@ -41,7 +41,7 @@ function createDevelopingCamera () {
 		75, window.innerWidth / window.innerHeight, 1, 1500
 	);
 
-	cameraDevel.position.set( 5, 5, -5 ); cameraDevel.lookAt(
+	cameraDevel.position.set( 25, 25, -25 ); cameraDevel.lookAt(
 	scene.position );
 
 	cameraDevel.updateProjectionMatrix();
@@ -325,9 +325,10 @@ function objectCollision () {
 function init () {
 
 	container = document.createElement( 'div' );
+	container.setAttribute( "id", "container");
 	document.body.appendChild( container );
 
-	renderer = new THREE.WebGLRenderer();
+	renderer = new THREE.WebGLRenderer( { alpha: true } );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	container.appendChild( renderer.domElement );
 
