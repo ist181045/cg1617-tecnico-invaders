@@ -94,20 +94,20 @@ function onKeyUp ( event ) {
 
   	switch ( event.keyCode ) {
 
-    	case 37:
-    	case 39:
+    	case 37: /*<-*/
+    	case 39: /*->*/
 
 	    	GameField.AShip.movementDir = "none";
 	    	break;
 
-	    case 81:
-	    case 69:
+	    case 81: /*q*/
+	    case 69: /*e*/
 
 	    	GameField.AShip.pointingDir[0] = "none";
 	    	break;
 
 	    case 32:
-	    case 66:
+	    case 66: /*b*/
 
 	    	BREAK_FIRERATE = true;
 	    	break;
@@ -119,58 +119,58 @@ function onKeyDown ( event ) {
 
 	switch ( event.keyCode ) {
 
-		case 65:
-		case 97:
+		case 65: /*a*/
+		case 97: /*A*/
 
 			/* wireframe toggling: later... */
 			break;
 
-		case 37:
+		case 37: /*<-*/
 
 			GameField.AShip.movementDir = 'left';
 			break;
 
-  		case 39:
+  		case 39: /*->*/
 
 			GameField.AShip.movementDir = 'right';
 			break;
 
-		case 81:
+		case 81: /*q*/
 
 			GameField.AShip.pointingDir[0] = 'left';
 			break;
 
-		case 69:
+		case 69: /*e*/
 			
 			GameField.AShip.pointingDir[0] = 'right';
 			break;
 
-		case 49:
+		case 49: /*1*/
 
 			activeCamera = cameraOrtho;
 			resizeCamera();
 			break;
 
-		case 50:
+		case 50: /*2*/
 
 			activeCamera = cameraStatic;
 			resizeCamera();
 			break;
 
-		case 51:
+		case 51: /*3*/
 
 			activeCamera = cameraDynamic;
 			resizeCamera();
 			break;
 
-		case 52:
+		case 52: /*4*/
 
 			 activeCamera = cameraDevel;
 			 resizeCamera();
 			 break;
 
 		case 32:
-		case 66:
+		case 66: /*b*/
 
 			if (fireRateClock.getElapsedTime() >= 0.3 || BREAK_FIRERATE){
 				GameField.AShip.fire();
@@ -179,15 +179,15 @@ function onKeyDown ( event ) {
 			BREAK_FIRERATE = false;
 			break;
 
-		case 77:
+		case 77: /*m*/
 			createSceneMF();
 			break;
 
-		case 84:
+		case 84: /*t*/
 			createSceneTF();
 			break;
 
-		case 87:
+		case 87: /*w*/
 			if (WEAPONS_SYSTEM == 1){ 
 				WEAPONS_SYSTEM = 2;
 			}
