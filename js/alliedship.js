@@ -20,20 +20,18 @@ class AlliedShip extends THREE.Object3D {
 		this.pointingDir = "none";
 		this.velocity = 0;
 		this.camera = null;
+		this.min = new THREE.Vector3(-10, -1.25, -13.875);
+		this.max = new THREE.Vector3(10, 1.25, 13.875);
+		this.bsRadius = Math.sqrt(this.max.x * this.max.x + this.max.y * this.max.y + this.max.z *  this.max.z);//17.1373;
 
-		this.addASCenter( this, 0, 0, 0 );
-		this.addASPropulsor( this, 0, 0, 2.5 );
-		this.addASCanon( this, 0, 0, -7.5 );
-		this.addASGun( this, 2, 0, -12 );
-		this.addASGun( this, -2, 0, -12 );
-		this.addASGunCockpit1( this, -2.5, -1.25, -7.5 );
-		this.addASGunCockpit2( this, 2.5, -1.25, -7.5 );
+		this.addASCenter( this, 0, 0, 2.625 );
+		this.addASPropulsor( this, 0, 0, 5.125 );
+		this.addASCanon( this, 0, 0, -4.875 );
+		this.addASGun( this, 2, 0, -9.375 );
+		this.addASGun( this, -2, 0, -9.375 );
+		this.addASGunCockpit1( this, -2.5, -1.25, -4.875 );
+		this.addASGunCockpit2( this, 2.5, -1.25, -4.875 );
 		//this.addASLeg( this, 0, -9, 0 );
-
-		this.boundingBox = new THREE.Box3();
-		this.boundingBox.setFromObject(this);
-		this.boundingSphere = new THREE.Sphere();
-		this.boundingBox.getBoundingSphere(this.boundingSphere);
 
 		this.position.set( x, y, z );
 	}
@@ -119,11 +117,6 @@ class AlliedShip extends THREE.Object3D {
 		obj.add( mesh1 );
 	}
 
-	updateBoundingBox() {
-		this.boundingBox.setFromObject(this);
-		this.boundingBox.getBoundingSphere(this.boundingSphere);
-	}
-
 	move ( interval ) {
 		if ( this.movementDir == "left" ) {
 			this.velocity -= ( this.acceleration - this.friction ) * interval;
@@ -152,9 +145,8 @@ class AlliedShip extends THREE.Object3D {
 		this.position.x += this.velocity * interval;
 		if ( this.pointingDir == "left" ) this.rotation.y += 1.5 * interval;
 		if ( this.pointingDir == "right" ) this.rotation.y -= 1.5 * interval;
-		this.updateBoundingBox();
 
-		this.wallCollision();
+		//this.wallCollision();
 		cameraDynamic.updateProjectionMatrix();
 	}
 
@@ -175,17 +167,17 @@ class AlliedShip extends THREE.Object3D {
 		}
 	}
 
-	wallCollision () {
-		if ( this.boundingBox.intersectsBox(GameField.rbbb) ) {
-			this.position.x += GameField.rbbb.min.x - GameField.AShip.boundingBox.max.x;
-			this.velocity = 0;
-			this.movementDir = "none";
-		}
-
-		if ( this.boundingBox.intersectsBox(GameField.lbbb) ) {
+	/*wallCollision () {
+		if (bsBarrierCollision(this) == [true, 0]) {
 			this.position.x += GameField.lbbb.max.x - GameField.AShip.boundingBox.min.x;
 			this.velocity = 0;
 			this.movementDir = "none";
 		}
-	}
+
+		if (bsBarrierCollision(this) == [true, 1]) {
+			this.position.x += GameField.rbbb.min.x - GameField.AShip.boundingBox.max.x;
+			this.velocity = 0;
+			this.movementDir = "none";
+		}
+	}*/
 }

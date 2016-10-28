@@ -16,6 +16,9 @@ class Bullet extends THREE.Object3D {
 		this.velocity = 90;
 		this.direction = new THREE.Vector2(-Math.sin(GameField.AShip.rotation.y), -Math.cos(GameField.AShip.rotation.y));
 		this.direction.normalize();
+		this.min = new THREE.Vector3(-0.5, -0.5, 2);
+		this.max = new THREE.Vector3(0.5, 0.5, 2);
+		this.bsRadius = Math.sqrt(this.max.x * this.max.x + this.max.y * this.max.y + this.max.z *  this.max.z);//2.1213;
 
 		var pts = [new THREE.Vector3(0, 2, 0), new THREE.Vector3(0.5, 1.5, 0.5), new THREE.Vector3(0.75, 1, 1), 
 				   new THREE.Vector3(0.90, 0.5, 1.5), new THREE.Vector3(1, 0, 2), new THREE.Vector3(1, -0.5, 2.5),
@@ -29,33 +32,18 @@ class Bullet extends THREE.Object3D {
 		mesh.position.set( x, y, z );
 		mesh.rotation.y = GameField.AShip.rotation.y;
 		this.add(mesh);
-
-		this.boundingBox = new THREE.Box3();
-		this.boundingBox.setFromObject(this);
-		this.boundingSphere = new THREE.Sphere();
-		this.boundingBox.getBoundingSphere(this.boundingSphere);
-	}
-
-	updateBoundingBox() {
-		this.boundingBox.setFromObject(this);
-		this.boundingBox.getBoundingSphere(this.boundingSphere);
 	}
 
 	move ( interval ) {
 		this.position.x += this.direction.x * this.velocity * interval;
 		this.position.z += this.direction.y * this.velocity * interval;
 		
-		this.updateBoundingBox();
-
-		this.wallCollision ();
-		this.shipCollision();
+		//this.wallCollision ();
+		//this.shipCollision();
 	}
 
-	wallCollision () {
-		if ( this.boundingBox.intersectsBox(GameField.tbbb) ||
-			 this.boundingBox.intersectsBox(GameField.bbbb) ||
-			 this.boundingBox.intersectsBox(GameField.rbbb) ||
-			 this.boundingBox.intersectsBox(GameField.lbbb) ) {
+	/*wallCollision () {
+		if ( ) {
 			scene.remove(this);
 			GameField.Bullets.splice(GameField.Bullets.indexOf(this), 1);
 		}
@@ -64,9 +52,9 @@ class Bullet extends THREE.Object3D {
 	shipCollision () {
 		for (var i = 0; i < GameField.EShips.length; i++) {
 			var s =  GameField.EShips[i];
-			if ( !this.boundingSphere.equals(s.boundingSphere)){
-				if ( this.boundingSphere.intersectsSphere( s.boundingSphere ) ){
-					if ( this.boundingBox.intersectsBox( s.boundingBox ) ){
+			if (){
+				if (){
+					if () ){
 						scene.remove(this);
 						GameField.remove(s);
 						GameField.Bullets.splice(GameField.Bullets.indexOf(this), 1);
@@ -75,5 +63,5 @@ class Bullet extends THREE.Object3D {
 				}
 			}
 		}
-	}
+	}*/
 }
