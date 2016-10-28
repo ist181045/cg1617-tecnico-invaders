@@ -7,7 +7,8 @@
  * @author: Sara Azinhal ( ist181700 )
  */
 
-import { Object3D, Vector3 } from '../lib/Three.js';
+import Object3D from '../lib/Three.js';
+import Vector3  from '../lib/Three.js';
 
 class Entity extends Object3D {
 
