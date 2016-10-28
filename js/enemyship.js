@@ -17,17 +17,15 @@ class EnemyShip extends THREE.Object3D {
 		this.acceleration = 50;
 		this.direction = new THREE.Vector2(0, 0);
 		this.velocity = new THREE.Vector2(0, 0);
+		this.min = new THREE.Vector3(-10, -7.5, -6.375);
+		this.max = new THREE.Vector3(10, 7.5, 6.375);
+		this.bsRadius = Math.sqrt(this.max.x * this.max.x + this.max.y * this.max.y + this.max.z *  this.max.z);//14.0764;
 
 		this.addESCockpit( this, 0, 0, 0 );
 		this.addESWingConector1( this, 6.75, 0, 0 );
 		this.addESWingConector2( this, -6.75, 0, 0 );
 		this.addESWing( this, -9.75, -7.5, -4.375 );
 		this.addESWing( this, 9.75, -7.5, -4.375 );
-
-		this.boundingBox = new THREE.Box3();
-		this.boundingBox.setFromObject(this);
-		this.boundingSphere = new THREE.Sphere();
-		this.boundingBox.getBoundingSphere(this.boundingSphere);
 
 		this.position.set( x, y, z );
 
@@ -85,11 +83,6 @@ class EnemyShip extends THREE.Object3D {
 		//this.direction.normalize();
 	}
 
-	updateBoundingBox() {
-		this.boundingBox.setFromObject(this);
-		this.boundingBox.getBoundingSphere(this.boundingSphere);
-	}
-
 	move ( interval ) {
 		if ( this.velocity.length() < this.max_speed ) {
 			this.velocity.x += this.direction.x * this.acceleration * interval;
@@ -98,26 +91,23 @@ class EnemyShip extends THREE.Object3D {
 		
 		this.position.x += this.velocity.x * interval;
 		this.position.z += this.velocity.y * interval;
-		this.updateBoundingBox();
 
-		this.wallCollision();
+		//this.wallCollision();
 	}
 
-	wallCollision () {
-		if ( this.boundingBox.intersectsBox(GameField.rbbb) ||
-			 this.boundingBox.intersectsBox(GameField.lbbb) ) {
+	/*wallCollision () {
+		if () {
 			this.direction.x = -this.direction.x;
 			this.direction.y = this.direction.y;
 			this.velocity.x = -this.velocity.x;
 			this.velocity.y = this.velocity.y;
 		}
 
-		if ( this.boundingBox.intersectsBox(GameField.tbbb) ||
-			 this.boundingBox.intersectsBox(GameField.bbbb) ) {
+		if () {
 			this.direction.x = this.direction.x;
 			this.direction.y = -this.direction.y;
 			this.velocity.x = this.velocity.x;
 			this.velocity.y = -this.velocity.y;
 		}
-	}
+	}*/
 }

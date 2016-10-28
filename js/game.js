@@ -41,7 +41,7 @@ function createDevelopingCamera () {
 		75, window.innerWidth / window.innerHeight, 1, 1500
 	);
 
-	cameraDevel.position.set( 5, 5, -5 ); cameraDevel.lookAt(
+	cameraDevel.position.set( 25, 25, -25 ); cameraDevel.lookAt(
 	scene.position );
 
 	cameraDevel.updateProjectionMatrix();
@@ -275,18 +275,19 @@ function animate () {
 	GameField.EShips.forEach( function(s) { s.move( delta ); } );
 	GameField.Bullets.forEach( function(b) { b.move( delta ); } );
 
-	objectCollision();
+	//objectCollision();
+	collision()
 
 	renderer.render( scene, activeCamera );
 	requestAnimationFrame( animate );
 
 }
 
-function objectCollision () {
+/*function objectCollision () {
 	GameField.EShips.forEach(
 		function(s1) {
-			if ( s1.boundingSphere.intersectsSphere( GameField.AShip.boundingSphere ) ){
-				if ( s1.boundingBox.intersectsBox( GameField.AShip.boundingBox ) ){
+			if (){
+				if (){
 					s1.direction.x = -s1.direction.x;
 					s1.direction.y = -s1.direction.y;
 					s1.velocity.x = -s1.velocity.x;
@@ -303,9 +304,9 @@ function objectCollision () {
 
 			GameField.EShips.forEach(
 				function(s2) {
-					if ( !s1.boundingSphere.equals(s2.boundingSphere)){
-						if ( s1.boundingSphere.intersectsSphere( s2.boundingSphere ) ){
-							if ( s1.boundingBox.intersectsBox( s2.boundingBox ) ){
+					if (){
+						if (){
+							if (){
 								if (!collisionsArray.includes(s1)) collisionsArray.push(s1);
 								if (!collisionsArray.includes(s2)) collisionsArray.push(s2);
 							}
@@ -324,6 +325,40 @@ function objectCollision () {
 		collisionsArray.shift();
 	}
 
+}*/
+
+function bsBarrierCollision (obj) {
+	var r = obj.bsRadius;
+
+	for (var i = 0; i < 4; i++) {
+		if (i == 0 || i == 1) {
+			var d = Math.abs(GameField.barriers.children[i].position.x - obj.position.x);
+			console.log("Barrier " + i, GameField.barriers.children[i].position.x, obj.position.x, d, r + 2 >= d);
+		}
+		if (i == 2 || i == 3) {
+			var d = Math.abs(GameField.barriers.children[i].position.z - obj.position.z);
+			console.log("Barrier " + i, GameField.barriers.children[i].position.z, obj.position.z, d, r + 2 >= d);
+		}
+
+		if (r + 2 >= d)
+			return [true, i];
+	}
+	return [false, -1];
+}
+
+function collision () {
+	resAShipColl = bsBarrierCollision(GameField.AShip);
+	if (resAShipColl == [true, 0]) {
+		GameField.AShip.position.x = GameField.barriers.children[0].position.x + 2 - GameField.AShip.min.x;
+		GameField.AShip.velocity = 0;
+		GameField.AShip.movementDir = "none";
+	}
+
+	if (resAShipColl == [true, 1]) {
+		GameField.AShip.position.x = GameField.barriers.children[1].position.x - 2 - GameField.AShip.max.x;
+		GameField.AShip.velocity = 0;
+		GameField.AShip.movementDir = "none";
+	}
 }
 
 function init () {
