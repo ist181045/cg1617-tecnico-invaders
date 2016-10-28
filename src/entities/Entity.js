@@ -36,7 +36,7 @@ class Entity extends Object3D {
 
 			this.velocity.addScaledVector( this.trajectory, this.acceleration * dt );
 
-		} else {
+		} else if ( this.velocity.length() === vlim ) {
 
 			this.velocity.setLength( vlim );
 
