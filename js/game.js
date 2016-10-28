@@ -9,7 +9,7 @@
 
 //MATERIALS
 
-var	material1 = new THREE.MeshBasicMaterial( { color: 0xbfbfbf, wireframe: false } );
+var	material1 = new THREE.MeshBasicMaterial( { color: 0xbfbfbf, wireframe: false, side: THREE.DoubleSide } );
 var material2 = new THREE.MeshBasicMaterial( { color: 0x404040, wireframe: false } );
 var material3 = new THREE.MeshBasicMaterial( { color: 0x404040, wireframe: false } );
 
@@ -41,7 +41,7 @@ function createDevelopingCamera () {
 		75, window.innerWidth / window.innerHeight, 1, 1500
 	);
 
-	cameraDevel.position.set( 25, 25, -25 ); cameraDevel.lookAt(
+	cameraDevel.position.set( 5, 5, -5 ); cameraDevel.lookAt(
 	scene.position );
 
 	cameraDevel.updateProjectionMatrix();
@@ -69,7 +69,7 @@ function createStaticBackCamera () {
 		75, window.innerWidth / window.innerHeight, 1, 1500
 	);
 
-	cameraStatic.position.set( 0, 75, 170 ); cameraStatic.lookAt(
+	cameraStatic.position.set( 0, 140, 190 ); cameraStatic.lookAt(
 	scene.position );
 
 	cameraStatic.updateProjectionMatrix();
@@ -106,6 +106,7 @@ function onKeyUp ( event ) {
 	    	GameField.AShip.pointingDir[0] = "none";
 	    	break;
 
+	    case 32:
 	    case 66:
 
 	    	BREAK_FIRERATE = true;
@@ -168,6 +169,7 @@ function onKeyDown ( event ) {
 			 resizeCamera();
 			 break;
 
+		case 32:
 		case 66:
 
 			if (fireRateClock.getElapsedTime() >= 0.3 || BREAK_FIRERATE){
