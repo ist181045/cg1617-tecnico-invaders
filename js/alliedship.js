@@ -19,6 +19,7 @@ class AlliedShip extends THREE.Object3D {
 		this.movementDir = "none";
 		this.pointingDir = ["none", new THREE.Vector2(0, 0)];
 		this.velocity = 0;
+		this.camera = null;
 
 		this.addASCenter( this, 0, 0, 0 );
 		this.addASPropulsor( this, 0, 0, 2.5 );
@@ -154,26 +155,27 @@ class AlliedShip extends THREE.Object3D {
 
 		this.wallCollision();
 
-		cameraDynamic.position.x += this.velocity * interval;
-		cameraDynamic.lookAt( GameField.AShip.position );
+		//cameraDynamic.position.x += this.velocity * interval;
+		//cameraDynamic.lookAt( GameField.AShip.position );
 		cameraDynamic.updateProjectionMatrix();
 	}
 
 	rotate ( interval ) {
 		if ( this.pointingDir[0] == "left" ) {
 			this.rotation.y += 1.5 * interval;
-			cameraDynamic.position.x += Math.cos(this.rotation.y) / 1.5;
-			cameraDynamic.position.z -= Math.sin(this.rotation.y) / 1.5;
-			cameraDynamic.lookAt( GameField.AShip.position );
-			cameraDynamic.updateProjectionMatrix();
+			//cameraDynamic.position.x += Math.cos(this.rotation.y) / 1.5;
+			//cameraDynamic.position.z -= Math.sin(this.rotation.y) / 1.5;
+			//cameraDynamic.lookAt( GameField.AShip.position );
+			//cameraDynamic.updateProjectionMatrix();
 		}
 		if ( this.pointingDir[0] == "right" ) {
 			this.rotation.y -= 1.5 * interval;
-			cameraDynamic.position.x -= Math.cos(this.rotation.y) / 1.5;
-			cameraDynamic.position.z += Math.sin(this.rotation.y) / 1.5;
-			cameraDynamic.lookAt( GameField.AShip.position );
-			cameraDynamic.updateProjectionMatrix();
+			//cameraDynamic.position.x -= Math.cos(this.rotation.y) / 1.5;
+			//cameraDynamic.position.z += Math.sin(this.rotation.y) / 1.5;
+			//cameraDynamic.lookAt( GameField.AShip.position );
+			//cameraDynamic.updateProjectionMatrix();
 		}
+		cameraDynamic.updateProjectionMatrix();
 
 		this.pointingDir[1].x = -Math.sin(this.rotation.y);
 		this.pointingDir[1].y = -Math.cos(this.rotation.y);

@@ -82,8 +82,10 @@ function createDynamicBackCamera () {
 		75, window.innerWidth / window.innerHeight, 1, 1000
 	);
 
-	cameraDynamic.position.set( GameField.AShip.position.x, 20, 125 );
+	cameraDynamic.position.set( GameField.AShip.position.x, 0, 0 );
 	cameraDynamic.lookAt( GameField.AShip.position );
+
+	GameField.AShip.add( cameraDynamic );
 
 	cameraDynamic.updateProjectionMatrix();
 
