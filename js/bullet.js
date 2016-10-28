@@ -14,7 +14,7 @@ class Bullet extends THREE.Object3D {
 		super();
 
 		this.velocity = 90;
-		this.direction = new THREE.Vector2(GameField.AShip.pointingDir[1].x, GameField.AShip.pointingDir[1].y);
+		this.direction = new THREE.Vector2(-Math.sin(GameField.AShip.rotation.y), -Math.cos(GameField.AShip.rotation.y));
 		this.direction.normalize();
 
 		var pts = [new THREE.Vector3(0, 2, 0), new THREE.Vector3(0.5, 1.5, 0.5), new THREE.Vector3(0.75, 1, 1), 
