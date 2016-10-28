@@ -7,16 +7,18 @@
  * @author: Sara Azinhal ( ist181700 )
  */
 
-class AlliedShip extends THREE.Object3D {
+import { Entity } from './Entity.js';
+
+class PlayerShip extends Entity {
 
 	constructor ( x, y, z ) {
 
-		super();
+		super( x, y, z );
 
 		this.max_speed = 750;
 		this.acceleration = 100;
 		this.friction = 37.5;
-		this.direction = "none";
+		this.direction = 'none';
 		this.velocity = 0;
 
 		this.addASCenter( this, 0, 0, 0 );
@@ -152,7 +154,7 @@ class AlliedShip extends THREE.Object3D {
 
 		this.wallCollision();
 
-		cameraDynamic.position.x += this.velocity * interval;	
+		cameraDynamic.position.x += this.velocity * interval;
 	}
 
 	fire () {
@@ -161,7 +163,7 @@ class AlliedShip extends THREE.Object3D {
 			scene.add(b);
 			GameField.Bullets.push(b);
 		}
-			
+
 		if (WEAPONS_SYSTEM == 2){
 			var b1 = new Bullet(this.position.x - 2, 10, this.position.z - 18);
 			var b2 = new Bullet(this.position.x + 2, 10, this.position.z - 18);
@@ -186,3 +188,5 @@ class AlliedShip extends THREE.Object3D {
 		}
 	}
 }
+
+export { PlayerShip };
