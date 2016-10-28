@@ -82,8 +82,8 @@ function createDynamicBackCamera () {
 		75, window.innerWidth / window.innerHeight, 1, 1000
 	);
 
-	cameraDynamic.position.set( GameField.AShip.position.x, 0, 0 );
-	cameraDynamic.lookAt( GameField.AShip.position );
+	cameraDynamic.position.set( GameField.AShip.position.x, 9, 25 );
+	cameraDynamic.lookAt( GameField.AShip );
 
 	GameField.AShip.add( cameraDynamic );
 
@@ -105,7 +105,7 @@ function onKeyUp ( event ) {
 	    case 81: /*q*/
 	    case 69: /*e*/
 
-	    	GameField.AShip.pointingDir[0] = "none";
+	    	GameField.AShip.pointingDir = "none";
 	    	break;
 
 	    case 32:
@@ -139,12 +139,12 @@ function onKeyDown ( event ) {
 
 		case 81: /*q*/
 
-			GameField.AShip.pointingDir[0] = 'left';
+			GameField.AShip.pointingDir = 'left';
 			break;
 
 		case 69: /*e*/
 			
-			GameField.AShip.pointingDir[0] = 'right';
+			GameField.AShip.pointingDir = 'right';
 			break;
 
 		case 49: /*1*/
