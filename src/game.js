@@ -1,6 +1,6 @@
 /*global THREE*/
 /**
- * CG Space Invaders
+ * CG Tecnico Invaders
  * CG45179 16'17
  *
  * @author: Rui Ventura   (ist181045)
