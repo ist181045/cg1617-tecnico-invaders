@@ -24,7 +24,7 @@
 			"unix"
 		],
 		"quotes": [
-			"warn",
+			"error",
 			"single"
 		],
 		"semi": [
@@ -36,6 +36,9 @@
 			{ 
 				"args": "none"
 			}
+		],
+		"no-console": [
+			"off"
 		]
 	}
 }
