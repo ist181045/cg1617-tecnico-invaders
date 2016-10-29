@@ -9,11 +9,9 @@ export default {
 	sourceMap: 'inline',
 	plugins: [
 		eslint( {
-			exclude: ['src/lib/Three.js', 'src/node_modules/**']
+			exclude: ['src/lib/Three.js']
 		} ),
-		babel( {
-			exclude: ['src/node_modules/**']
-		} ),
+		babel(),
 		(process.env.NODE_ENV === 'production' && uglify())
 	]
 };
