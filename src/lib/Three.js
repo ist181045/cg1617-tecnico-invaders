@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 /**
  * three.modules.js (r82)
  *
