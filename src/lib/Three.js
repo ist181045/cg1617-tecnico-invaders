@@ -1,3 +1,13 @@
+/* eslint-disable */
+
+/**
+ * three.modules.js (r82)
+ *
+ * @author mrdoob / http://mrdoob.com/
+ * @see https://github.com/mrdoob/three.js/blob/master/build/three.modules.js
+ *
+ */
+
 // Polyfills
 
 if ( Number.EPSILON === undefined ) {
