@@ -1,14 +1,15 @@
 {
   "name": "tecnico-invaders",
   "version": "0.0.0",
-  "description": "Space Invaders with a twist, powered by three.js (revision 82)",
-  "main": "build/invaders.js",
+  "description": "Space Invaders with a twist, powered by three.js r82",
+  "main": "dist/invaders.js",
+  "module": "dist/invaders.es6.js",
+  "jsnext:main": "dist/invaders.es6.js",
   "files": [
-    "package.json",
     "README.md",
-    "build/invaders.js",
-    "build/invaders.min.js",
-    "src"
+    "dist/invaders.js",
+    "dist/invaders.es6.js",
+    "dist/invaders.min.js"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -50,7 +51,9 @@
   },
   "homepage": "https://github.com/rgcv/cg1617-tecnico-invaders#readme",
   "devDependencies": {
+    "babel-preset-es2015-rollup": "^1.2.0",
     "rollup": "^0.36.3",
+    "rollup-plugin-babel": "^2.6.1",
     "rollup-watch": "^2.5.0",
     "uglify-js": "^2.7.4"
   }
