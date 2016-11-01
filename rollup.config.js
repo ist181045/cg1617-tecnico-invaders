@@ -1,17 +1,20 @@
-import babel  from 'rollup-plugin-babel';
-import eslint from 'rollup-plugin-eslint';
-import uglify from 'rollup-plugin-uglify';
+import babel from 'rollup-plugin-babel';
 
 export default {
-	entry: 'src/game.js',
-	dest: 'build/invaders.min.js',
-	format: 'iife',
-	sourceMap: 'inline',
+	entry: 'src/Main.js',
 	plugins: [
-		eslint( {
-			exclude: ['src/lib/Three.js']
-		} ),
-		babel(),
-		(process.env.NODE_ENV === 'production' && uglify())
+		babel({
+			exclude: 'node_modules/**'
+		})
+	],
+	targets: [
+		{
+			format: 'es',
+			dest: 'dist/invaders.es6.js'
+		},
+		{
+			format: 'iife',
+			dest: 'dist/invaders.js'
+		}
 	]
 };
