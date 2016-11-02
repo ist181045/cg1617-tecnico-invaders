@@ -15,6 +15,7 @@
   ],
   "scripts": {
     "dev": "rollup -c -w",
+    "dist": "rollup -c && uglify dist/invaders.js -o dist/js/invaders.min.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
