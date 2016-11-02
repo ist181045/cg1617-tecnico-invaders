@@ -7,12 +7,11 @@
  * @author: Sara Azinhal ( ist181700 )
  */
 
-import { Box3 }     from '../lib/Three.js';
-import { Object3D } from '../lib/Three.js';
-import { Sphere3 }  from '../lib/Three.js';
 import { Vector3 }  from '../lib/Three.js';
 
-class Entity extends Object3D {
+import Collidable from '../Collidable.js';
+
+class Entity extends Collidable {
 
 	constructor ( x, y, z ) {
 
@@ -27,9 +26,6 @@ class Entity extends Object3D {
 		this.velocity     = new Vector3();
 		this.acceleration = 10;
 		this.friction     = 8;
-
-		this.boundingBox    = new Box3();
-		this.boundingSphere = new Sphere3();
 
 		this.position.set( x, y, z );
 
@@ -76,26 +72,6 @@ class Entity extends Object3D {
 		}
 
 		this.position.addScaledVector( this.velocity, dt );
-
-	}
-
-	intersect ( other ) {
-
-		let r1 = this.boundingSphere.radius;
-		let r2 = other.boundingSphere.radius;
-		let distSq = this.position.distanceToSquared( other.position );
-
-		if ( ( r1 * r1 + r2 * r2 ) >= distSq ) {
-
-			let [ a, b ] = [ this.boundingBox, other.boundingBox ];
-
-			return (a.min.x <= b.max.x && a.max.x >= b.min.x &&
-				a.min.y <= b.max.y && a.max.y >= b.min.y &&
-				a.min.z <= b.max.z && a.max.z >= b.min.z);
-
-		}
-
-		return false;
 
 	}
 
