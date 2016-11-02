@@ -45,7 +45,9 @@ class Entity extends Collidable {
 
 	}
 
-	move ( dt ) {
+	update ( dt ) {
+
+		super();
 
 		let v = this.velocity.length();
 		let dvf = this.friction * dt;
