@@ -20,7 +20,7 @@ class Bullet extends THREE.Object3D {
 		this.max = new THREE.Vector3(0.5, 0.5, 2);
 		this.bsRadius = Math.sqrt(this.max.x * this.max.x + this.max.y * this.max.y + this.max.z *  this.max.z);//2.1213;
 
-		var pts = [new THREE.Vector3(0, 2, 0), new THREE.Vector3(0.5, 1.5, 0.5), new THREE.Vector3(0.75, 1, 1), 
+		var pts = [new THREE.Vector3(0, 2, 0), new THREE.Vector3(0.5, 1.5, 0.5), new THREE.Vector3(0.75, 1, 1),
 				   new THREE.Vector3(0.90, 0.5, 1.5), new THREE.Vector3(1, 0, 2), new THREE.Vector3(1, -0.5, 2.5),
 				   new THREE.Vector3(1, -1, 3), new THREE.Vector3(1, -1.5, 3.5), new THREE.Vector3(1, -2, 4)];
 
@@ -29,15 +29,15 @@ class Bullet extends THREE.Object3D {
 		var mesh = new THREE.Mesh( geometry , material1 );
 		//mesh.rotation.x = -Math.PI/2;
 
-		mesh.position.set( x, y, z );
 		mesh.rotation.y = GameField.AShip.rotation.y;
 		this.add(mesh);
+		this.position.set( x, y, z );
 	}
 
 	move ( interval ) {
 		this.position.x += this.direction.x * this.velocity * interval;
 		this.position.z += this.direction.y * this.velocity * interval;
-		
+
 		//this.wallCollision ();
 		//this.shipCollision();
 	}

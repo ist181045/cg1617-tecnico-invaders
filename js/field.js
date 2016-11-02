@@ -21,7 +21,7 @@ class Field extends THREE.Object3D {
 		this._length = l;
 
 		this._buildField( 0, 0, 0 );
-		
+
 		this.position.set( x, y, z );
 
 	}
@@ -60,7 +60,7 @@ class Field extends THREE.Object3D {
 
 		let w = this._width;
 		let l = this._length;
-		
+
 		this.barriers = new THREE.Group();
 
 		let barrierMaterial = new THREE.MeshBasicMaterial( {
