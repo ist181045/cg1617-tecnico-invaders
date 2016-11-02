@@ -17,6 +17,8 @@ class Collidable extends Object3D {
 
 		super();
 
+		this.type = 'Collidable';
+
 		this.boundingBox    = new Box3();
 		this.boundingSphere = new Sphere3();
 
