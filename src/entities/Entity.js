@@ -63,9 +63,12 @@ class Entity extends Collidable {
 
 			}
 
+			this.position.addScaledVector( this.velocity, dt );
+			
 		} else if ( v > dvf ) {
 
 			this.velocity.addScaledVector( this.direction, -dvf );
+			this.position.addScaledVector( this.velocity, dt );
 
 		} else {
 
@@ -73,7 +76,6 @@ class Entity extends Collidable {
 
 		}
 
-		this.position.addScaledVector( this.velocity, dt );
 
 	}
 
