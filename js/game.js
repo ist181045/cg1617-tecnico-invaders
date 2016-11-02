@@ -36,7 +36,7 @@ var BREAK_FIRERATE = true;
 
 //CAMERA CREATION
 function createDevelopingCamera () {
-	
+
 	cameraDevel = new THREE.PerspectiveCamera(
 		75, window.innerWidth / window.innerHeight, 1, 1500
 	);
@@ -64,7 +64,7 @@ function createOrtographicCamera () {
 }
 
 function createStaticBackCamera () {
-	
+
 	cameraStatic = new THREE.PerspectiveCamera(
 		75, window.innerWidth / window.innerHeight, 1, 1500
 	);
@@ -143,7 +143,7 @@ function onKeyDown ( event ) {
 			break;
 
 		case 69: /*e*/
-			
+
 			GameField.AShip.pointingDir = 'right';
 			break;
 
@@ -190,7 +190,7 @@ function onKeyDown ( event ) {
 			break;
 
 		case 87: /*w*/
-			if (WEAPONS_SYSTEM == 1){ 
+			if (WEAPONS_SYSTEM == 1){
 				WEAPONS_SYSTEM = 2;
 			}
 			else{
@@ -314,7 +314,7 @@ function animate () {
 					}
 				}
 			);
-		} 
+		}
 	);
 
 	while (collisionsArray.length != 0) {
@@ -333,31 +333,148 @@ function bsBarrierCollision (obj) {
 	for (var i = 0; i < 4; i++) {
 		if (i == 0 || i == 1) {
 			var d = Math.abs(GameField.barriers.children[i].position.x - obj.position.x);
-			console.log("Barrier " + i, GameField.barriers.children[i].position.x, obj.position.x, d, r + 2 >= d);
 		}
 		if (i == 2 || i == 3) {
 			var d = Math.abs(GameField.barriers.children[i].position.z - obj.position.z);
-			console.log("Barrier " + i, GameField.barriers.children[i].position.z, obj.position.z, d, r + 2 >= d);
 		}
-
 		if (r + 2 >= d)
 			return [true, i];
 	}
 	return [false, -1];
 }
 
-function collision () {
-	resAShipColl = bsBarrierCollision(GameField.AShip);
-	if (resAShipColl == [true, 0]) {
-		GameField.AShip.position.x = GameField.barriers.children[0].position.x + 2 - GameField.AShip.min.x;
-		GameField.AShip.velocity = 0;
-		GameField.AShip.movementDir = "none";
+function bbBarrierCollision (obj, barr) {
+	var objmin = new THREE.Vector3(obj.position.x + obj.min.x, obj.position.y + obj.min.y, obj.position.z + obj.min.z);
+	var objmax = new THREE.Vector3(obj.position.x + obj.max.x, obj.position.y + obj.max.y, obj.position.z + obj.max.z);
+	var barrmin = new THREE.Vector3();
+	var barrmax = new THREE.Vector3();
+	if (barr == 0 || barr == 1){
+		var barrpos = GameField.barriers.children[barr].position;
+		barrmin.set(barrpos.x - 2, barrpos.y - 10, barrpos.z - GameField._length / 2);
+		barrmax.set(barrpos.x + 2, barrpos.y + 10, barrpos.z + GameField._length / 2);
+	}
+	if (barr == 2 || barr == 3){
+		var barrpos = GameField.barriers.children[barr].position;
+		barrmin.set(barrpos.x - GameField.width / 2, barrpos.y - 10, barrpos.z - 2);
+		barrmax.set(barrpos.x + GameField.width / 2, barrpos.y + 10, barrpos.z + 2);
 	}
 
-	if (resAShipColl == [true, 1]) {
-		GameField.AShip.position.x = GameField.barriers.children[1].position.x - 2 - GameField.AShip.max.x;
-		GameField.AShip.velocity = 0;
-		GameField.AShip.movementDir = "none";
+	if (objmax.x > barrmin.x && objmin.x < barrmax.x &&
+		objmax.y > barrmin.y && objmin.y < barrmax.y &&
+		objmax.z > barrmin.z && objmin.z < barrmax.z)
+		return true;
+	return false;
+}
+
+function bsObjectCollision (obj1, obj2) {
+	var r1 = obj1.bsRadius;
+	var r2 = obj2.bsRadius;
+	var d = Math.sqrt(Math.pow(obj1.position.x - obj2.position.x, 2) + Math.pow(obj1.position.z - obj2.position.z, 2));
+
+	if (r1 + r2 >= d)
+		return true;
+	return false;
+}
+
+function bbObjectCollision (obj1, obj2) {
+	var obj1min = new THREE.Vector3(obj1.position.x + obj1.min.x, obj1.position.y + obj1.min.y, obj1.position.z + obj1.min.z);
+	var obj1max = new THREE.Vector3(obj1.position.x + obj1.max.x, obj1.position.y + obj1.max.y, obj1.position.z + obj1.max.z);
+	var obj2min = new THREE.Vector3(obj2.position.x + obj2.min.x, obj2.position.y + obj2.min.y, obj2.position.z + obj2.min.z);
+	var obj2max = new THREE.Vector3(obj2.position.x + obj2.max.x, obj2.position.y + obj2.max.y, obj2.position.z + obj2.max.z);
+
+	if (obj1max.x > obj2min.x && obj1min.x < obj2max.x &&
+		obj1max.y > obj2min.y && obj1min.y < obj2max.y &&
+		obj1max.z > obj2min.z && obj1min.z < obj2max.z)
+		return true;
+	return false;
+}
+
+function collision () {
+	var resAShipBSColl = bsBarrierCollision(GameField.AShip);
+
+	if (resAShipBSColl[0] && resAShipBSColl[1] == 0) {
+		var resAShipBBColl = bbBarrierCollision(GameField.AShip, resAShipBSColl[1]);
+		if (resAShipBBColl) {
+			GameField.AShip.position.x = GameField.barriers.children[0].position.x + 2 - GameField.AShip.min.x;
+			GameField.AShip.velocity = 0;
+			GameField.AShip.movementDir = "none";
+		}
+	}
+
+	if (resAShipBSColl[0] && resAShipBSColl[1] == 1) {
+		var resAShipBBColl = bbBarrierCollision(GameField.AShip, resAShipBSColl[1]);
+		if (resAShipBBColl) {
+			GameField.AShip.position.x = GameField.barriers.children[1].position.x - 2 - GameField.AShip.max.x;
+			GameField.AShip.velocity = 0;
+			GameField.AShip.movementDir = "none";
+		}
+	}
+
+	for (var o = 0; o < GameField.Bullets.length; o++) {
+		var currBullet = GameField.Bullets[o];
+		var resCurrBulletBSColl = bsBarrierCollision(currBullet);
+
+		if (resCurrBulletBSColl[0]) {
+			if (bbBarrierCollision(currBullet, resCurrBulletBSColl[1])) {
+				scene.remove(currBullet);
+				GameField.Bullets.splice(o, 1);
+				o--;
+			}
+		}
+	}
+
+	for (var i = 0; i < GameField.EShips.length; i++) {
+		var currShip = GameField.EShips[i];
+		var resCurrEShipBSColl = bsBarrierCollision(currShip);
+
+		if (resCurrEShipBSColl[0] && (resCurrEShipBSColl[1] == 0 || resCurrEShipBSColl[1] == 1)) {
+			if (bbBarrierCollision(currShip, resCurrEShipBSColl[1])) {
+				currShip.direction.x = -currShip.direction.x;
+				currShip.direction.y = currShip.direction.y;
+				currShip.velocity.x = -currShip.velocity.x;
+				currShip.velocity.y = currShip.velocity.y;
+			}
+		}
+
+		if (resCurrEShipBSColl[0] && (resCurrEShipBSColl[1] == 2 || resCurrEShipBSColl[1] == 3)) {
+			if (bbBarrierCollision(currShip, resCurrEShipBSColl[1])) {
+				currShip.direction.x = currShip.direction.x;
+				currShip.direction.y = -currShip.direction.y;
+				currShip.velocity.x = currShip.velocity.x;
+				currShip.velocity.y = -currShip.velocity.y;
+			}
+		}
+
+		for (var e = i + 1; e < GameField.EShips.length; e++) {
+			var currTestShip = GameField.EShips[e];
+
+			if (bsObjectCollision(currShip, currTestShip)) {
+				if (bbObjectCollision(currShip, currTestShip)) {
+					currShip.direction.x = -currShip.direction.x;
+					currShip.direction.y = -currShip.direction.y;
+					currShip.velocity.x = -currShip.velocity.x;
+					currShip.velocity.y = -currShip.velocity.y;
+
+					currTestShip.direction.x = -currTestShip.direction.x;
+					currTestShip.direction.y = -currTestShip.direction.y;
+					currTestShip.velocity.x = -currTestShip.velocity.x;
+					currTestShip.velocity.y = -currTestShip.velocity.y;
+				}
+			}
+		}
+		for (var b = 0; b < GameField.Bullets.length; b++) {
+			var currBullet = GameField.Bullets[b];
+
+			if (bsObjectCollision(currShip, currBullet)) {
+				if (bbObjectCollision(currShip, currBullet)) {
+					scene.remove(currBullet);
+					GameField.remove(currShip);
+					GameField.Bullets.splice(b, 1);
+					GameField.EShips.splice(i, 1);
+					i--; b--;
+				}
+			}
+		}
 	}
 }
 
