@@ -11,7 +11,7 @@
     "dist/img/favicon.ico",
     "dist/invaders.js",
     "dist/invaders.es6.js",
-    "dist/invaders.min.js"
+    "dist/js/invaders.min.js"
   ],
   "scripts": {
     "dev": "rollup -c -w",
