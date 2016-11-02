@@ -7,11 +7,14 @@
   "jsnext:main": "dist/invaders.es6.js",
   "files": [
     "README.md",
+    "dist/index.html",
+    "dist/img/favicon.ico",
     "dist/invaders.js",
     "dist/invaders.es6.js",
     "dist/invaders.min.js"
   ],
   "scripts": {
+    "dev": "rollup -c -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
