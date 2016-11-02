@@ -19,6 +19,8 @@ class Collidable extends Object3D {
 
 		this.type = 'Collidable';
 
+		this.updateBoundingBox = false;
+
 		this.boundingBox    = new Box3();
 		this.boundingSphere = new Sphere3();
 
@@ -43,6 +45,17 @@ class Collidable extends Object3D {
 		}
 
 		return false;
+
+	}
+
+	update () {
+
+		if ( this.updateBoundingBox ) {
+
+			this.boundingBox.setFromObject( this );
+			this.updateBoundingBox = false;
+
+		}
 
 	}
 
