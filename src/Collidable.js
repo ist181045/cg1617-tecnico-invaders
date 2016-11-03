@@ -7,9 +7,9 @@
  * @author: Sara Azinhal ( ist181700 )
  */
 
-import { Object3D } from './lib/threejs/core/Object3D.js';
-import { Box3 } from './lib/threejs/math/Box3.js';
-import { Sphere } from './lib/threejs/math/Sphere.js';
+import { Object3D } from './lib/threejs/core/Object3D';
+import { Box3 } from './lib/threejs/math/Box3';
+import { Sphere } from './lib/threejs/math/Sphere';
 
 class Collidable extends Object3D {
 

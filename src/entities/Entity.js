@@ -7,9 +7,9 @@
  * @author: Sara Azinhal ( ist181700 )
  */
 
-import { Vector3 }  from '../lib/threejs/math/Vector3.js';
+import { Vector3 }  from '../lib/threejs/math/Vector3';
 
-import Collidable from '../Collidable.js';
+import Collidable from '../Collidable';
 
 class Entity extends Collidable {
 
