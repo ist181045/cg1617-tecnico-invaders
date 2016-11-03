@@ -7,7 +7,7 @@
  * @author: Sara Azinhal ( ist181700 )
  */
 
-import { Vector3 }  from '../lib/Three.js';
+import { Vector3 }  from '../lib/threejs/math/Vector3.js';
 
 import Collidable from '../Collidable.js';
 
@@ -33,7 +33,7 @@ class Entity extends Collidable {
 
 	}
 
-	setDirection( x, y, z ) {
+	setDirection ( x, y, z ) {
 
 		this.direction.set( x, y, z );
 
@@ -47,24 +47,27 @@ class Entity extends Collidable {
 
 	update ( dt ) {
 
-		super();
+		super.update();
 
 		let v = this.velocity.length();
 		let dvf = this.friction * dt;
 
-		if ( this.moving ) {
+		if ( this.moving && v !== this.MAX_VELOCITY ) {
 
 			let dv = this.acceleration * dt;
-			this.velocity.addScaledVector( this.direction, dv );
 
 			if ( v + dv > this.MAX_VELOCITY ) {
 
 				this.velocity.setLength( this.MAX_VELOCITY );
 
+			} else {
+
+				this.velocity.addScaledVector( this.direction, dv );
+
 			}
 
 			this.position.addScaledVector( this.velocity, dt );
-			
+
 		} else if ( v > dvf ) {
 
 			this.velocity.addScaledVector( this.direction, -dvf );
@@ -75,7 +78,6 @@ class Entity extends Collidable {
 			this.velocity.setLength( 0 );
 
 		}
-
 
 	}
 

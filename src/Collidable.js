@@ -7,9 +7,9 @@
  * @author: Sara Azinhal ( ist181700 )
  */
 
-import { Object3D } from '../lib/Three.js';
-import { Box3 } from '../lib/Three.js';
-import { Sphere3 } from '../lib/Three.js';
+import { Object3D } from './lib/threejs/core/Object3D.js';
+import { Box3 } from './lib/threejs/math/Box3.js';
+import { Sphere } from './lib/threejs/math/Sphere.js';
 
 class Collidable extends Object3D {
 
@@ -22,7 +22,7 @@ class Collidable extends Object3D {
 		this.updateBoundingBox = false;
 
 		this.boundingBox    = new Box3();
-		this.boundingSphere = new Sphere3();
+		this.boundingSphere = new Sphere();
 
 		this.position.set( x, y, z );
 
