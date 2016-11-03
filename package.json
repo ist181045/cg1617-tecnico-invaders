@@ -3,19 +3,16 @@
   "version": "0.0.0",
   "description": "Space Invaders with a twist, powered by three.js r82",
   "main": "dist/invaders.js",
-  "module": "dist/invaders.es6.js",
-  "jsnext:main": "dist/invaders.es6.js",
   "files": [
     "README.md",
     "dist/index.html",
     "dist/img/favicon.ico",
     "dist/invaders.js",
-    "dist/invaders.es6.js",
     "dist/js/invaders.min.js"
   ],
   "scripts": {
     "dev": "rollup -c -w",
-    "dist": "rollup -c && uglify dist/invaders.js -o dist/js/invaders.min.js",
+    "dist": "rollup -c && uglifyjs dist/invaders.js -o dist/js/invaders.min.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
