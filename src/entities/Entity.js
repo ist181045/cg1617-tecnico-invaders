@@ -29,8 +29,6 @@ class Entity extends Collidable {
 
 		this.position.set( x, y, z );
 
-		return this;
-
 	}
 
 	setDirection ( x, y, z ) {
