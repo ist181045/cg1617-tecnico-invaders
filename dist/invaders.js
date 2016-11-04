@@ -260,6 +260,19 @@ var _Math = {
 
 };
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author supereggbert / http://www.paulbrunt.co.uk/
+ * @author philogb / http://blog.thejit.org/
+ * @author jordi_ros / http://plattsoft.com
+ * @author D1plo1d / http://github.com/D1plo1d
+ * @author alteredq / http://alteredqualia.com/
+ * @author mikael emtinger / http://gomo.se/
+ * @author timknip / http://www.floorplanner.com/
+ * @author bhouston / http://clara.io
+ * @author WestLangley / http://github.com/WestLangley
+ */
+
 function Matrix4() {
 
 	this.elements = new Float32Array( [
@@ -1227,6 +1240,13 @@ Matrix4.prototype = {
 
 };
 
+/**
+ * @author mikael emtinger / http://gomo.se/
+ * @author alteredq / http://alteredqualia.com/
+ * @author WestLangley / http://github.com/WestLangley
+ * @author bhouston / http://clara.io
+ */
+
 function Quaternion( x, y, z, w ) {
 
 	this._x = x || 0;
@@ -1805,6 +1825,15 @@ Object.assign( Quaternion, {
 	}
 
 } );
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author *kile / http://kile.stravaganza.org/
+ * @author philogb / http://blog.thejit.org/
+ * @author mikael emtinger / http://gomo.se/
+ * @author egraether / http://egraether.com/
+ * @author WestLangley / http://github.com/WestLangley
+ */
 
 function Vector3( x, y, z ) {
 
@@ -2562,6 +2591,11 @@ Vector3.prototype = {
 
 };
 
+/**
+ * @author bhouston / http://clara.io
+ * @author WestLangley / http://github.com/WestLangley
+ */
+
 function Box3( min, max ) {
 
 	this.min = ( min !== undefined ) ? min : new Vector3( + Infinity, + Infinity, + Infinity );
@@ -3034,6 +3068,11 @@ Box3.prototype = {
 
 };
 
+/**
+ * @author bhouston / http://clara.io
+ * @author mrdoob / http://mrdoob.com/
+ */
+
 function Sphere( center, radius ) {
 
 	this.center = ( center !== undefined ) ? center : new Vector3();
@@ -3203,6 +3242,10 @@ Sphere.prototype = {
 	}
 
 };
+
+/**
+ * @author bhouston / http://clara.io
+ */
 
 function Ray( origin, direction ) {
 
@@ -3833,6 +3876,12 @@ Object.assign( EventDispatcher.prototype, {
 
 } );
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author WestLangley / http://github.com/WestLangley
+ * @author bhouston / http://clara.io
+ */
+
 function Euler( x, y, z, order ) {
 
 	this._x = x || 0;
@@ -4202,6 +4251,13 @@ Layers.prototype = {
 
 };
 
+/**
+ * @author alteredq / http://alteredqualia.com/
+ * @author WestLangley / http://github.com/WestLangley
+ * @author bhouston / http://clara.io
+ * @author tschw
+ */
+
 function Matrix3() {
 
 	this.elements = new Float32Array( [
@@ -4505,6 +4561,14 @@ Matrix3.prototype = {
 	}
 
 };
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author mikael emtinger / http://gomo.se/
+ * @author alteredq / http://alteredqualia.com/
+ * @author WestLangley / http://github.com/WestLangley
+ * @author elephantatwork / www.elephantatwork.ch
+ */
 
 function Object3D() {
 
@@ -5351,6 +5415,11 @@ var RGBDEncoding = 3006;
 var BasicDepthPacking = 3200;
 var RGBADepthPacking = 3201;
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ */
+
 function Material() {
 
 	Object.defineProperty( this, 'id', { value: MaterialIdCount() } );
@@ -5686,6 +5755,10 @@ Object.assign( Material.prototype, EventDispatcher.prototype );
 
 var count$1 = 0;
 function MaterialIdCount() { return count$1++; }
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
 
 function Color( r, g, b ) {
 
@@ -6203,6 +6276,20 @@ var ColorKeywords = { 'aliceblue': 0xF0F8FF, 'antiquewhite': 0xFAEBD7, 'aqua': 0
 'sienna': 0xA0522D, 'silver': 0xC0C0C0, 'skyblue': 0x87CEEB, 'slateblue': 0x6A5ACD, 'slategray': 0x708090, 'slategrey': 0x708090, 'snow': 0xFFFAFA,
 'springgreen': 0x00FF7F, 'steelblue': 0x4682B4, 'tan': 0xD2B48C, 'teal': 0x008080, 'thistle': 0xD8BFD8, 'tomato': 0xFF6347, 'turquoise': 0x40E0D0,
 'violet': 0xEE82EE, 'wheat': 0xF5DEB3, 'white': 0xFFFFFF, 'whitesmoke': 0xF5F5F5, 'yellow': 0xFFFF00, 'yellowgreen': 0x9ACD32 };
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ *
+ * parameters = {
+ *  color: <hex>,
+ *  opacity: <float>,
+ *
+ *  linewidth: <float>,
+ *  linecap: "round",
+ *  linejoin: "round"
+ * }
+ */
 
 function LineBasicMaterial( parameters ) {
 
@@ -7355,6 +7442,10 @@ Vector2.prototype = {
 
 };
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
+
 function BufferAttribute( array, itemSize, normalized ) {
 
 	if ( Array.isArray( array ) ) {
@@ -7674,13 +7765,16 @@ BufferAttribute.prototype = {
 
 };
 
-//
-
 function Float32Attribute( array, itemSize ) {
 
 	return new BufferAttribute( new Float32Array( array ), itemSize );
 
 }
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ */
 
 function Face3( a, b, c, normal, color, materialIndex ) {
 
@@ -7736,6 +7830,15 @@ Face3.prototype = {
 	}
 
 };
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author kile / http://kile.stravaganza.org/
+ * @author alteredq / http://alteredqualia.com/
+ * @author mikael emtinger / http://gomo.se/
+ * @author zz85 / http://www.lab4games.net/zz85/blog
+ * @author bhouston / http://clara.io
+ */
 
 function Geometry() {
 
@@ -8994,6 +9097,10 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 var count$2 = 0;
 function GeometryIdCount() { return count$2++; }
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
+
 function DirectGeometry() {
 
 	Object.defineProperty( this, 'id', { value: GeometryIdCount() } );
@@ -9276,6 +9383,11 @@ Object.assign( DirectGeometry.prototype, EventDispatcher.prototype, {
 	}
 
 } );
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ * @author mrdoob / http://mrdoob.com/
+ */
 
 function BufferGeometry() {
 
@@ -10303,6 +10415,10 @@ Object.assign( BufferGeometry.prototype, EventDispatcher.prototype, {
 
 BufferGeometry.MaxIndex = 65535;
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
+
 function Line( geometry, material, mode ) {
 
 	if ( mode === 1 ) {
@@ -10484,6 +10600,10 @@ Line.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 } );
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
+
 function LineSegments( geometry, material ) {
 
 	Line.call( this, geometry, material );
@@ -10499,6 +10619,11 @@ LineSegments.prototype = Object.assign( Object.create( Line.prototype ), {
 	isLineSegments: true
 
 } );
+
+/**
+ * @author sroucheray / http://sroucheray.org/
+ * @author mrdoob / http://mrdoob.com/
+ */
 
 function AxisHelper( size ) {
 
@@ -10600,6 +10725,12 @@ Clock.prototype = {
 
 };
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author mikael emtinger / http://gomo.se/
+ * @author WestLangley / http://github.com/WestLangley
+*/
+
 function Camera() {
 
 	Object3D.call( this );
@@ -10664,6 +10795,11 @@ Camera.prototype.copy = function ( source ) {
 	return this;
 
 };
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ * @author arose / http://github.com/arose
+ */
 
 function OrthographicCamera( left, right, top, bottom, near, far ) {
 
@@ -10781,6 +10917,13 @@ OrthographicCamera.prototype = Object.assign( Object.create( Camera.prototype ),
 	}
 
 } );
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author greggman / http://games.greggman.com/
+ * @author zz85 / http://www.lab4games.net/zz85/blog
+ * @author tschw
+ */
 
 function PerspectiveCamera( fov, aspect, near, far ) {
 
@@ -10995,6 +11138,10 @@ PerspectiveCamera.prototype = Object.assign( Object.create( Camera.prototype ), 
 
 } );
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
+
 function Scene () {
 
 	Object3D.call( this );
@@ -11038,6 +11185,12 @@ Scene.prototype.toJSON = function ( meta ) {
 	return data;
 
 };
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ * @author szimek / https://github.com/szimek/
+ */
 
 function Texture( image, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding ) {
 
@@ -11317,6 +11470,10 @@ Object.assign( Texture.prototype, EventDispatcher.prototype );
 
 var count$3 = 0;
 function TextureIdCount() { return count$3++; }
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
 
 function CubeTexture( images, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding ) {
 
@@ -12272,6 +12429,10 @@ var ShaderChunk = {
 	shadow_vert: shadow_vert
 };
 
+/**
+ * Uniforms library for shared webgl shaders
+ */
+
 var UniformsLib = {
 
 	common: {
@@ -12425,6 +12586,12 @@ var UniformsLib = {
 	}
 
 };
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ * @author mrdoob / http://mrdoob.com/
+ * @author mikael emtinger / http://gomo.se/
+ */
 
 var ShaderLib = {
 
@@ -12648,6 +12815,10 @@ ShaderLib.physical = {
 	fragmentShader: ShaderChunk.meshphysical_frag
 
 };
+
+/**
+ * @author bhouston / http://clara.io
+ */
 
 function Box2( min, max ) {
 
@@ -12881,6 +13052,11 @@ Box2.prototype = {
 	}
 
 };
+
+/**
+ * @author mikael emtinger / http://gomo.se/
+ * @author alteredq / http://alteredqualia.com/
+ */
 
 function LensFlarePlugin( renderer, flares ) {
 
@@ -13260,6 +13436,11 @@ function LensFlarePlugin( renderer, flares ) {
 
 }
 
+/**
+ * @author mikael emtinger / http://gomo.se/
+ * @author alteredq / http://alteredqualia.com/
+ */
+
 function SpritePlugin( renderer, sprites ) {
 
 	var gl = renderer.context;
@@ -13629,6 +13810,17 @@ function SpritePlugin( renderer, sprites ) {
 
 }
 
+/**
+ * @author szimek / https://github.com/szimek/
+ * @author alteredq / http://alteredqualia.com/
+ * @author Marius Kintel / https://github.com/kintel
+ */
+
+/*
+ In options, we can specify:
+ * Texture parameters for an auto-generated target texture
+ * depthBuffer/stencilBuffer: Booleans to indicate if we should generate these buffers
+*/
 function WebGLRenderTarget( width, height, options ) {
 
 	this.uuid = _Math.generateUUID();
@@ -13703,6 +13895,27 @@ Object.assign( WebGLRenderTarget.prototype, EventDispatcher.prototype, {
 	}
 
 } );
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ *
+ * parameters = {
+ *  defines: { "label" : "value" },
+ *  uniforms: { "parameter1": { value: 1.0 }, "parameter2": { value2: 2 } },
+ *
+ *  fragmentShader: <string>,
+ *  vertexShader: <string>,
+ *
+ *  wireframe: <boolean>,
+ *  wireframeLinewidth: <float>,
+ *
+ *  lights: <bool>,
+ *
+ *  skinning: <bool>,
+ *  morphTargets: <bool>,
+ *  morphNormals: <bool>
+ * }
+ */
 
 function ShaderMaterial( parameters ) {
 
@@ -13805,6 +14018,29 @@ ShaderMaterial.prototype.toJSON = function ( meta ) {
 
 };
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ * @author bhouston / https://clara.io
+ * @author WestLangley / http://github.com/WestLangley
+ *
+ * parameters = {
+ *
+ *  opacity: <float>,
+ *
+ *  map: new THREE.Texture( <Image> ),
+ *
+ *  alphaMap: new THREE.Texture( <Image> ),
+ *
+ *  displacementMap: new THREE.Texture( <Image> ),
+ *  displacementScale: <float>,
+ *  displacementBias: <float>,
+ *
+ *  wireframe: <boolean>,
+ *  wireframeLinewidth: <float>
+ * }
+ */
+
 function MeshDepthMaterial( parameters ) {
 
 	Material.call( this );
@@ -13862,6 +14098,10 @@ MeshDepthMaterial.prototype.copy = function ( source ) {
 	return this;
 
 };
+
+/**
+ * @author bhouston / http://clara.io
+ */
 
 function Plane( normal, constant ) {
 
@@ -14091,6 +14331,12 @@ Plane.prototype = {
 	}
 
 };
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ * @author bhouston / http://clara.io
+ */
 
 function Frustum( p0, p1, p2, p3, p4, p5 ) {
 
@@ -14733,6 +14979,10 @@ function WebGLShadowMap( _renderer, _lights, _objects, capabilities ) {
 
 }
 
+/**
+ * @author bhouston / http://clara.io
+ */
+
 function Line3( start, end ) {
 
 	this.start = ( start !== undefined ) ? start : new Vector3();
@@ -14855,6 +15105,11 @@ Line3.prototype = {
 	}
 
 };
+
+/**
+ * @author bhouston / http://clara.io
+ * @author mrdoob / http://mrdoob.com/
+ */
 
 function Triangle( a, b, c ) {
 
@@ -15107,6 +15362,39 @@ Triangle.prototype = {
 
 };
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ *
+ * parameters = {
+ *  color: <hex>,
+ *  opacity: <float>,
+ *  map: new THREE.Texture( <Image> ),
+ *
+ *  aoMap: new THREE.Texture( <Image> ),
+ *  aoMapIntensity: <float>
+ *
+ *  specularMap: new THREE.Texture( <Image> ),
+ *
+ *  alphaMap: new THREE.Texture( <Image> ),
+ *
+ *  envMap: new THREE.TextureCube( [posx, negx, posy, negy, posz, negz] ),
+ *  combine: THREE.Multiply,
+ *  reflectivity: <float>,
+ *  refractionRatio: <float>,
+ *
+ *  shading: THREE.SmoothShading,
+ *  depthTest: <bool>,
+ *  depthWrite: <bool>,
+ *
+ *  wireframe: <boolean>,
+ *  wireframeLinewidth: <float>,
+ *
+ *  skinning: <bool>,
+ *  morphTargets: <bool>
+ * }
+ */
+
 function MeshBasicMaterial( parameters ) {
 
 	Material.call( this );
@@ -15179,6 +15467,13 @@ MeshBasicMaterial.prototype.copy = function ( source ) {
 	return this;
 
 };
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ * @author mikael emtinger / http://gomo.se/
+ * @author jonobr1 / http://jonobr1.com/
+ */
 
 function Mesh( geometry, material ) {
 
@@ -15515,6 +15810,10 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 } );
 
+/**
+ * @author Mugen87 / https://github.com/Mugen87
+ */
+
 function BoxBufferGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) {
 
 	BufferGeometry.call( this );
@@ -15705,6 +16004,11 @@ function BoxBufferGeometry( width, height, depth, widthSegments, heightSegments,
 
 BoxBufferGeometry.prototype = Object.create( BufferGeometry.prototype );
 BoxBufferGeometry.prototype.constructor = BoxBufferGeometry;
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Plane.as
+ */
 
 function PlaneBufferGeometry( width, height, widthSegments, heightSegments ) {
 
@@ -19486,6 +19790,14 @@ function WebGLClipping() {
 	}
 
 }
+
+/**
+ * @author supereggbert / http://www.paulbrunt.co.uk/
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ * @author szimek / https://github.com/szimek/
+ * @author tschw
+ */
 
 function WebGLRenderer( parameters ) {
 
