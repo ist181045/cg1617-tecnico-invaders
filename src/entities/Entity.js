@@ -69,6 +69,13 @@ class Entity extends Collidable {
 		} else if ( v > dvf ) {
 
 			updatePos = true;
+
+			if ( v !== this.direction.dot( this.velocity ) ) {
+
+				this.direction.copy( this.velocity ).normalize();
+
+			}
+
 			this.velocity.addScaledVector( this.direction, -dvf );
 
 		} else {
