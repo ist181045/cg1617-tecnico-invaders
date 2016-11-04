@@ -40,7 +40,7 @@ export default {
 		{
 			format: 'iife',
 			dest: 'dist/invaders.js',
-			moduleName: 'invaders'
+			moduleName: 'Invaders'
 		}
 	]
 };
