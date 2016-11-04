@@ -27,7 +27,7 @@ class Game {
 	constructor () {
 
 		this.scene = new Scene();
-		this.renderer = (function() {
+		this.renderer = (function () {
 
 			let renderer = new WebGLRenderer();
 
@@ -38,7 +38,7 @@ class Game {
 
 		})();
 
-		this.topCamera = (function( scene ) {
+		this.topCamera = (function ( scene ) {
 
 			let camera = new OrthographicCamera(
 				WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 1000
@@ -52,7 +52,7 @@ class Game {
 			return camera;
 
 		})( this.scene );
-		this.backCamera = (function( scene ) {
+		this.backCamera = (function ( scene ) {
 
 			let camera = new PerspectiveCamera(
 				75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000
