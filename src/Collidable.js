@@ -30,11 +30,10 @@ class Collidable extends Object3D {
 
 	intersect ( other ) {
 
-		let r1 = this.boundingSphere.radius;
-		let r2 = other.boundingSphere.radius;
-		let distSq = this.position.distanceToSquared( other.position );
+		let rSum = this.boundingSphere.radius + other.boundingSphere.radius;
+		let distSq = this.boundingSphere.center.distanceToSquared( other.boundingSphere.center );
 
-		if ( ( r1 * r1 + r2 * r2 ) >= distSq ) {
+		if ( rSum * rSum >= distSq ) {
 
 			let [ a, b ] = [ this.boundingBox, other.boundingBox ];
 
@@ -52,8 +51,9 @@ class Collidable extends Object3D {
 
 		if ( this.updateBoundingBox ) {
 
-			this.boundingBox.setFromObject( this );
 			this.updateBoundingBox = false;
+			this.boundingBox.setFromObject( this );
+			this.boundingBox.getBoundingSphere( this.boundingSphere );
 
 		}
 
