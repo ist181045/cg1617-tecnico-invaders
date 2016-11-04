@@ -27,19 +27,15 @@ class Entity extends Collidable {
 		this.acceleration = 10;
 		this.friction     = 8;
 
+		this.updateBoundingBox = true;
+
 		this.position.set( x, y, z );
 
 	}
 
 	setDirection ( x, y, z ) {
 
-		this.direction.set( x, y, z );
-
-		if ( this.direction.lengthSq() > 1 ) {
-
-			this.direction.normalize();
-
-		}
+		this.direction.set( x, y, z ).normalize();
 
 	}
 
@@ -47,33 +43,48 @@ class Entity extends Collidable {
 
 		super.update();
 
-		let v = this.velocity.length();
+		let v   = this.velocity.length();
 		let dvf = this.friction * dt;
+		let updatePos = false;
 
-		if ( this.moving && v !== this.MAX_VELOCITY ) {
+		if ( this.moving ) {
 
-			let dv = this.acceleration * dt;
+			if ( v !== this.MAX_VELOCITY ) {
 
-			if ( v + dv > this.MAX_VELOCITY ) {
+				let dv = this.acceleration * dt;
 
-				this.velocity.setLength( this.MAX_VELOCITY );
+				updatePos = true;
 
-			} else {
+				if ( v + dv > this.MAX_VELOCITY ) {
 
-				this.velocity.addScaledVector( this.direction, dv );
+					this.velocity.setLength( this.MAX_VELOCITY );
 
+				} else {
+
+					this.velocity.addScaledVector( this.direction, dv );
+
+				}
+				
 			}
-
-			this.position.addScaledVector( this.velocity, dt );
 
 		} else if ( v > dvf ) {
 
+			updatePos = true;
 			this.velocity.addScaledVector( this.direction, -dvf );
-			this.position.addScaledVector( this.velocity, dt );
 
 		} else {
 
 			this.velocity.setLength( 0 );
+
+		}
+
+		if ( updatePos ) {
+
+			let ds = new Vector3().addScaledVector( this.velocity, dt );
+
+			this.position.add( ds );
+			this.boundingBox.translate( ds );
+			this.boundingSphere.translate( ds );
 
 		}
 
