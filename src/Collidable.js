@@ -7,15 +7,16 @@
  * @author: Sara Azinhal ( ist181700 )
  */
 
-import { Object3D } from './lib/threejs/core/Object3D';
 import { Box3 } from './lib/threejs/math/Box3';
 import { Sphere } from './lib/threejs/math/Sphere';
 
-class Collidable extends Object3D {
+import GameObject from './GameObject';
+
+class Collidable extends GameObject {
 
 	constructor ( x, y, z ) {
 
-		super();
+		super( x, y, z );
 
 		this.type = 'Collidable';
 
@@ -23,8 +24,6 @@ class Collidable extends Object3D {
 
 		this.boundingBox    = new Box3();
 		this.boundingSphere = new Sphere();
-
-		this.position.set( x, y, z );
 
 	}
 
