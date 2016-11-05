@@ -20,6 +20,8 @@ import { WebGLRenderer } from './lib/threejs/renderers/WebGLRenderer';
 import { WIDTH, HEIGHT } from './Constants';
 import { WINDOW_PIXEL_RATIO, WINDOW_WIDTH, WINDOW_HEIGHT } from './Constants';
 
+import PlayerShip from './entities/PlayerShip';
+
 import * as Keyboard from './Keyboard';
 
 class Game {
@@ -68,9 +70,12 @@ class Game {
 		})( this.scene );
 		this.camera = this.topCamera;
 
-		this.gameClock = new Clock( false );
+		this.playerShip = new PlayerShip( 0, 0, 200,
+			new PerspectiveCamera( 75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000 ) );
 
 		/* TODO: Game Objects array, player ship, and so on */
+
+		this.gameClock = new Clock( false );
 
 	}
 
@@ -86,6 +91,7 @@ class Game {
 
 		/* TODO: Setup function, reset the game on startup and restart */
 		//setup();
+		this.scene.add( this.playerShip );
 
 		this.gameClock.start();
 
@@ -96,13 +102,15 @@ class Game {
 
 	update () {
 
-		window.requestAnimationFrame( this.update.bind( this ) );
+		let dt = this.gameClock.getDelta();
 
-		this.gameClock.getDelta();
+		this.playerShip.update( dt );
 
 		/* TODO: Game objects' (TBA) updates */
 
 		this.renderer.render( this.scene, this.camera );
+
+		window.requestAnimationFrame( this.update.bind( this ) );
 
 	}
 
@@ -159,6 +167,29 @@ class Game {
 
 				break;
 
+			case Keyboard.KEY_3:
+
+				this.camera = this.playerShip.camera;
+				this.resize();
+
+				break;
+
+			case Keyboard.KEY_A:
+			case Keyboard.KEY_LEFT:
+
+				if ( !this.playerShip.moving ) this.playerShip.moving = true;
+				this.playerShip.setDirection( -1, 0, 0 );
+
+				break;
+
+			case Keyboard.KEY_D:
+			case Keyboard.KEY_RIGHT:
+
+				if ( !this.playerShip.moving ) this.playerShip.moving = true;
+				this.playerShip.setDirection( 1, 0, 0 );
+
+				break;
+
 			default:
 
 				break;
@@ -168,7 +199,20 @@ class Game {
 	}
 
 	keyUp ( event ) {
-		/* TODO: Handle key releases that affect game objects */
+
+		switch ( event.keyCode ) {
+			case Keyboard.KEY_A:
+			case Keyboard.KEY_LEFT:
+			case Keyboard.KEY_D:
+			case Keyboard.KEY_RIGHT:
+
+				this.playerShip.moving = false;
+
+				break;
+
+			default:
+				break;
+		}
 	}
 
 }
