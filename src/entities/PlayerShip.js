@@ -30,7 +30,7 @@ class PlayerShip extends Entity {
 		this.camera = (function ( self ) {
 
 			camera.position.add( new Vector3( 0, 30, 75 ) );
-			camera.lookAt( new Vector3().copy( self.position ).negate() );
+			camera.lookAt( self.position.clone().negate() );
 
 			camera.updateProjectionMatrix();
 
@@ -52,6 +52,18 @@ class PlayerShip extends Entity {
 	setDirection ( x, y, z ) {
 
 		super.setDirection( x, 0, 0 );
+
+	}
+
+	intersect ( other ) {
+
+		if ( other.type === 'Barrier' ) {
+			/* TODO: Barrier collision */
+		} else {
+
+			super.intersect( other );
+
+		}
 
 	}
 
