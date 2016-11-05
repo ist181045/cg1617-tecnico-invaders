@@ -19,15 +19,15 @@ class Entity extends Collidable {
 
 		this.type = 'Entity';
 
-		this.MAX_VELOCITY = 300;
+		this.MAX_VELOCITY = 1000;
 
 		this.updateBoundingBox = true;
 
 		this.moving       = false;
 		this.direction    = new Vector3();
 		this.velocity     = new Vector3();
-		this.acceleration = 150;
-		this.friction     = 130;
+		this.acceleration = 300;
+		this.friction     = 350;
 
 	}
 
@@ -58,11 +58,13 @@ class Entity extends Collidable {
 
 					this.velocity.setLength( this.MAX_VELOCITY );
 
-				} else {
+				} else if ( this.direction.dot( this.velocity ) < v ) {
 
-					this.velocity.addScaledVector( this.direction, dv );
+					this.velocity.addScaledVector( this.direction, dvf );
 
 				}
+
+				this.velocity.addScaledVector( this.direction, dv );
 
 			}
 
