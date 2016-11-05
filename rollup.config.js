@@ -1,7 +1,7 @@
 import babel from 'rollup-plugin-babel';
 
 /**
- * From three.js rollup.config.js
+ * glsl transform from three.js rollup.config.js
  *
  * @see https://github.com/mrdoob/three.js/blob/r82/rollup.config.js
  */
