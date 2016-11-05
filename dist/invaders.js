@@ -22619,30 +22619,76 @@ var WINDOW_HEIGHT = function WINDOW_HEIGHT() {
 };
 
 /**
- * CG Space Invaders
- * CG45179 16'17
- *
- * @author: Rui Ventura ( ist181045 )
- * @author: Diogo Freitas ( ist181586 )
- * @author: Sara Azinhal ( ist181700 )
+ * @author mrdoob / http://mrdoob.com/
+ * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Cube.as
  */
+
+function BoxGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) {
+
+	Geometry.call( this );
+
+	this.type = 'BoxGeometry';
+
+	this.parameters = {
+		width: width,
+		height: height,
+		depth: depth,
+		widthSegments: widthSegments,
+		heightSegments: heightSegments,
+		depthSegments: depthSegments
+	};
+
+	this.fromBufferGeometry( new BoxBufferGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) );
+	this.mergeVertices();
+
+}
+
+BoxGeometry.prototype = Object.create( Geometry.prototype );
+BoxGeometry.prototype.constructor = BoxGeometry;
 
 /**
- * According to http://keycode.info
+ * @author mrdoob / http://mrdoob.com/
+ *
+ * parameters = {
+ *  opacity: <float>,
+ *
+ *  wireframe: <boolean>,
+ *  wireframeLinewidth: <float>
+ * }
  */
 
+function MeshNormalMaterial( parameters ) {
 
+	Material.call( this, parameters );
 
+	this.type = 'MeshNormalMaterial';
 
+	this.wireframe = false;
+	this.wireframeLinewidth = 1;
 
+	this.fog = false;
+	this.lights = false;
+	this.morphTargets = false;
 
+	this.setValues( parameters );
 
+}
 
+MeshNormalMaterial.prototype = Object.create( Material.prototype );
+MeshNormalMaterial.prototype.constructor = MeshNormalMaterial;
 
+MeshNormalMaterial.prototype.isMeshNormalMaterial = true;
 
+MeshNormalMaterial.prototype.copy = function ( source ) {
 
-var KEY_1 = 49;
-var KEY_2 = 50;
+	Material.prototype.copy.call( this, source );
+
+	this.wireframe = source.wireframe;
+	this.wireframeLinewidth = source.wireframeLinewidth;
+
+	return this;
+
+};
 
 var asyncGenerator = function () {
   function AwaitValue(value) {
@@ -22816,6 +22862,21 @@ var get = function get(object, property, receiver) {
   }
 };
 
+var inherits = function (subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+};
 
 
 
@@ -22827,8 +22888,13 @@ var get = function get(object, property, receiver) {
 
 
 
+var possibleConstructorReturn = function (self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
 
-
+  return call && (typeof call === "object" || typeof call === "function") ? call : self;
+};
 
 
 
@@ -22853,6 +22919,286 @@ var set = function set(object, property, value, receiver) {
 
   return value;
 };
+
+/**
+ * CG Space Invaders
+ * CG45179 16'17
+ *
+ * @author: Rui Ventura ( ist181045 )
+ * @author: Diogo Freitas ( ist181586 )
+ * @author: Sara Azinhal ( ist181700 )
+ */
+
+var GameObject = function (_Object3D) {
+  inherits(GameObject, _Object3D);
+
+  function GameObject(x, y, z) {
+    classCallCheck(this, GameObject);
+
+    var _this = possibleConstructorReturn(this, (GameObject.__proto__ || Object.getPrototypeOf(GameObject)).call(this));
+
+    _this.type = 'GameObject';
+
+    _this.material = new MeshNormalMaterial();
+
+    _this.position.set(x || 0, y || 0, z || 0);
+
+    return _this;
+  }
+
+  return GameObject;
+}(Object3D);
+
+/**
+ * CG Space Invaders
+ * CG45179 16'17
+ *
+ * @author: Rui Ventura ( ist181045 )
+ * @author: Diogo Freitas ( ist181586 )
+ * @author: Sara Azinhal ( ist181700 )
+ */
+
+var Collidable = function (_GameObject) {
+	inherits(Collidable, _GameObject);
+
+	function Collidable(x, y, z) {
+		classCallCheck(this, Collidable);
+
+		var _this = possibleConstructorReturn(this, (Collidable.__proto__ || Object.getPrototypeOf(Collidable)).call(this, x, y, z));
+
+		_this.type = 'Collidable';
+
+		_this.updateBoundingBox = false;
+
+		_this.boundingBox = new Box3();
+		_this.boundingSphere = new Sphere();
+
+		return _this;
+	}
+
+	createClass(Collidable, [{
+		key: 'intersect',
+		value: function intersect(other) {
+
+			var rSum = this.boundingSphere.radius + other.boundingSphere.radius;
+			var distSq = this.boundingSphere.center.distanceToSquared(other.boundingSphere.center);
+
+			if (rSum * rSum >= distSq) {
+				var _ref = [this.boundingBox, other.boundingBox],
+				    a = _ref[0],
+				    b = _ref[1];
+
+
+				return a.min.x <= b.max.x && a.max.x >= b.min.x && a.min.y <= b.max.y && a.max.y >= b.min.y && a.min.z <= b.max.z && a.max.z >= b.min.z;
+			}
+
+			return false;
+		}
+	}, {
+		key: 'update',
+		value: function update() {
+
+			if (this.updateBoundingBox) {
+
+				this.updateBoundingBox = false;
+				this.boundingBox.setFromObject(this);
+				this.boundingBox.getBoundingSphere(this.boundingSphere);
+			}
+		}
+	}]);
+	return Collidable;
+}(GameObject);
+
+/**
+ * CG Tecnico Invaders
+ * CG45179 16'17
+ *
+ * @author: Rui Ventura ( ist181045 )
+ * @author: Diogo Freitas ( ist181586 )
+ * @author: Sara Azinhal ( ist181700 )
+ */
+
+var Entity = function (_Collidable) {
+	inherits(Entity, _Collidable);
+
+	function Entity(x, y, z) {
+		classCallCheck(this, Entity);
+
+		var _this = possibleConstructorReturn(this, (Entity.__proto__ || Object.getPrototypeOf(Entity)).call(this, x, y, z));
+
+		_this.type = 'Entity';
+
+		_this.MAX_VELOCITY = 300;
+
+		_this.updateBoundingBox = true;
+
+		_this.moving = false;
+		_this.direction = new Vector3();
+		_this.velocity = new Vector3();
+		_this.acceleration = 150;
+		_this.friction = 130;
+
+		return _this;
+	}
+
+	createClass(Entity, [{
+		key: 'setDirection',
+		value: function setDirection(x, y, z) {
+
+			this.direction.set(x, y, z).normalize();
+		}
+	}, {
+		key: 'update',
+		value: function update(dt) {
+
+			get(Entity.prototype.__proto__ || Object.getPrototypeOf(Entity.prototype), 'update', this).call(this);
+
+			var updatePos = false;
+
+			var v = this.velocity.length();
+			var dvf = this.friction * dt;
+
+			if (this.moving) {
+
+				updatePos = true;
+
+				if (v !== this.MAX_VELOCITY) {
+
+					var dv = this.acceleration * dt;
+
+					if (v + dv > this.MAX_VELOCITY) {
+
+						this.velocity.setLength(this.MAX_VELOCITY);
+					} else {
+
+						this.velocity.addScaledVector(this.direction, dv);
+					}
+				}
+			} else if (v > dvf) {
+
+				updatePos = true;
+
+				if (v !== this.direction.dot(this.velocity)) {
+
+					this.direction.copy(this.velocity).normalize();
+				}
+
+				this.velocity.addScaledVector(this.direction, -dvf);
+			} else {
+
+				this.velocity.setLength(0);
+			}
+
+			if (updatePos) {
+
+				var ds = new Vector3().addScaledVector(this.velocity, dt);
+
+				this.position.add(ds);
+				this.boundingBox.translate(ds);
+				this.boundingSphere.translate(ds);
+			}
+		}
+	}]);
+	return Entity;
+}(Collidable);
+
+/**
+ * CG Space Invaders
+ * CG45179 16'17
+ *
+ * @author: Rui Ventura ( ist181045 )
+ * @author: Diogo Freitas ( ist181586 )
+ * @author: Sara Azinhal ( ist181700 )
+ */
+
+var PlayerShip = function (_Entity) {
+	inherits(PlayerShip, _Entity);
+
+	function PlayerShip(x, y, z, camera) {
+		classCallCheck(this, PlayerShip);
+
+		var _this = possibleConstructorReturn(this, (PlayerShip.__proto__ || Object.getPrototypeOf(PlayerShip)).call(this, x, y, z));
+
+		if (camera === undefined || camera.type !== 'PerspectiveCamera') {
+
+			throw new TypeError('PlayerShip: \'camera\' undefined or not PerspectiveCamera');
+		}
+
+		_this.type = 'PlayerShip';
+
+		_this.camera = function (self) {
+
+			camera.position.add(new Vector3(0, 30, 75));
+			camera.lookAt(new Vector3().copy(self.position).multiplyScalar(-1));
+
+			camera.updateProjectionMatrix();
+
+			return camera;
+		}(_this);
+
+		_this.add(_this.camera);
+		_this.add(function (self) {
+
+			/* TODO: Build player ship */
+
+			return new Mesh(new BoxGeometry(10, 10, 10), self.material);
+		}(_this));
+
+		return _this;
+	}
+
+	createClass(PlayerShip, [{
+		key: 'setDirection',
+		value: function setDirection(x, y, z) {
+
+			get(PlayerShip.prototype.__proto__ || Object.getPrototypeOf(PlayerShip.prototype), 'setDirection', this).call(this, x, 0, 0);
+		}
+	}]);
+	return PlayerShip;
+}(Entity);
+
+/**
+ * CG Space Invaders
+ * CG45179 16'17
+ *
+ * @author: Rui Ventura ( ist181045 )
+ * @author: Diogo Freitas ( ist181586 )
+ * @author: Sara Azinhal ( ist181700 )
+ */
+
+/**
+ * According to http://keycode.info
+ */
+
+
+
+
+
+
+
+
+
+
+var KEY_LEFT = 37;
+
+var KEY_RIGHT = 39;
+
+
+
+var KEY_1 = 49;
+var KEY_2 = 50;
+var KEY_3 = 51;
+
+
+
+
+
+
+
+var KEY_A = 65;
+
+
+var KEY_D = 68;
 
 /**
  * CG Space Invaders
@@ -22903,9 +23249,11 @@ var Game = function () {
 		}(this.scene);
 		this.camera = this.topCamera;
 
-		this.gameClock = new Clock(false);
+		this.playerShip = new PlayerShip(0, 0, 200, new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000));
 
 		/* TODO: Game Objects array, player ship, and so on */
+
+		this.gameClock = new Clock(false);
 	}
 
 	createClass(Game, [{
@@ -22922,6 +23270,7 @@ var Game = function () {
 
 			/* TODO: Setup function, reset the game on startup and restart */
 			//setup();
+			this.scene.add(this.playerShip);
 
 			this.gameClock.start();
 
@@ -22932,13 +23281,15 @@ var Game = function () {
 		key: 'update',
 		value: function update() {
 
-			window.requestAnimationFrame(this.update.bind(this));
+			var dt = this.gameClock.getDelta();
 
-			this.gameClock.getDelta();
+			this.playerShip.update(dt);
 
 			/* TODO: Game objects' (TBA) updates */
 
 			this.renderer.render(this.scene, this.camera);
+
+			window.requestAnimationFrame(this.update.bind(this));
 		}
 	}, {
 		key: 'resize',
@@ -22991,6 +23342,29 @@ var Game = function () {
 
 					break;
 
+				case KEY_3:
+
+					this.camera = this.playerShip.camera;
+					this.resize();
+
+					break;
+
+				case KEY_A:
+				case KEY_LEFT:
+
+					if (!this.playerShip.moving) this.playerShip.moving = true;
+					this.playerShip.setDirection(-1, 0, 0);
+
+					break;
+
+				case KEY_D:
+				case KEY_RIGHT:
+
+					if (!this.playerShip.moving) this.playerShip.moving = true;
+					this.playerShip.setDirection(1, 0, 0);
+
+					break;
+
 				default:
 
 					break;
@@ -23000,7 +23374,20 @@ var Game = function () {
 	}, {
 		key: 'keyUp',
 		value: function keyUp(event) {
-			/* TODO: Handle key releases that affect game objects */
+
+			switch (event.keyCode) {
+				case KEY_A:
+				case KEY_LEFT:
+				case KEY_D:
+				case KEY_RIGHT:
+
+					this.playerShip.moving = false;
+
+					break;
+
+				default:
+					break;
+			}
 		}
 	}]);
 	return Game;
