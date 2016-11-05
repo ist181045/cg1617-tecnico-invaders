@@ -217,7 +217,6 @@ class Game {
 
 }
 
-var game = new Game();
-game.start();
+new Game().start();
 
 export default Game;

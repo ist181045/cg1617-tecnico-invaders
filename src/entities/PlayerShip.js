@@ -30,7 +30,7 @@ class PlayerShip extends Entity {
 		this.camera = (function ( self ) {
 
 			camera.position.add( new Vector3( 0, 30, 75 ) );
-			camera.lookAt( new Vector3().copy( self.position ).multiplyScalar( -1 ) );
+			camera.lookAt( new Vector3().copy( self.position ).negate() );
 
 			camera.updateProjectionMatrix();
 
