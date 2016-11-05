@@ -8,7 +8,7 @@
  */
 
 import { Object3D } from './lib/threejs/core/Object3D';
-import { MeshNormalMaterial } from './lib/threejs/materials/MeshBasicMaterial';
+import { MeshNormalMaterial } from './lib/threejs/materials/MeshNormalMaterial';
 
 class GameObject extends Object3D {
 
@@ -19,6 +19,8 @@ class GameObject extends Object3D {
 		this.type = 'GameObject';
 
 		this.material = new MeshNormalMaterial();
+
+		this.position.set( x || 0, y || 0, z || 0 );
 
 	}
 
