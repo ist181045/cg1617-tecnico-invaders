@@ -23028,15 +23028,15 @@ var Entity = function (_Collidable) {
 
 		_this.type = 'Entity';
 
-		_this.MAX_VELOCITY = 300;
+		_this.MAX_VELOCITY = 1000;
 
 		_this.updateBoundingBox = true;
 
 		_this.moving = false;
 		_this.direction = new Vector3();
 		_this.velocity = new Vector3();
-		_this.acceleration = 150;
-		_this.friction = 130;
+		_this.acceleration = 300;
+		_this.friction = 350;
 
 		return _this;
 	}
@@ -23058,6 +23058,8 @@ var Entity = function (_Collidable) {
 			var v = this.velocity.length();
 			var dvf = this.friction * dt;
 
+			var dot = this.direction.dot(this.velocity);
+
 			if (this.moving) {
 
 				updatePos = true;
@@ -23069,16 +23071,18 @@ var Entity = function (_Collidable) {
 					if (v + dv > this.MAX_VELOCITY) {
 
 						this.velocity.setLength(this.MAX_VELOCITY);
-					} else {
+					} else if (v !== dot) {
 
-						this.velocity.addScaledVector(this.direction, dv);
+						this.velocity.addScaledVector(this.direction, dvf);
 					}
+
+					this.velocity.addScaledVector(this.direction, dv);
 				}
 			} else if (v > dvf) {
 
 				updatePos = true;
 
-				if (v !== this.direction.dot(this.velocity)) {
+				if (v !== dot) {
 
 					this.direction.copy(this.velocity).normalize();
 				}
@@ -23129,7 +23133,7 @@ var PlayerShip = function (_Entity) {
 		_this.camera = function (self) {
 
 			camera.position.add(new Vector3(0, 30, 75));
-			camera.lookAt(new Vector3().copy(self.position).multiplyScalar(-1));
+			camera.lookAt(self.position.clone().negate());
 
 			camera.updateProjectionMatrix();
 
@@ -23152,6 +23156,17 @@ var PlayerShip = function (_Entity) {
 		value: function setDirection(x, y, z) {
 
 			get(PlayerShip.prototype.__proto__ || Object.getPrototypeOf(PlayerShip.prototype), 'setDirection', this).call(this, x, 0, 0);
+		}
+	}, {
+		key: 'intersect',
+		value: function intersect(other) {
+
+			if (other.type === 'Barrier') {
+				/* TODO: Barrier collision */
+			} else {
+
+				get(PlayerShip.prototype.__proto__ || Object.getPrototypeOf(PlayerShip.prototype), 'intersect', this).call(this, other);
+			}
 		}
 	}]);
 	return PlayerShip;
@@ -23393,8 +23408,7 @@ var Game = function () {
 	return Game;
 }();
 
-var game = new Game();
-game.start();
+new Game().start();
 
 return Game;
 
