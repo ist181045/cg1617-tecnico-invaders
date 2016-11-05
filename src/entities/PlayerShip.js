@@ -7,6 +7,10 @@
  * @author: Sara Azinhal ( ist181700 )
  */
 
+import { BoxGeometry } from '../lib/threejs/geometries/BoxGeometry';
+import { Mesh } from '../lib/threejs/objects/Mesh';
+import { Vector3 } from '../lib/threejs/math/Vector3';
+
 import Entity from './Entity.js';
 
 class PlayerShip extends Entity {
@@ -25,9 +29,8 @@ class PlayerShip extends Entity {
 
 		this.camera = (function ( self ) {
 
-			camera.position.copy( self.position );
-			camera.position.add( 0, 20, -50 );
-			camera.lookAt( self.position );
+			camera.position.add( new Vector3( 0, 30, 75 ) );
+			camera.lookAt( new Vector3().copy( self.position ).multiplyScalar( -1 ) );
 
 			camera.updateProjectionMatrix();
 
@@ -40,15 +43,15 @@ class PlayerShip extends Entity {
 
 			/* TODO: Build player ship */
 
-		}( this ));
+			return new Mesh( new BoxGeometry( 10, 10, 10 ), self.material );
 
-		return this;
+		}( this ));
 
 	}
 
 	setDirection ( x, y, z ) {
 
-		super( x, 0, 0 );
+		super.setDirection( x, 0, 0 );
 
 	}
 
