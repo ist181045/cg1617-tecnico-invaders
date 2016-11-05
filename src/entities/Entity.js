@@ -46,6 +46,8 @@ class Entity extends Collidable {
 		let v   = this.velocity.length();
 		let dvf = this.friction * dt;
 
+		let dot = this.direction.dot( this.velocity );
+
 		if ( this.moving ) {
 
 			updatePos = true;
@@ -58,7 +60,7 @@ class Entity extends Collidable {
 
 					this.velocity.setLength( this.MAX_VELOCITY );
 
-				} else if ( this.direction.dot( this.velocity ) < v ) {
+				} else if ( v !== dot ) {
 
 					this.velocity.addScaledVector( this.direction, dvf );
 
@@ -72,7 +74,7 @@ class Entity extends Collidable {
 
 			updatePos = true;
 
-			if ( v !== this.direction.dot( this.velocity ) ) {
+			if ( v !== dot ) {
 
 				this.direction.copy( this.velocity ).normalize();
 
