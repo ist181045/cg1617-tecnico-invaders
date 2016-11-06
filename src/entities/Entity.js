@@ -21,7 +21,7 @@ class Entity extends Collidable {
 
 		this.MAX_VELOCITY = 1000;
 
-		this.updateBoundingBox = true;
+		this.updateBoundries = true;
 
 		this.moving       = false;
 		this.direction    = new Vector3();
