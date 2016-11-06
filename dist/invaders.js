@@ -22619,32 +22619,384 @@ var WINDOW_HEIGHT = function WINDOW_HEIGHT() {
 };
 
 /**
- * @author mrdoob / http://mrdoob.com/
- * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Cube.as
+ * @author Mugen87 / https://github.com/Mugen87
  */
 
-function BoxGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) {
+function PolyhedronBufferGeometry( vertices, indices, radius, detail ) {
+
+	BufferGeometry.call( this );
+
+	this.type = 'PolyhedronBufferGeometry';
+
+	this.parameters = {
+		vertices: vertices,
+		indices: indices,
+		radius: radius,
+		detail: detail
+	};
+
+	radius = radius || 1;
+	detail = detail || 0;
+
+	// default buffer data
+
+	var vertexBuffer = [];
+	var uvBuffer = [];
+
+	// the subdivision creates the vertex buffer data
+
+	subdivide( detail );
+
+	// all vertices should lie on a conceptual sphere with a given radius
+
+	appplyRadius( radius );
+
+	// finally, create the uv data
+
+	generateUVs();
+
+	// build non-indexed geometry
+
+	this.addAttribute( 'position', Float32Attribute( vertexBuffer, 3 ) );
+	this.addAttribute( 'normal', Float32Attribute( vertexBuffer.slice(), 3 ) );
+	this.addAttribute( 'uv', Float32Attribute( uvBuffer, 2 ) );
+	this.normalizeNormals();
+
+	this.boundingSphere = new Sphere( new Vector3(), radius );
+
+	// helper functions
+
+	function subdivide( detail ) {
+
+		var a = new Vector3();
+		var b = new Vector3();
+		var c = new Vector3();
+
+		// iterate over all faces and apply a subdivison with the given detail value
+
+		for ( var i = 0; i < indices.length; i += 3 ) {
+
+			// get the vertices of the face
+
+			getVertexByIndex( indices[ i + 0 ], a );
+			getVertexByIndex( indices[ i + 1 ], b );
+			getVertexByIndex( indices[ i + 2 ], c );
+
+			// perform subdivision
+
+			subdivideFace( a, b, c, detail );
+
+		}
+
+	}
+
+	function subdivideFace( a, b, c, detail ) {
+
+		var cols = Math.pow( 2, detail );
+
+		// we use this multidimensional array as a data structure for creating the subdivision
+
+		var v = [];
+
+		var i, j;
+
+		// construct all of the vertices for this subdivision
+
+		for ( i = 0 ; i <= cols; i ++ ) {
+
+			v[ i ] = [];
+
+			var aj = a.clone().lerp( c, i / cols );
+			var bj = b.clone().lerp( c, i / cols );
+
+			var rows = cols - i;
+
+			for ( j = 0; j <= rows; j ++ ) {
+
+				if ( j === 0 && i === cols ) {
+
+					v[ i ][ j ] = aj;
+
+				} else {
+
+					v[ i ][ j ] = aj.clone().lerp( bj, j / rows );
+
+				}
+
+			}
+
+		}
+
+		// construct all of the faces
+
+		for ( i = 0; i < cols ; i ++ ) {
+
+			for ( j = 0; j < 2 * ( cols - i ) - 1; j ++ ) {
+
+				var k = Math.floor( j / 2 );
+
+				if ( j % 2 === 0 ) {
+
+					pushVertex( v[ i ][ k + 1 ] );
+					pushVertex( v[ i + 1 ][ k ] );
+					pushVertex( v[ i ][ k ] );
+
+				} else {
+
+					pushVertex( v[ i ][ k + 1 ] );
+					pushVertex( v[ i + 1 ][ k + 1 ] );
+					pushVertex( v[ i + 1 ][ k ] );
+
+				}
+
+			}
+
+		}
+
+	}
+
+	function appplyRadius( radius ) {
+
+		var vertex = new Vector3();
+
+		// iterate over the entire buffer and apply the radius to each vertex
+
+		for ( var i = 0; i < vertexBuffer.length; i += 3 ) {
+
+			vertex.x = vertexBuffer[ i + 0 ];
+			vertex.y = vertexBuffer[ i + 1 ];
+			vertex.z = vertexBuffer[ i + 2 ];
+
+			vertex.normalize().multiplyScalar( radius );
+
+			vertexBuffer[ i + 0 ] = vertex.x;
+			vertexBuffer[ i + 1 ] = vertex.y;
+			vertexBuffer[ i + 2 ] = vertex.z;
+
+		}
+
+	}
+
+	function generateUVs() {
+
+		var vertex = new Vector3();
+
+		for ( var i = 0; i < vertexBuffer.length; i += 3 ) {
+
+			vertex.x = vertexBuffer[ i + 0 ];
+			vertex.y = vertexBuffer[ i + 1 ];
+			vertex.z = vertexBuffer[ i + 2 ];
+
+			var u = azimuth( vertex ) / 2 / Math.PI + 0.5;
+			var v = inclination( vertex ) / Math.PI + 0.5;
+			uvBuffer.push( u, 1 - v );
+
+		}
+
+		correctUVs();
+
+		correctSeam();
+
+	}
+
+	function correctSeam() {
+
+		// handle case when face straddles the seam, see #3269
+
+		for ( var i = 0; i < uvBuffer.length; i += 6 ) {
+
+			// uv data of a single face
+
+			var x0 = uvBuffer[ i + 0 ];
+			var x1 = uvBuffer[ i + 2 ];
+			var x2 = uvBuffer[ i + 4 ];
+
+			var max = Math.max( x0, x1, x2 );
+			var min = Math.min( x0, x1, x2 );
+
+			// 0.9 is somewhat arbitrary
+
+			if ( max > 0.9 && min < 0.1 ) {
+
+				if ( x0 < 0.2 ) uvBuffer[ i + 0 ] += 1;
+				if ( x1 < 0.2 ) uvBuffer[ i + 2 ] += 1;
+				if ( x2 < 0.2 ) uvBuffer[ i + 4 ] += 1;
+
+			}
+
+		}
+
+	}
+
+	function pushVertex( vertex ) {
+
+		vertexBuffer.push( vertex.x, vertex.y, vertex.z );
+
+	}
+
+	function getVertexByIndex( index, vertex ) {
+
+		var stride = index * 3;
+
+		vertex.x = vertices[ stride + 0 ];
+		vertex.y = vertices[ stride + 1 ];
+		vertex.z = vertices[ stride + 2 ];
+
+	}
+
+	function correctUVs() {
+
+		var a = new Vector3();
+		var b = new Vector3();
+		var c = new Vector3();
+
+		var centroid = new Vector3();
+
+		var uvA = new Vector2();
+		var uvB = new Vector2();
+		var uvC = new Vector2();
+
+		for ( var i = 0, j = 0; i < vertexBuffer.length; i += 9, j += 6 ) {
+
+			a.set( vertexBuffer[ i + 0 ], vertexBuffer[ i + 1 ], vertexBuffer[ i + 2 ] );
+			b.set( vertexBuffer[ i + 3 ], vertexBuffer[ i + 4 ], vertexBuffer[ i + 5 ] );
+			c.set( vertexBuffer[ i + 6 ], vertexBuffer[ i + 7 ], vertexBuffer[ i + 8 ] );
+
+			uvA.set( uvBuffer[ j + 0 ], uvBuffer[ j + 1 ] );
+			uvB.set( uvBuffer[ j + 2 ], uvBuffer[ j + 3 ] );
+			uvC.set( uvBuffer[ j + 4 ], uvBuffer[ j + 5 ] );
+
+			centroid.copy( a ).add( b ).add( c ).divideScalar( 3 );
+
+			var azi = azimuth( centroid );
+
+			correctUV( uvA, j + 0, a, azi );
+			correctUV( uvB, j + 2, b, azi );
+			correctUV( uvC, j + 4, c, azi );
+
+		}
+
+	}
+
+	function correctUV( uv, stride, vector, azimuth  ) {
+
+		if ( ( azimuth < 0 ) && ( uv.x === 1 ) ) {
+
+			uvBuffer[ stride ] =  uv.x - 1;
+
+		}
+
+		if ( ( vector.x === 0 ) && ( vector.z === 0 ) ) {
+
+			uvBuffer[ stride ] = azimuth / 2 / Math.PI + 0.5;
+
+		}
+
+	}
+
+	// Angle around the Y axis, counter-clockwise when looking from above.
+
+	function azimuth( vector ) {
+
+		return Math.atan2( vector.z, - vector.x );
+
+	}
+
+
+	// Angle above the XZ plane.
+
+	function inclination( vector ) {
+
+		return Math.atan2( - vector.y, Math.sqrt( ( vector.x * vector.x ) + ( vector.z * vector.z ) ) );
+
+	}
+
+}
+
+PolyhedronBufferGeometry.prototype = Object.create( BufferGeometry.prototype );
+PolyhedronBufferGeometry.prototype.constructor = PolyhedronBufferGeometry;
+
+/**
+ * @author Mugen87 / https://github.com/Mugen87
+ */
+
+function DodecahedronBufferGeometry( radius, detail ) {
+
+	var t = ( 1 + Math.sqrt( 5 ) ) / 2;
+	var r = 1 / t;
+
+	var vertices = [
+
+		// (±1, ±1, ±1)
+		- 1, - 1, - 1,    - 1, - 1,  1,
+		- 1,  1, - 1,    - 1,  1,  1,
+		 1, - 1, - 1,     1, - 1,  1,
+		 1,  1, - 1,     1,  1,  1,
+
+		// (0, ±1/φ, ±φ)
+		 0, - r, - t,     0, - r,  t,
+		 0,  r, - t,     0,  r,  t,
+
+		// (±1/φ, ±φ, 0)
+		- r, - t,  0,    - r,  t,  0,
+		 r, - t,  0,     r,  t,  0,
+
+		// (±φ, 0, ±1/φ)
+		- t,  0, - r,     t,  0, - r,
+		- t,  0,  r,     t,  0,  r
+	];
+
+	var indices = [
+		 3, 11,  7,      3,  7, 15,      3, 15, 13,
+		 7, 19, 17,      7, 17,  6,      7,  6, 15,
+		17,  4,  8,     17,  8, 10,     17, 10,  6,
+		 8,  0, 16,      8, 16,  2,      8,  2, 10,
+		 0, 12,  1,      0,  1, 18,      0, 18, 16,
+		 6, 10,  2,      6,  2, 13,      6, 13, 15,
+		 2, 16, 18,      2, 18,  3,      2,  3, 13,
+		18,  1,  9,     18,  9, 11,     18, 11,  3,
+		 4, 14, 12,      4, 12,  0,      4,  0,  8,
+		11,  9,  5,     11,  5, 19,     11, 19,  7,
+		19,  5, 14,     19, 14,  4,     19,  4, 17,
+		 1, 12, 14,      1, 14,  5,      1,  5,  9
+	];
+
+	PolyhedronBufferGeometry.call( this, vertices, indices, radius, detail );
+
+	this.type = 'DodecahedronBufferGeometry';
+
+	this.parameters = {
+		radius: radius,
+		detail: detail
+	};
+
+}
+
+DodecahedronBufferGeometry.prototype = Object.create( PolyhedronBufferGeometry.prototype );
+DodecahedronBufferGeometry.prototype.constructor = DodecahedronBufferGeometry;
+
+/**
+ * @author Abe Pazos / https://hamoid.com
+ */
+
+function DodecahedronGeometry( radius, detail ) {
 
 	Geometry.call( this );
 
-	this.type = 'BoxGeometry';
+	this.type = 'DodecahedronGeometry';
 
 	this.parameters = {
-		width: width,
-		height: height,
-		depth: depth,
-		widthSegments: widthSegments,
-		heightSegments: heightSegments,
-		depthSegments: depthSegments
+		radius: radius,
+		detail: detail
 	};
 
-	this.fromBufferGeometry( new BoxBufferGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) );
+	this.fromBufferGeometry( new DodecahedronBufferGeometry( radius, detail ) );
 	this.mergeVertices();
 
 }
 
-BoxGeometry.prototype = Object.create( Geometry.prototype );
-BoxGeometry.prototype.constructor = BoxGeometry;
+DodecahedronGeometry.prototype = Object.create( Geometry.prototype );
+DodecahedronGeometry.prototype.constructor = DodecahedronGeometry;
 
 /**
  * @author mrdoob / http://mrdoob.com/
@@ -23095,9 +23447,9 @@ var Entity = function (_Collidable) {
 
 			if (updatePos) {
 
-				var ds = new Vector3().addScaledVector(this.velocity, dt);
+				var ds = this.velocity.clone();
 
-				this.position.add(ds);
+				this.position.add(ds.multiplyScalar(dt));
 				this.boundingBox.translate(ds);
 				this.boundingSphere.translate(ds);
 			}
@@ -23105,6 +23457,90 @@ var Entity = function (_Collidable) {
 	}]);
 	return Entity;
 }(Collidable);
+
+/**
+ * CG Space Invaders
+ * CG45179 16'17
+ *
+ * @author: Rui Ventura ( ist181045 )
+ * @author: Diogo Freitas ( ist181586 )
+ * @author: Sara Azinhal ( ist181700 )
+ */
+
+var EnemyShip = function (_Entity) {
+	inherits(EnemyShip, _Entity);
+
+	function EnemyShip(x, y, z) {
+		classCallCheck(this, EnemyShip);
+
+		var _this = possibleConstructorReturn(this, (EnemyShip.__proto__ || Object.getPrototypeOf(EnemyShip)).call(this, x, y, z));
+
+		_this.type = 'EnemyShip';
+
+		_this.MAX_VELOCITY = 200;
+
+		_this.direction = function (self) {
+			var x = Math.random() - 0.5,
+			    z = Math.random() - 0.5;
+
+
+			return new Vector3(x, 0, z).normalize();
+		}(_this);
+
+		_this.moving = true;
+
+		_this.add(function (self) {
+
+			return new Mesh(new DodecahedronGeometry(10, 1), self.material);
+		}(_this));
+
+		return _this;
+	}
+
+	createClass(EnemyShip, [{
+		key: 'setDirection',
+		value: function setDirection(x, y, z) {
+
+			/* HACK: Do not allow direction changes from outside */
+			return;
+		}
+	}, {
+		key: 'intersect',
+		value: function intersect(other) {
+
+			return other.type !== 'PlayerShip' && get(EnemyShip.prototype.__proto__ || Object.getPrototypeOf(EnemyShip.prototype), 'intersect', this).call(this, other);
+		}
+	}]);
+	return EnemyShip;
+}(Entity);
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Cube.as
+ */
+
+function BoxGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) {
+
+	Geometry.call( this );
+
+	this.type = 'BoxGeometry';
+
+	this.parameters = {
+		width: width,
+		height: height,
+		depth: depth,
+		widthSegments: widthSegments,
+		heightSegments: heightSegments,
+		depthSegments: depthSegments
+	};
+
+	this.fromBufferGeometry( new BoxBufferGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) );
+	this.mergeVertices();
+
+}
+
+BoxGeometry.prototype = Object.create( Geometry.prototype );
+BoxGeometry.prototype.constructor = BoxGeometry;
 
 /**
  * CG Space Invaders
@@ -23240,32 +23676,33 @@ var Game = function () {
 			return renderer;
 		}();
 
-		this.topCamera = function (scene) {
+		this.topCamera = function (self) {
 
-			var camera = new OrthographicCamera(WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 1000);
+			var camera = new OrthographicCamera(~WIDTH >> 1, WIDTH >> 1, HEIGHT >> 1, ~HEIGHT >> 1, 1, 1000);
 
-			camera.position.set(0, 200, 0);
-			camera.lookAt(scene.position);
+			camera.position.set(0, 100, 0);
+			camera.lookAt(self.scene.position);
 
 			camera.updateProjectionMatrix();
 
 			return camera;
-		}(this.scene);
-		this.backCamera = function (scene) {
+		}(this);
+		this.backCamera = function (self) {
 
 			var camera = new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000);
 
-			camera.position.set(0, 100, 400);
-			camera.lookAt(scene.position);
+			camera.position.set(0, 200, (HEIGHT >> 1) + 100);
+			camera.lookAt(self.scene.position);
 
 			camera.updateProjectionMatrix();
 
 			return camera;
-		}(this.scene);
+		}(this);
 		this.camera = this.topCamera;
 
-		this.playerShip = new PlayerShip(0, 0, 200, new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000));
+		this.playerShip = new PlayerShip(0, 0, (HEIGHT >> 1) - 50, new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000));
 
+		this.gameObjects = new Array();
 		/* TODO: Game Objects array, player ship, and so on */
 
 		this.gameClock = new Clock(false);
@@ -23275,9 +23712,9 @@ var Game = function () {
 		key: 'start',
 		value: function start() {
 
-			this.scene.add(new AxisHelper(50));
-
 			document.body.appendChild(this.renderer.domElement);
+
+			this.scene.add(new AxisHelper(50));
 
 			window.addEventListener('resize', this.resize.bind(this));
 			window.addEventListener('keydown', this.keyDown.bind(this));
@@ -23285,11 +23722,37 @@ var Game = function () {
 
 			/* TODO: Setup function, reset the game on startup and restart */
 			//setup();
+
+			var nx = 6,
+			    nz = 3;
+			var segX = (WIDTH - 100) / nx,
+			    segZ = ((HEIGHT >> 1) - 60) / nz;
+
+
 			this.scene.add(this.playerShip);
+			this.gameObjects.push(this.playerShip);
+
+			for (var i = 0; i < nz; ++i) {
+
+				for (var j = 0; j < nx; ++j) {
+					var posX = segX * (j - (nx - 1) / 2),
+					    posZ = segZ * (i - (nz - 1) / 2);
+
+
+					console.log(posX, posZ);
+
+					var alien = new EnemyShip(posX, 0, posZ);
+
+					this.scene.add(alien);
+					this.gameObjects.push(alien);
+				}
+			}
 
 			this.gameClock.start();
 
+			/* HACK: Force a first resize */
 			this.resize();
+
 			this.update();
 		}
 	}, {
@@ -23298,7 +23761,9 @@ var Game = function () {
 
 			var dt = this.gameClock.getDelta();
 
-			this.playerShip.update(dt);
+			this.gameObjects.forEach(function (obj) {
+				return obj.update(dt);
+			});
 
 			/* TODO: Game objects' (TBA) updates */
 
@@ -23316,16 +23781,16 @@ var Game = function () {
 
 				if (ratio > WIDTH / HEIGHT) {
 
-					this.camera.left = HEIGHT * ratio / -2;
-					this.camera.right = HEIGHT * ratio / 2;
-					this.camera.top = HEIGHT / 2;
-					this.camera.bottom = HEIGHT / -2;
+					this.camera.left = ~(HEIGHT * ratio) >> 1;
+					this.camera.right = HEIGHT * ratio >> 1;
+					this.camera.top = HEIGHT >> 1;
+					this.camera.bottom = ~HEIGHT >> 1;
 				} else {
 
-					this.camera.left = WIDTH / -2;
-					this.camera.right = WIDTH / 2;
-					this.camera.top = WIDTH / ratio / 2;
-					this.camera.bottom = WIDTH / ratio / -2;
+					this.camera.left = ~WIDTH >> 1;
+					this.camera.right = WIDTH >> 1;
+					this.camera.top = WIDTH / ratio >> 1;
+					this.camera.bottom = ~(WIDTH / ratio) >> 1;
 				}
 			} else {
 
