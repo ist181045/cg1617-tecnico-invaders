@@ -20,6 +20,7 @@ import { WebGLRenderer } from './lib/threejs/renderers/WebGLRenderer';
 import { WIDTH, HEIGHT } from './Constants';
 import { WINDOW_PIXEL_RATIO, WINDOW_WIDTH, WINDOW_HEIGHT } from './Constants';
 
+import EnemyShip from './entities/EnemyShip';
 import PlayerShip from './entities/PlayerShip';
 
 import * as Keyboard from './Keyboard';
@@ -40,39 +41,40 @@ class Game {
 
 		})();
 
-		this.topCamera = (function ( scene ) {
+		this.topCamera = (function ( self ) {
 
 			let camera = new OrthographicCamera(
-				WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 1000
+				~WIDTH >> 1, WIDTH >> 1, HEIGHT >> 1, ~HEIGHT >> 1, 1, 1000
 			);
 
-			camera.position.set( 0, 200, 0 );
-			camera.lookAt( scene.position );
+			camera.position.set( 0, 100, 0 );
+			camera.lookAt( self.scene.position );
 
 			camera.updateProjectionMatrix();
 
 			return camera;
 
-		})( this.scene );
-		this.backCamera = (function ( scene ) {
+		})( this );
+		this.backCamera = (function ( self ) {
 
 			let camera = new PerspectiveCamera(
 				75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000
 			);
 
-			camera.position.set( 0, 100, 400 );
-			camera.lookAt( scene.position );
+			camera.position.set( 0, 200, ( HEIGHT >> 1 ) + 100 );
+			camera.lookAt( self.scene.position );
 
 			camera.updateProjectionMatrix();
 
 			return camera;
 
-		})( this.scene );
+		})( this );
 		this.camera = this.topCamera;
 
-		this.playerShip = new PlayerShip( 0, 0, 200,
+		this.playerShip = new PlayerShip( 0, 0, ( HEIGHT >> 1 ) - 50,
 			new PerspectiveCamera( 75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000 ) );
 
+		this.gameObjects = new Array();
 		/* TODO: Game Objects array, player ship, and so on */
 
 		this.gameClock = new Clock( false );
@@ -81,9 +83,9 @@ class Game {
 
 	start () {
 
-		this.scene.add( new AxisHelper(50) );
-
 		document.body.appendChild( this.renderer.domElement );
+
+		this.scene.add( new AxisHelper( 50 ) );
 
 		window.addEventListener( 'resize',  this.resize.bind( this ) );
 		window.addEventListener( 'keydown', this.keyDown.bind( this ) );
@@ -91,11 +93,38 @@ class Game {
 
 		/* TODO: Setup function, reset the game on startup and restart */
 		//setup();
+
+		let [ nx, nz ] = [ 6, 3 ];
+		let [ segX, segZ ] = [ ( WIDTH - 100 ) / nx, ( ( HEIGHT >> 1 ) - 60 ) / nz ];
+
 		this.scene.add( this.playerShip );
+		this.gameObjects.push( this.playerShip );
+
+		for ( let i = 0; i < nz; ++i ) {
+
+			for ( let j = 0; j < nx; ++j ) {
+
+				let [ posX, posZ ] = [
+					segX * ( j - ( ( nx - 1 ) / 2 ) ),
+					segZ * ( i - ( ( nz - 1 ) / 2 ) )
+				];
+
+				console.log( posX, posZ );
+
+				let alien = new EnemyShip( posX, 0, posZ );
+
+				this.scene.add( alien );
+				this.gameObjects.push( alien );
+
+			}
+
+		}
 
 		this.gameClock.start();
 
+		/* HACK: Force a first resize */
 		this.resize();
+
 		this.update();
 
 	}
@@ -104,7 +133,7 @@ class Game {
 
 		let dt = this.gameClock.getDelta();
 
-		this.playerShip.update( dt );
+		this.gameObjects.forEach( ( obj ) => obj.update( dt ) );
 
 		/* TODO: Game objects' (TBA) updates */
 
@@ -122,17 +151,17 @@ class Game {
 
 			if ( ratio > ( WIDTH / HEIGHT ) ) {
 
-				this.camera.left   = ( HEIGHT * ratio ) / -2;
-				this.camera.right  = ( HEIGHT * ratio ) /  2;
-				this.camera.top    = HEIGHT /  2;
-				this.camera.bottom = HEIGHT / -2;
+				this.camera.left   = ~( HEIGHT * ratio ) >> 1;
+				this.camera.right  = ( HEIGHT * ratio ) >> 1;
+				this.camera.top    = HEIGHT >> 1;
+				this.camera.bottom = ~HEIGHT >> 1;
 
 			} else {
 
-				this.camera.left   = WIDTH / -2;
-				this.camera.right  = WIDTH /  2;
-				this.camera.top    = ( WIDTH / ratio ) /  2;
-				this.camera.bottom = ( WIDTH / ratio ) / -2;
+				this.camera.left   = ~WIDTH >> 1;
+				this.camera.right  = WIDTH >> 1;
+				this.camera.top    = ( WIDTH / ratio ) >> 1;
+				this.camera.bottom = ~( WIDTH / ratio ) >> 1;
 
 			}
 
