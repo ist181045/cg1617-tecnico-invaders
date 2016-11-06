@@ -90,9 +90,9 @@ class Entity extends Collidable {
 
 		if ( updatePos ) {
 
-			let ds = new Vector3().addScaledVector( this.velocity, dt );
+			let ds = this.velocity.clone();
 
-			this.position.add( ds );
+			this.position.add( ds.multiplyScalar( dt ) );
 			this.boundingBox.translate( ds );
 			this.boundingSphere.translate( ds );
 
