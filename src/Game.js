@@ -20,6 +20,7 @@ import { WebGLRenderer } from './lib/threejs/renderers/WebGLRenderer';
 import { WIDTH, HEIGHT } from './Constants';
 import { WINDOW_PIXEL_RATIO, WINDOW_WIDTH, WINDOW_HEIGHT } from './Constants';
 
+import Field from './Field';
 import EnemyShip from './entities/EnemyShip';
 import PlayerShip from './entities/PlayerShip';
 
@@ -71,6 +72,8 @@ class Game {
 		})( this );
 		this.camera = this.topCamera;
 
+		this.field = new Field( 0, 0, 0, WIDTH - 4, HEIGHT - 4 );
+
 		this.playerShip = new PlayerShip( 0, 0, ( HEIGHT >> 1 ) - 50,
 			new PerspectiveCamera( 75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000 ) );
 
@@ -84,20 +87,52 @@ class Game {
 
 		document.body.appendChild( this.renderer.domElement );
 
-		this.scene.add( new AxisHelper( 50 ) );
-
 		window.addEventListener( 'resize',  this.resize.bind( this ) );
 		window.addEventListener( 'keydown', this.keyDown.bind( this ) );
 		window.addEventListener( 'keyup',   this.keyUp.bind( this ) );
 
-		/* TODO: Setup function, reset the game on startup and restart */
-		//setup();
+		this.setup();
+
+		/* HACK: Force a first resize */
+		this.resize();
+
+		this.update();
+
+	}
+
+	setup () {
+
+		/* Clear the scene */
+		for ( let i = this.scene.children.length; i > 0; --i ) {
+
+			this.scene.remove( this.scene.children[i] );
+
+		}
+
+		this.gameObjects = new Array();
+
+		/* Build the scene */
+
+		this.scene.add( new AxisHelper( 50 ) );
 
 		let [ nx, nz ] = [ 6, 3 ];
-		let [ segX, segZ ] = [ ( WIDTH - 100 ) / nx, ( ( HEIGHT >> 1 ) - 60 ) / nz ];
+		let [ segX, segZ ] = [ ( WIDTH - 120 ) / nx, ( ( HEIGHT >> 1 ) - 60 ) / nz ];
 
-		this.scene.add( this.playerShip );
+		this.field.children.forEach( function ( b ) {
+
+			if ( b.type === 'Barrier' ) {
+
+				this.gameObjects.push( b );
+
+			}
+
+		}, this );
+		this.scene.add( this.field );
+
+		this.playerShip.position.set( 0, 0, ( HEIGHT >> 1 ) - 50 );
+		this.playerShip.velocity.setScalar( 0 );
 		this.gameObjects.push( this.playerShip );
+		this.scene.add( this.playerShip );
 
 		for ( let i = 0; i < nz; ++i ) {
 
@@ -105,24 +140,17 @@ class Game {
 
 				let [ posX, posZ ] = [
 					segX * ( j - ( ( nx - 1 ) / 2 ) ),
-					segZ * ( i - ( ( nz - 1 ) / 2 ) )
+					segZ * ( i - ( ( nz + 1 ) / 2 ) )
 				];
 
 				let alien = new EnemyShip( posX, 0, posZ );
 
-				this.scene.add( alien );
 				this.gameObjects.push( alien );
+				this.scene.add( alien );
 
 			}
 
 		}
-
-		this.gameClock.start();
-
-		/* HACK: Force a first resize */
-		this.resize();
-
-		this.update();
 
 	}
 
@@ -138,7 +166,7 @@ class Game {
 
 					let [ o1, o2 ] = [ this.gameObjects[i], this.gameObjects[j] ];
 
-					o1.intersect( o2 ) && o1.handleCollision( o2 );
+					o1.intersect( o2 ) && o1.handleCollision( o2, dt );
 
 				}
 
@@ -235,6 +263,13 @@ class Game {
 				this.gameClock.running ?
 					this.gameClock.stop() :
 					this.gameClock.start();
+
+				break;
+
+			case Keyboard.KEY_R:
+
+				this.gameClock.stop();
+				this.setup();
 
 				break;
 
