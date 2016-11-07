@@ -23081,6 +23081,7 @@ var Barrier = function (_Collidable) {
 		key: 'handleCollision',
 		value: function handleCollision(other, dt) {
 
+			/* HACK: Calculating normal due to the field's centered position */
 			var n = this.position.clone().negate().normalize();
 
 			switch (other.type) {
@@ -23088,20 +23089,22 @@ var Barrier = function (_Collidable) {
 				case 'PlayerShip':
 
 					other.direction.negate();
-					other.velocity.negate().multiplyScalar(0.4);
+					other.velocity.negate();
 					other.update(dt);
+					other.velocity.multiplyScalar(0.4);
 
 					break;
 
 				case 'EnemyShip':
-					{
 
-						other.direction.reflect(n);
-						other.velocity.reflect(n);
-						other.update(dt);
+					other.direction.reflect(n);
+					other.velocity.reflect(n);
+					other.update(dt);
 
-						break;
-					}
+					break;
+
+				default:
+					break;
 
 			}
 		}
