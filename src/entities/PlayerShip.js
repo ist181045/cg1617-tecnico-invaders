@@ -29,7 +29,7 @@ class PlayerShip extends Entity {
 		this.type = 'PlayerShip';
 
 		this.bullets  = new Array();
-		this.shooting = false,
+		this.shooting = false;
 		this.reload   = 0;
 
 		this.camera = (function ( self ) {
@@ -73,11 +73,13 @@ class PlayerShip extends Entity {
 		if ( this.reload === 0 ) {
 
 			let bullet = new Bullet( 0, 0, -20 );
+
 			bullet.direction.set( -Math.sin( this.rotation.y ), 0, -Math.cos( this.rotation.y ) );
+			bullet.velocity.copy( bullet.direction ).multiplyScalar( bullet.MAX_VELOCITY );
 			bullet.position.applyMatrix4( this.matrixWorld );
 
 			this.bullets.push( bullet );
-			this.reload = 10;
+			this.reload = 25;
 
 		}
 
