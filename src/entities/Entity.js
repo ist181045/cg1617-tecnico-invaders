@@ -23,6 +23,8 @@ class Entity extends Collidable {
 
 		this.updateBoundries = true;
 
+		this.alive = true;
+
 		this.moving       = false;
 		this.direction    = new Vector3();
 		this.velocity     = new Vector3();
