@@ -29,10 +29,28 @@ class Collidable extends GameObject {
 
 	intersect ( other ) {
 
-		let rSum = this.boundingSphere.radius + other.boundingSphere.radius;
-		let distSq = this.boundingSphere.center.distanceToSquared( other.boundingSphere.center );
+		return this.intersectSphere( other ) && this.intersectBox( other );
 
-		if ( rSum * rSum >= distSq ) {
+	}
+
+	intersectSphere ( other ) {
+
+		if ( this.boundingSphere !== null && other.boundingSphere !== null ) {
+
+			let rSum = this.boundingSphere.radius + other.boundingSphere.radius;
+			let distSq = this.boundingSphere.center.distanceToSquared( other.boundingSphere.center );
+
+			return rSum * rSum >= distSq;
+
+		}
+
+		return false;
+
+	}
+
+	intersectBox ( other ) {
+
+		if ( this.boundingBox !== null && other.boundingBox !== null ) {
 
 			let [ a, b ] = [ this.boundingBox, other.boundingBox ];
 
@@ -46,7 +64,7 @@ class Collidable extends GameObject {
 
 	}
 
-	handleCollision ( other ) {
+	handleCollision ( other, dt ) {
 
 		return;
 
@@ -57,8 +75,17 @@ class Collidable extends GameObject {
 		if ( this.updateBoundries ) {
 
 			this.updateBoundries = false;
-			this.boundingBox.setFromObject( this );
-			this.boundingBox.getBoundingSphere( this.boundingSphere );
+
+			if ( this.boundingBox !== null ) {
+
+				this.boundingBox.setFromObject( this );
+
+				if ( this.boundingSphere !== null ) {
+
+					this.boundingBox.getBoundingSphere( this.boundingSphere );
+
+				}
+			}
 
 		}
 
