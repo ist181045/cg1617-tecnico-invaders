@@ -23133,7 +23133,7 @@ var Field = function (_GameObject) {
 
 	function Field(x, y, z) {
 		var w = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 200;
-		var l = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 200;
+		var h = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 200;
 		classCallCheck(this, Field);
 
 		var _this = possibleConstructorReturn(this, (Field.__proto__ || Object.getPrototypeOf(Field)).call(this, x, y, z));
@@ -23141,12 +23141,12 @@ var Field = function (_GameObject) {
 		_this.type = 'Field';
 
 		_this.width = w;
-		_this.length = l;
+		_this.height = h;
 
-		_this.add(new Barrier((x - w >> 1) + 2, y, z, 4, 10, l));
-		_this.add(new Barrier((x + w >> 1) - 2, y, z, 4, 10, l));
-		_this.add(new Barrier(x, y, (z - l >> 1) + 2, w, 10, 4));
-		_this.add(new Barrier(x, y, (z + l >> 1) - 2, w, 10, 4));
+		_this.add(new Barrier((x - w >> 1) + 2, y, z, 4, 10, h));
+		_this.add(new Barrier((x + w >> 1) - 2, y, z, 4, 10, h));
+		_this.add(new Barrier(x, y, (z - h >> 1) + 2, w, 10, 4));
+		_this.add(new Barrier(x, y, (z + h >> 1) - 2, w, 10, 4));
 
 		return _this;
 	}
@@ -23747,7 +23747,7 @@ var Bullet = function (_Entity) {
 
 		_this.type = 'Bullet';
 
-		_this.MAX_VELOCITY = 600;
+		_this.MAX_VELOCITY = 400;
 
 		_this.moving = true;
 
@@ -23760,17 +23760,6 @@ var Bullet = function (_Entity) {
 	}
 
 	createClass(Bullet, [{
-		key: 'update',
-		value: function update(dt) {
-
-			if (this.velocity.length() < this.MAX_VELOCITY) {
-
-				this.velocity.copy(this.direction).multiplyScalar(this.MAX_VELOCITY);
-			}
-
-			get(Bullet.prototype.__proto__ || Object.getPrototypeOf(Bullet.prototype), 'update', this).call(this, dt);
-		}
-	}, {
 		key: 'handleCollision',
 		value: function handleCollision(other, dt) {
 
@@ -23823,7 +23812,8 @@ var PlayerShip = function (_Entity) {
 		_this.type = 'PlayerShip';
 
 		_this.bullets = new Array();
-		_this.shooting = false, _this.reload = 0;
+		_this.shooting = false;
+		_this.reload = 0;
 
 		_this.camera = function (self) {
 
@@ -23867,11 +23857,13 @@ var PlayerShip = function (_Entity) {
 			if (this.reload === 0) {
 
 				var bullet = new Bullet(0, 0, -20);
+
 				bullet.direction.set(-Math.sin(this.rotation.y), 0, -Math.cos(this.rotation.y));
+				bullet.velocity.copy(bullet.direction).multiplyScalar(bullet.MAX_VELOCITY);
 				bullet.position.applyMatrix4(this.matrixWorld);
 
 				this.bullets.push(bullet);
-				this.reload = 10;
+				this.reload = 25;
 			}
 		}
 	}, {
@@ -23993,6 +23985,8 @@ var Game = function () {
 			return renderer;
 		}();
 
+		this.field = new Field(0, 0, 0, WIDTH - 10, HEIGHT - 10);
+
 		this.topCamera = function (self) {
 
 			var camera = new OrthographicCamera(~WIDTH >> 1, WIDTH >> 1, HEIGHT >> 1, ~HEIGHT >> 1, 1, 200);
@@ -24008,7 +24002,7 @@ var Game = function () {
 
 			var camera = new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000);
 
-			camera.position.set(0, 250, (HEIGHT >> 1) + 150);
+			camera.position.set(0, 250, (self.field.height >> 1) + 150);
 			camera.lookAt(self.scene.position);
 
 			camera.updateProjectionMatrix();
@@ -24017,9 +24011,7 @@ var Game = function () {
 		}(this);
 		this.camera = this.topCamera;
 
-		this.field = new Field(0, 0, 0, WIDTH - 4, HEIGHT - 4);
-
-		this.playerShip = new PlayerShip(0, 0, (HEIGHT >> 1) - 50, new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000));
+		this.playerShip = new PlayerShip(0, 0, (this.field.height >> 1) - 50, new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000));
 
 		this.gameObjects = new Array();
 
@@ -24059,12 +24051,6 @@ var Game = function () {
 
 			this.scene.add(new AxisHelper(50));
 
-			var nx = 6,
-			    nz = 3;
-			var segX = (WIDTH - 120) / nx,
-			    segZ = ((HEIGHT >> 1) - 60) / nz;
-
-
 			this.field.children.forEach(function (b) {
 
 				b.type === 'Barrier' && this.gameObjects.push(b);
@@ -24072,12 +24058,18 @@ var Game = function () {
 
 			this.scene.add(this.field);
 
-			this.playerShip.position.set(0, 0, (HEIGHT >> 1) - 50);
+			this.playerShip.position.set(0, 0, (this.field.height >> 1) - 50);
 			this.playerShip.velocity.setScalar(0);
 			this.playerShip.updateBoundries = true;
 
 			this.gameObjects.push(this.playerShip);
 			this.scene.add(this.playerShip);
+
+			var nx = 6,
+			    nz = 3;
+			var segX = (this.field.width - 120) / nx,
+			    segZ = (this.field.height - 120 >> 1) / nz;
+
 
 			for (var _i = 0; _i < nz; ++_i) {
 
