@@ -35,7 +35,7 @@ class EnemyShip extends Entity {
 
 		this.add( function( self ) {
 
-			return new Mesh( new DodecahedronGeometry( 10, 1 ), self.material );
+			return new Mesh( new DodecahedronGeometry( 15, 0 ), self.material );
 
 		}( this ));
 
@@ -43,15 +43,34 @@ class EnemyShip extends Entity {
 
 	setDirection ( x, y, z ) {
 
-		/* HACK: Do not allow direction changes from outside */
+		/* HACK: Do not allow direction changes */
 		return;
 
 	}
 
-	intersect ( other ) {
+	handleCollision ( other ) {
 
-		return other.type !== 'PlayerShip' && super.intersect( other );
+		switch ( other.type ) {
 
+			case 'EnemyShip':
+
+				this.direction.negate();
+				this.velocity.negate();
+
+				other.direction.negate();
+				other.velocity.negate();
+
+				break;
+
+			case 'Field':
+
+				/* TODO: Create Field and implement collisions with it */
+
+				break;
+
+			default: break;
+
+		}
 	}
 
 }

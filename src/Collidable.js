@@ -36,13 +36,19 @@ class Collidable extends GameObject {
 
 			let [ a, b ] = [ this.boundingBox, other.boundingBox ];
 
-			return (a.min.x <= b.max.x && a.max.x >= b.min.x &&
-				a.min.y <= b.max.y && a.max.y >= b.min.y &&
-				a.min.z <= b.max.z && a.max.z >= b.min.z);
+			return (a.min.x < b.max.x && a.max.x > b.min.x &&
+				a.min.y < b.max.y && a.max.y > b.min.y &&
+				a.min.z < b.max.z && a.max.z > b.min.z);
 
 		}
 
 		return false;
+
+	}
+
+	handleCollision ( other ) {
+
+		return;
 
 	}
 
@@ -53,6 +59,8 @@ class Collidable extends GameObject {
 			this.updateBoundries = false;
 			this.boundingBox.setFromObject( this );
 			this.boundingBox.getBoundingSphere( this.boundingSphere );
+
+			console.log( this.type, 'updatd boundries!' );
 
 		}
 
