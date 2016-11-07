@@ -23091,7 +23091,8 @@ var Barrier = function (_Collidable) {
 					other.direction.negate();
 					other.velocity.negate();
 					other.update(dt);
-					other.velocity.multiplyScalar(0.4);
+
+					other.velocity.multiplyScalar(0.3);
 
 					break;
 
@@ -23100,6 +23101,12 @@ var Barrier = function (_Collidable) {
 					other.direction.reflect(n);
 					other.velocity.reflect(n);
 					other.update(dt);
+
+					break;
+
+				case 'Bullet':
+
+					other.alive = false;
 
 					break;
 
@@ -23550,6 +23557,8 @@ var Entity = function (_Collidable) {
 
 		_this.updateBoundries = true;
 
+		_this.alive = true;
+
 		_this.moving = false;
 		_this.direction = new Vector3();
 		_this.velocity = new Vector3();
@@ -23703,6 +23712,13 @@ var EnemyShip = function (_Entity) {
 
 					break;
 
+				case 'Bullet':
+
+					this.alive = false;
+					other.alive = false;
+
+					break;
+
 				default:
 					break;
 
@@ -23710,6 +23726,76 @@ var EnemyShip = function (_Entity) {
 		}
 	}]);
 	return EnemyShip;
+}(Entity);
+
+/**
+ * CG Space Invaders
+ * CG45179 16'17
+ *
+ * @author: Rui Ventura ( ist181045 )
+ * @author: Diogo Freitas ( ist181586 )
+ * @author: Sara Azinhal ( ist181700 )
+ */
+
+var Bullet = function (_Entity) {
+	inherits(Bullet, _Entity);
+
+	function Bullet(x, y, z) {
+		classCallCheck(this, Bullet);
+
+		var _this = possibleConstructorReturn(this, (Bullet.__proto__ || Object.getPrototypeOf(Bullet)).call(this, x, y, z));
+
+		_this.type = 'Bullet';
+
+		_this.MAX_VELOCITY = 600;
+
+		_this.moving = true;
+
+		_this.add(function (self) {
+
+			return new Mesh(new BoxGeometry(4, 4, 10), self.material);
+		}(_this));
+
+		return _this;
+	}
+
+	createClass(Bullet, [{
+		key: 'update',
+		value: function update(dt) {
+
+			if (this.velocity.length() < this.MAX_VELOCITY) {
+
+				this.velocity.copy(this.direction).multiplyScalar(this.MAX_VELOCITY);
+			}
+
+			get(Bullet.prototype.__proto__ || Object.getPrototypeOf(Bullet.prototype), 'update', this).call(this, dt);
+		}
+	}, {
+		key: 'handleCollision',
+		value: function handleCollision(other, dt) {
+
+			switch (other.type) {
+
+				case 'EnemyShip':
+
+					this.alive = false;
+					other.alive = false;
+
+					break;
+
+				case 'Barrier':
+
+					this.alive = false;
+
+					break;
+
+				default:
+					break;
+
+			}
+		}
+	}]);
+	return Bullet;
 }(Entity);
 
 /**
@@ -23735,6 +23821,9 @@ var PlayerShip = function (_Entity) {
 		}
 
 		_this.type = 'PlayerShip';
+
+		_this.bullets = new Array();
+		_this.shooting = false, _this.reload = 0;
 
 		_this.camera = function (self) {
 
@@ -23762,6 +23851,28 @@ var PlayerShip = function (_Entity) {
 		value: function setDirection(x, y, z) {
 
 			get(PlayerShip.prototype.__proto__ || Object.getPrototypeOf(PlayerShip.prototype), 'setDirection', this).call(this, x, 0, 0);
+		}
+	}, {
+		key: 'update',
+		value: function update(dt) {
+
+			get(PlayerShip.prototype.__proto__ || Object.getPrototypeOf(PlayerShip.prototype), 'update', this).call(this, dt);
+
+			this.reload > 0 && --this.reload;
+		}
+	}, {
+		key: 'fire',
+		value: function fire() {
+
+			if (this.reload === 0) {
+
+				var bullet = new Bullet(0, 0, -20);
+				bullet.direction.set(-Math.sin(this.rotation.y), 0, -Math.cos(this.rotation.y));
+				bullet.position.applyMatrix4(this.matrixWorld);
+
+				this.bullets.push(bullet);
+				this.reload = 10;
+			}
 		}
 	}, {
 		key: 'intersect',
@@ -23815,6 +23926,8 @@ var PlayerShip = function (_Entity) {
 
 
 
+var KEY_SPACEBAR = 32;
+
 var KEY_LEFT = 37;
 
 var KEY_RIGHT = 39;
@@ -23832,7 +23945,7 @@ var KEY_3 = 51;
 
 
 var KEY_A = 65;
-
+var KEY_B = 66;
 
 var KEY_D = 68;
 
@@ -23895,7 +24008,7 @@ var Game = function () {
 
 			var camera = new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000);
 
-			camera.position.set(0, 200, (HEIGHT >> 1) + 100);
+			camera.position.set(0, 250, (HEIGHT >> 1) + 150);
 			camera.lookAt(self.scene.position);
 
 			camera.updateProjectionMatrix();
@@ -23954,15 +24067,15 @@ var Game = function () {
 
 			this.field.children.forEach(function (b) {
 
-				if (b.type === 'Barrier') {
-
-					this.gameObjects.push(b);
-				}
+				b.type === 'Barrier' && this.gameObjects.push(b);
 			}, this);
+
 			this.scene.add(this.field);
 
 			this.playerShip.position.set(0, 0, (HEIGHT >> 1) - 50);
 			this.playerShip.velocity.setScalar(0);
+			this.playerShip.updateBoundries = true;
+
 			this.gameObjects.push(this.playerShip);
 			this.scene.add(this.playerShip);
 
@@ -23990,6 +24103,13 @@ var Game = function () {
 
 					var dt = _this.gameClock.getDelta();
 
+					if (_this.playerShip.bullets.length > 0) {
+
+						_this.scene.add(_this.playerShip.bullets[0]);
+						_this.gameObjects.push(_this.playerShip.bullets[0]);
+						_this.playerShip.bullets.splice(0, 1);
+					}
+
 					for (var i = 0; i < _this.gameObjects.length; ++i) {
 
 						for (var j = i + 1; j < _this.gameObjects.length; ++j) {
@@ -24002,9 +24122,19 @@ var Game = function () {
 						}
 					}
 
-					_this.gameObjects.forEach(function (obj) {
-						return obj.update(dt);
-					});
+					_this.gameObjects.forEach(function (obj, index) {
+
+						if (obj.alive !== undefined && !obj.alive) {
+
+							this.scene.remove(obj);
+							this.gameObjects.splice(index, 1);
+						} else {
+
+							obj.update(dt);
+						}
+					}, _this);
+
+					_this.playerShip.shooting && _this.playerShip.fire();
 				})();
 			}
 
@@ -24086,6 +24216,13 @@ var Game = function () {
 
 					break;
 
+				case KEY_B:
+				case KEY_SPACEBAR:
+
+					this.playerShip.shooting = true;
+
+					break;
+
 				case KEY_P:
 
 					this.gameClock.running ? this.gameClock.stop() : this.gameClock.start();
@@ -24131,6 +24268,13 @@ var Game = function () {
 				case KEY_RIGHT:
 
 					this.playerShip.moving = false;
+
+					break;
+
+				case KEY_B:
+				case KEY_SPACEBAR:
+
+					this.playerShip.shooting = false;
 
 					break;
 
