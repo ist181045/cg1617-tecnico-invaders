@@ -11,7 +11,8 @@ import { BoxGeometry } from '../lib/threejs/geometries/BoxGeometry';
 import { Mesh } from '../lib/threejs/objects/Mesh';
 import { Vector3 } from '../lib/threejs/math/Vector3';
 
-import Entity from './Entity.js';
+import Entity from './Entity';
+import Bullet from './Bullet';
 
 class PlayerShip extends Entity {
 
@@ -26,6 +27,10 @@ class PlayerShip extends Entity {
 		}
 
 		this.type = 'PlayerShip';
+
+		this.bullets  = new Array();
+		this.shooting = false,
+		this.reload   = 0;
 
 		this.camera = (function ( self ) {
 
@@ -52,6 +57,29 @@ class PlayerShip extends Entity {
 	setDirection ( x, y, z ) {
 
 		super.setDirection( x, 0, 0 );
+
+	}
+
+	update ( dt ) {
+
+		super.update( dt );
+
+		this.reload > 0 && --this.reload;
+
+	}
+
+	fire () {
+
+		if ( this.reload === 0 ) {
+
+			let bullet = new Bullet( 0, 0, -20 );
+			bullet.direction.set( -Math.sin( this.rotation.y ), 0, -Math.cos( this.rotation.y ) );
+			bullet.position.applyMatrix4( this.matrixWorld );
+
+			this.bullets.push( bullet );
+			this.reload = 10;
+
+		}
 
 	}
 

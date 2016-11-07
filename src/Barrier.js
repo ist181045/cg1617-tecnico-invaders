@@ -50,7 +50,8 @@ class Barrier extends Collidable {
 				other.direction.negate();
 				other.velocity.negate();
 				other.update( dt );
-				other.velocity.multiplyScalar( 0.4 );
+
+				other.velocity.multiplyScalar( 0.3 );
 
 				break;
 
@@ -59,6 +60,12 @@ class Barrier extends Collidable {
 				other.direction.reflect( n );
 				other.velocity.reflect( n );
 				other.update( dt );
+
+				break;
+
+			case 'Bullet':
+
+				other.alive = false;
 
 				break;
 
