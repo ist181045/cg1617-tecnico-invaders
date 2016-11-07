@@ -128,21 +128,26 @@ class Game {
 
 	update () {
 
-		let l  = this.gameObjects.length;
-		let dt = this.gameClock.getDelta();
+		if ( this.gameClock.running ) {
 
-		for ( let i = 0; i < l; ++i ) {
+			let l  = this.gameObjects.length;
+			let dt = this.gameClock.getDelta();
 
-			for ( let j = i + 1; j < l; ++j ) {
+			for ( let i = 0; i < l; ++i ) {
 
-				let [ o1, o2 ] = [ this.gameObjects[i], this.gameObjects[j] ];
+				for ( let j = i + 1; j < l; ++j ) {
 
-				o1.intersect( o2 ) && o1.handleCollision( o2 );
+					let [ o1, o2 ] = [ this.gameObjects[i], this.gameObjects[j] ];
 
+					o1.intersect( o2 ) && o1.handleCollision( o2 );
+
+				}
+				
 			}
-		}
 
-		this.gameObjects.forEach( ( obj ) => obj.update( dt ) );
+			this.gameObjects.forEach( ( obj ) => obj.update( dt ) );
+
+		}
 
 		this.renderer.render( this.scene, this.camera );
 
@@ -223,6 +228,14 @@ class Game {
 
 				if ( !this.playerShip.moving ) this.playerShip.moving = true;
 				this.playerShip.setDirection( 1, 0, 0 );
+
+				break;
+
+			case Keyboard.KEY_P:
+
+				this.gameClock.running ?
+					this.gameClock.stop() :
+					this.gameClock.start();
 
 				break;
 
