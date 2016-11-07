@@ -42,6 +42,8 @@ class Game {
 
 		})();
 
+		this.field = new Field( 0, 0, 0, WIDTH - 10, HEIGHT - 10 );
+
 		this.topCamera = (function ( self ) {
 
 			let camera = new OrthographicCamera(
@@ -62,7 +64,7 @@ class Game {
 				75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000
 			);
 
-			camera.position.set( 0, 250, ( HEIGHT >> 1 ) + 150 );
+			camera.position.set( 0, 250, ( this.height >> 1 ) + 150 );
 			camera.lookAt( self.scene.position );
 
 			camera.updateProjectionMatrix();
@@ -72,9 +74,7 @@ class Game {
 		})( this );
 		this.camera = this.topCamera;
 
-		this.field = new Field( 0, 0, 0, WIDTH - 4, HEIGHT - 4 );
-
-		this.playerShip = new PlayerShip( 0, 0, ( HEIGHT >> 1 ) - 50,
+		this.playerShip = new PlayerShip( 0, 0, ( this.field.height >> 1 ) - 50,
 			new PerspectiveCamera( 75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000 ) );
 
 		this.gameObjects = new Array();
@@ -116,7 +116,10 @@ class Game {
 		this.scene.add( new AxisHelper( 50 ) );
 
 		let [ nx, nz ] = [ 6, 3 ];
-		let [ segX, segZ ] = [ ( WIDTH - 120 ) / nx, ( ( HEIGHT >> 1 ) - 60 ) / nz ];
+		let [ segX, segZ ] = [
+			( this.field.width - 120 ) / nx,
+			( ( this.field.height >> 1 ) - 60 ) / nz
+		];
 
 		this.field.children.forEach( function ( b ) {
 
@@ -126,7 +129,7 @@ class Game {
 
 		this.scene.add( this.field );
 
-		this.playerShip.position.set( 0, 0, ( HEIGHT >> 1 ) - 50 );
+		this.playerShip.position.set( 0, 0, ( this.field.height >> 1 ) - 50 );
 		this.playerShip.velocity.setScalar( 0 );
 		this.playerShip.updateBoundries = true;
 
