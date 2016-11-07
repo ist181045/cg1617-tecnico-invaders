@@ -75,7 +75,6 @@ class Game {
 			new PerspectiveCamera( 75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000 ) );
 
 		this.gameObjects = new Array();
-		/* TODO: Game Objects array, player ship, and so on */
 
 		this.gameClock = new Clock( false );
 
@@ -109,8 +108,6 @@ class Game {
 					segZ * ( i - ( ( nz - 1 ) / 2 ) )
 				];
 
-				console.log( posX, posZ );
-
 				let alien = new EnemyShip( posX, 0, posZ );
 
 				this.scene.add( alien );
@@ -131,11 +128,21 @@ class Game {
 
 	update () {
 
+		let l  = this.gameObjects.length;
 		let dt = this.gameClock.getDelta();
 
-		this.gameObjects.forEach( ( obj ) => obj.update( dt ) );
+		for ( let i = 0; i < l; ++i ) {
 
-		/* TODO: Game objects' (TBA) updates */
+			for ( let j = i + 1; j < l; ++j ) {
+
+				let [ o1, o2 ] = [ this.gameObjects[i], this.gameObjects[j] ];
+
+				o1.intersect( o2 ) && o1.handleCollision( o2 );
+
+			}
+		}
+
+		this.gameObjects.forEach( ( obj ) => obj.update( dt ) );
 
 		this.renderer.render( this.scene, this.camera );
 
@@ -247,5 +254,3 @@ class Game {
 }
 
 new Game().start();
-
-export default Game;
