@@ -19,6 +19,8 @@ var container;
 
 var cameraOrtho, cameraStatic, cameraDynamic, cameraDevel;
 
+var directionalLight, pointLights;
+
 var activeCamera, scene, renderer;
 
 var clock, fireRateClock;
@@ -89,6 +91,12 @@ function createDynamicBackCamera () {
 
 	cameraDynamic.updateProjectionMatrix();
 
+}
+
+//LIGHT CREATION
+
+function createDirectionalLight () {
+	
 }
 
 //EVENT HANDLER
@@ -283,49 +291,7 @@ function animate () {
 
 }
 
-/*function objectCollision () {
-	GameField.EShips.forEach(
-		function(s1) {
-			if (){
-				if (){
-					s1.direction.x = -s1.direction.x;
-					s1.direction.y = -s1.direction.y;
-					s1.velocity.x = -s1.velocity.x;
-					s1.velocity.y = -s1.velocity.y;
-
-					if ( s1.direction.x > 0 ) {
-						GameField.AShip.velocity = -40;
-					}
-					if ( s1.direction.x < 0 ) {
-						GameField.AShip.velocity = 40;
-					}
-				}
-			}
-
-			GameField.EShips.forEach(
-				function(s2) {
-					if (){
-						if (){
-							if (){
-								if (!collisionsArray.includes(s1)) collisionsArray.push(s1);
-								if (!collisionsArray.includes(s2)) collisionsArray.push(s2);
-							}
-						}
-					}
-				}
-			);
-		}
-	);
-
-	while (collisionsArray.length != 0) {
-		collisionsArray[0].direction.x = -collisionsArray[0].direction.x;
-		collisionsArray[0].direction.y = -collisionsArray[0].direction.y;
-		collisionsArray[0].velocity.x = -collisionsArray[0].velocity.x;
-		collisionsArray[0].velocity.y = -collisionsArray[0].velocity.y;
-		collisionsArray.shift();
-	}
-
-}*/
+//COLLISION
 
 function bsBarrierCollision (obj) {
 	var r = obj.bsRadius;
@@ -426,6 +392,17 @@ function collision () {
 	for (var i = 0; i < GameField.EShips.length; i++) {
 		var currShip = GameField.EShips[i];
 		var resCurrEShipBSColl = bsBarrierCollision(currShip);
+
+		if (bsObjectCollision(currShip, GameField.AShip)) {
+			if (bbObjectCollision(currShip, GameField.AShip)) {
+				currShip.direction.x = -currShip.direction.x;
+				currShip.direction.y = -currShip.direction.y;
+				currShip.velocity.x = -currShip.velocity.x;
+				currShip.velocity.y = -currShip.velocity.y;
+
+				GameField.AShip.velocity = -currShip.direction.x * 40;
+			}
+		}
 
 		if (resCurrEShipBSColl[0] && (resCurrEShipBSColl[1] == 0 || resCurrEShipBSColl[1] == 1)) {
 			if (bbBarrierCollision(currShip, resCurrEShipBSColl[1])) {
