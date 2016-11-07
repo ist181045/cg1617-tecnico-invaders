@@ -22619,6 +22619,532 @@ var WINDOW_HEIGHT = function WINDOW_HEIGHT() {
 };
 
 /**
+ * @author mrdoob / http://mrdoob.com/
+ *
+ * parameters = {
+ *  opacity: <float>,
+ *
+ *  wireframe: <boolean>,
+ *  wireframeLinewidth: <float>
+ * }
+ */
+
+function MeshNormalMaterial( parameters ) {
+
+	Material.call( this, parameters );
+
+	this.type = 'MeshNormalMaterial';
+
+	this.wireframe = false;
+	this.wireframeLinewidth = 1;
+
+	this.fog = false;
+	this.lights = false;
+	this.morphTargets = false;
+
+	this.setValues( parameters );
+
+}
+
+MeshNormalMaterial.prototype = Object.create( Material.prototype );
+MeshNormalMaterial.prototype.constructor = MeshNormalMaterial;
+
+MeshNormalMaterial.prototype.isMeshNormalMaterial = true;
+
+MeshNormalMaterial.prototype.copy = function ( source ) {
+
+	Material.prototype.copy.call( this, source );
+
+	this.wireframe = source.wireframe;
+	this.wireframeLinewidth = source.wireframeLinewidth;
+
+	return this;
+
+};
+
+var asyncGenerator = function () {
+  function AwaitValue(value) {
+    this.value = value;
+  }
+
+  function AsyncGenerator(gen) {
+    var front, back;
+
+    function send(key, arg) {
+      return new Promise(function (resolve, reject) {
+        var request = {
+          key: key,
+          arg: arg,
+          resolve: resolve,
+          reject: reject,
+          next: null
+        };
+
+        if (back) {
+          back = back.next = request;
+        } else {
+          front = back = request;
+          resume(key, arg);
+        }
+      });
+    }
+
+    function resume(key, arg) {
+      try {
+        var result = gen[key](arg);
+        var value = result.value;
+
+        if (value instanceof AwaitValue) {
+          Promise.resolve(value.value).then(function (arg) {
+            resume("next", arg);
+          }, function (arg) {
+            resume("throw", arg);
+          });
+        } else {
+          settle(result.done ? "return" : "normal", result.value);
+        }
+      } catch (err) {
+        settle("throw", err);
+      }
+    }
+
+    function settle(type, value) {
+      switch (type) {
+        case "return":
+          front.resolve({
+            value: value,
+            done: true
+          });
+          break;
+
+        case "throw":
+          front.reject(value);
+          break;
+
+        default:
+          front.resolve({
+            value: value,
+            done: false
+          });
+          break;
+      }
+
+      front = front.next;
+
+      if (front) {
+        resume(front.key, front.arg);
+      } else {
+        back = null;
+      }
+    }
+
+    this._invoke = send;
+
+    if (typeof gen.return !== "function") {
+      this.return = undefined;
+    }
+  }
+
+  if (typeof Symbol === "function" && Symbol.asyncIterator) {
+    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
+      return this;
+    };
+  }
+
+  AsyncGenerator.prototype.next = function (arg) {
+    return this._invoke("next", arg);
+  };
+
+  AsyncGenerator.prototype.throw = function (arg) {
+    return this._invoke("throw", arg);
+  };
+
+  AsyncGenerator.prototype.return = function (arg) {
+    return this._invoke("return", arg);
+  };
+
+  return {
+    wrap: function (fn) {
+      return function () {
+        return new AsyncGenerator(fn.apply(this, arguments));
+      };
+    },
+    await: function (value) {
+      return new AwaitValue(value);
+    }
+  };
+}();
+
+
+
+
+
+var classCallCheck = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
+
+var createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
+}();
+
+
+
+
+
+
+
+var get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;
+  var desc = Object.getOwnPropertyDescriptor(object, property);
+
+  if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);
+
+    if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;
+
+    if (getter === undefined) {
+      return undefined;
+    }
+
+    return getter.call(receiver);
+  }
+};
+
+var inherits = function (subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+};
+
+
+
+
+
+
+
+
+
+
+
+var possibleConstructorReturn = function (self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return call && (typeof call === "object" || typeof call === "function") ? call : self;
+};
+
+
+
+var set = function set(object, property, value, receiver) {
+  var desc = Object.getOwnPropertyDescriptor(object, property);
+
+  if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);
+
+    if (parent !== null) {
+      set(parent, property, value, receiver);
+    }
+  } else if ("value" in desc && desc.writable) {
+    desc.value = value;
+  } else {
+    var setter = desc.set;
+
+    if (setter !== undefined) {
+      setter.call(receiver, value);
+    }
+  }
+
+  return value;
+};
+
+/**
+ * CG Space Invaders
+ * CG45179 16'17
+ *
+ * @author: Rui Ventura ( ist181045 )
+ * @author: Diogo Freitas ( ist181586 )
+ * @author: Sara Azinhal ( ist181700 )
+ */
+
+var GameObject = function (_Object3D) {
+  inherits(GameObject, _Object3D);
+
+  function GameObject(x, y, z) {
+    classCallCheck(this, GameObject);
+
+    var _this = possibleConstructorReturn(this, (GameObject.__proto__ || Object.getPrototypeOf(GameObject)).call(this));
+
+    _this.type = 'GameObject';
+
+    _this.material = new MeshNormalMaterial();
+
+    _this.position.set(x || 0, y || 0, z || 0);
+
+    return _this;
+  }
+
+  return GameObject;
+}(Object3D);
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Cube.as
+ */
+
+function BoxGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) {
+
+	Geometry.call( this );
+
+	this.type = 'BoxGeometry';
+
+	this.parameters = {
+		width: width,
+		height: height,
+		depth: depth,
+		widthSegments: widthSegments,
+		heightSegments: heightSegments,
+		depthSegments: depthSegments
+	};
+
+	this.fromBufferGeometry( new BoxBufferGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) );
+	this.mergeVertices();
+
+}
+
+BoxGeometry.prototype = Object.create( Geometry.prototype );
+BoxGeometry.prototype.constructor = BoxGeometry;
+
+/**
+ * CG Space Invaders
+ * CG45179 16'17
+ *
+ * @author: Rui Ventura ( ist181045 )
+ * @author: Diogo Freitas ( ist181586 )
+ * @author: Sara Azinhal ( ist181700 )
+ */
+
+var Collidable = function (_GameObject) {
+	inherits(Collidable, _GameObject);
+
+	function Collidable(x, y, z) {
+		classCallCheck(this, Collidable);
+
+		var _this = possibleConstructorReturn(this, (Collidable.__proto__ || Object.getPrototypeOf(Collidable)).call(this, x, y, z));
+
+		_this.type = 'Collidable';
+
+		_this.updateBoundries = false;
+
+		_this.boundingBox = new Box3();
+		_this.boundingSphere = new Sphere();
+
+		return _this;
+	}
+
+	createClass(Collidable, [{
+		key: 'intersect',
+		value: function intersect(other) {
+
+			return this.intersectSphere(other) && this.intersectBox(other);
+		}
+	}, {
+		key: 'intersectSphere',
+		value: function intersectSphere(other) {
+
+			if (this.boundingSphere !== null && other.boundingSphere !== null) {
+
+				var rSum = this.boundingSphere.radius + other.boundingSphere.radius;
+				var distSq = this.boundingSphere.center.distanceToSquared(other.boundingSphere.center);
+
+				return rSum * rSum >= distSq;
+			}
+
+			return false;
+		}
+	}, {
+		key: 'intersectBox',
+		value: function intersectBox(other) {
+
+			if (this.boundingBox !== null && other.boundingBox !== null) {
+				var _ref = [this.boundingBox, other.boundingBox],
+				    a = _ref[0],
+				    b = _ref[1];
+
+
+				return a.min.x < b.max.x && a.max.x > b.min.x && a.min.y < b.max.y && a.max.y > b.min.y && a.min.z < b.max.z && a.max.z > b.min.z;
+			}
+
+			return false;
+		}
+	}, {
+		key: 'handleCollision',
+		value: function handleCollision(other, dt) {
+
+			return;
+		}
+	}, {
+		key: 'update',
+		value: function update() {
+
+			if (this.updateBoundries) {
+
+				this.updateBoundries = false;
+
+				if (this.boundingBox !== null) {
+
+					this.boundingBox.setFromObject(this);
+
+					if (this.boundingSphere !== null) {
+
+						this.boundingBox.getBoundingSphere(this.boundingSphere);
+					}
+				}
+			}
+		}
+	}]);
+	return Collidable;
+}(GameObject);
+
+/**
+ * CG Space Invaders
+ * CG45179 16'17
+ *
+ * @author: Rui Ventura ( ist181045 )
+ * @author: Diogo Freitas ( ist181586 )
+ * @author: Sara Azinhal ( ist181700 )
+ */
+
+var Barrier = function (_Collidable) {
+	inherits(Barrier, _Collidable);
+
+	function Barrier(x, y, z, w, h, l) {
+		classCallCheck(this, Barrier);
+
+		var _this = possibleConstructorReturn(this, (Barrier.__proto__ || Object.getPrototypeOf(Barrier)).call(this, x, y, z));
+
+		_this.type = 'Barrier';
+
+		_this.updateBoundries = true;
+
+		_this.boundingSphere = null;
+
+		_this.add(function (self) {
+
+			return new Mesh(new BoxGeometry(w, h, l), self.material);
+		}(_this));
+
+		return _this;
+	}
+
+	createClass(Barrier, [{
+		key: 'intersect',
+		value: function intersect(other) {
+
+			return this.type !== other.type && this.intersectBox(other);
+		}
+	}, {
+		key: 'handleCollision',
+		value: function handleCollision(other, dt) {
+
+			var n = this.position.clone().negate().normalize();
+
+			switch (other.type) {
+
+				case 'PlayerShip':
+
+					other.direction.negate();
+					other.velocity.negate().multiplyScalar(0.4);
+					other.update(dt);
+
+					break;
+
+				case 'EnemyShip':
+					{
+
+						other.direction.reflect(n);
+						other.velocity.reflect(n);
+						other.update(dt);
+
+						break;
+					}
+
+			}
+		}
+	}]);
+	return Barrier;
+}(Collidable);
+
+/**
+ * CG Space Invaders
+ * CG45179 16'17
+ *
+ * @author: Rui Ventura ( ist181045 )
+ * @author: Diogo Freitas ( ist181586 )
+ * @author: Sara Azinhal ( ist181700 )
+ */
+
+var Field = function (_GameObject) {
+	inherits(Field, _GameObject);
+
+	function Field(x, y, z) {
+		var w = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 200;
+		var l = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 200;
+		classCallCheck(this, Field);
+
+		var _this = possibleConstructorReturn(this, (Field.__proto__ || Object.getPrototypeOf(Field)).call(this, x, y, z));
+
+		_this.type = 'Field';
+
+		_this.width = w;
+		_this.length = l;
+
+		_this.add(new Barrier((x - w >> 1) + 2, y, z, 4, 10, l));
+		_this.add(new Barrier((x + w >> 1) - 2, y, z, 4, 10, l));
+		_this.add(new Barrier(x, y, (z - l >> 1) + 2, w, 10, 4));
+		_this.add(new Barrier(x, y, (z + l >> 1) - 2, w, 10, 4));
+
+		return _this;
+	}
+
+	return Field;
+}(GameObject);
+
+/**
  * @author Mugen87 / https://github.com/Mugen87
  */
 
@@ -22999,377 +23525,6 @@ DodecahedronGeometry.prototype = Object.create( Geometry.prototype );
 DodecahedronGeometry.prototype.constructor = DodecahedronGeometry;
 
 /**
- * @author mrdoob / http://mrdoob.com/
- *
- * parameters = {
- *  opacity: <float>,
- *
- *  wireframe: <boolean>,
- *  wireframeLinewidth: <float>
- * }
- */
-
-function MeshNormalMaterial( parameters ) {
-
-	Material.call( this, parameters );
-
-	this.type = 'MeshNormalMaterial';
-
-	this.wireframe = false;
-	this.wireframeLinewidth = 1;
-
-	this.fog = false;
-	this.lights = false;
-	this.morphTargets = false;
-
-	this.setValues( parameters );
-
-}
-
-MeshNormalMaterial.prototype = Object.create( Material.prototype );
-MeshNormalMaterial.prototype.constructor = MeshNormalMaterial;
-
-MeshNormalMaterial.prototype.isMeshNormalMaterial = true;
-
-MeshNormalMaterial.prototype.copy = function ( source ) {
-
-	Material.prototype.copy.call( this, source );
-
-	this.wireframe = source.wireframe;
-	this.wireframeLinewidth = source.wireframeLinewidth;
-
-	return this;
-
-};
-
-var asyncGenerator = function () {
-  function AwaitValue(value) {
-    this.value = value;
-  }
-
-  function AsyncGenerator(gen) {
-    var front, back;
-
-    function send(key, arg) {
-      return new Promise(function (resolve, reject) {
-        var request = {
-          key: key,
-          arg: arg,
-          resolve: resolve,
-          reject: reject,
-          next: null
-        };
-
-        if (back) {
-          back = back.next = request;
-        } else {
-          front = back = request;
-          resume(key, arg);
-        }
-      });
-    }
-
-    function resume(key, arg) {
-      try {
-        var result = gen[key](arg);
-        var value = result.value;
-
-        if (value instanceof AwaitValue) {
-          Promise.resolve(value.value).then(function (arg) {
-            resume("next", arg);
-          }, function (arg) {
-            resume("throw", arg);
-          });
-        } else {
-          settle(result.done ? "return" : "normal", result.value);
-        }
-      } catch (err) {
-        settle("throw", err);
-      }
-    }
-
-    function settle(type, value) {
-      switch (type) {
-        case "return":
-          front.resolve({
-            value: value,
-            done: true
-          });
-          break;
-
-        case "throw":
-          front.reject(value);
-          break;
-
-        default:
-          front.resolve({
-            value: value,
-            done: false
-          });
-          break;
-      }
-
-      front = front.next;
-
-      if (front) {
-        resume(front.key, front.arg);
-      } else {
-        back = null;
-      }
-    }
-
-    this._invoke = send;
-
-    if (typeof gen.return !== "function") {
-      this.return = undefined;
-    }
-  }
-
-  if (typeof Symbol === "function" && Symbol.asyncIterator) {
-    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
-      return this;
-    };
-  }
-
-  AsyncGenerator.prototype.next = function (arg) {
-    return this._invoke("next", arg);
-  };
-
-  AsyncGenerator.prototype.throw = function (arg) {
-    return this._invoke("throw", arg);
-  };
-
-  AsyncGenerator.prototype.return = function (arg) {
-    return this._invoke("return", arg);
-  };
-
-  return {
-    wrap: function (fn) {
-      return function () {
-        return new AsyncGenerator(fn.apply(this, arguments));
-      };
-    },
-    await: function (value) {
-      return new AwaitValue(value);
-    }
-  };
-}();
-
-
-
-
-
-var classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
-
-var createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }
-
-  return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) defineProperties(Constructor, staticProps);
-    return Constructor;
-  };
-}();
-
-
-
-
-
-
-
-var get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;
-  var desc = Object.getOwnPropertyDescriptor(object, property);
-
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
-
-    if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;
-
-    if (getter === undefined) {
-      return undefined;
-    }
-
-    return getter.call(receiver);
-  }
-};
-
-var inherits = function (subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-};
-
-
-
-
-
-
-
-
-
-
-
-var possibleConstructorReturn = function (self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return call && (typeof call === "object" || typeof call === "function") ? call : self;
-};
-
-
-
-var set = function set(object, property, value, receiver) {
-  var desc = Object.getOwnPropertyDescriptor(object, property);
-
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
-
-    if (parent !== null) {
-      set(parent, property, value, receiver);
-    }
-  } else if ("value" in desc && desc.writable) {
-    desc.value = value;
-  } else {
-    var setter = desc.set;
-
-    if (setter !== undefined) {
-      setter.call(receiver, value);
-    }
-  }
-
-  return value;
-};
-
-/**
- * CG Space Invaders
- * CG45179 16'17
- *
- * @author: Rui Ventura ( ist181045 )
- * @author: Diogo Freitas ( ist181586 )
- * @author: Sara Azinhal ( ist181700 )
- */
-
-var GameObject = function (_Object3D) {
-  inherits(GameObject, _Object3D);
-
-  function GameObject(x, y, z) {
-    classCallCheck(this, GameObject);
-
-    var _this = possibleConstructorReturn(this, (GameObject.__proto__ || Object.getPrototypeOf(GameObject)).call(this));
-
-    _this.type = 'GameObject';
-
-    _this.material = new MeshNormalMaterial();
-
-    _this.position.set(x || 0, y || 0, z || 0);
-
-    return _this;
-  }
-
-  return GameObject;
-}(Object3D);
-
-/**
- * CG Space Invaders
- * CG45179 16'17
- *
- * @author: Rui Ventura ( ist181045 )
- * @author: Diogo Freitas ( ist181586 )
- * @author: Sara Azinhal ( ist181700 )
- */
-
-var Collidable = function (_GameObject) {
-	inherits(Collidable, _GameObject);
-
-	function Collidable(x, y, z) {
-		classCallCheck(this, Collidable);
-
-		var _this = possibleConstructorReturn(this, (Collidable.__proto__ || Object.getPrototypeOf(Collidable)).call(this, x, y, z));
-
-		_this.type = 'Collidable';
-
-		_this.updateBoundries = false;
-
-		_this.boundingBox = new Box3();
-		_this.boundingSphere = new Sphere();
-
-		return _this;
-	}
-
-	createClass(Collidable, [{
-		key: 'intersect',
-		value: function intersect(other) {
-
-			var rSum = this.boundingSphere.radius + other.boundingSphere.radius;
-			var distSq = this.boundingSphere.center.distanceToSquared(other.boundingSphere.center);
-
-			if (rSum * rSum >= distSq) {
-				var _ref = [this.boundingBox, other.boundingBox],
-				    a = _ref[0],
-				    b = _ref[1];
-
-
-				return a.min.x < b.max.x && a.max.x > b.min.x && a.min.y < b.max.y && a.max.y > b.min.y && a.min.z < b.max.z && a.max.z > b.min.z;
-			}
-
-			return false;
-		}
-	}, {
-		key: 'handleCollision',
-		value: function handleCollision(other) {
-
-			return;
-		}
-	}, {
-		key: 'update',
-		value: function update() {
-
-			if (this.updateBoundries) {
-
-				this.updateBoundries = false;
-				this.boundingBox.setFromObject(this);
-				this.boundingBox.getBoundingSphere(this.boundingSphere);
-
-				console.log(this.type, 'updatd boundries!');
-			}
-		}
-	}]);
-	return Collidable;
-}(GameObject);
-
-/**
  * CG Tecnico Invaders
  * CG45179 16'17
  *
@@ -23450,7 +23605,7 @@ var Entity = function (_Collidable) {
 				this.velocity.addScaledVector(this.direction, -dvf);
 			} else {
 
-				this.velocity.setLength(0);
+				this.velocity.setScalar(0);
 			}
 
 			if (updatePos) {
@@ -23513,8 +23668,16 @@ var EnemyShip = function (_Entity) {
 			return;
 		}
 	}, {
+		key: 'intersect',
+		value: function intersect(other) {
+
+			if (other.type === 'Barrier') return other.intersect(this);
+
+			return get(EnemyShip.prototype.__proto__ || Object.getPrototypeOf(EnemyShip.prototype), 'intersect', this).call(this, other);
+		}
+	}, {
 		key: 'handleCollision',
-		value: function handleCollision(other) {
+		value: function handleCollision(other, dt) {
 
 			switch (other.type) {
 
@@ -23522,15 +23685,18 @@ var EnemyShip = function (_Entity) {
 
 					this.direction.negate();
 					this.velocity.negate();
+					this.update(dt);
 
 					other.direction.negate();
 					other.velocity.negate();
+					other.update(dt);
 
 					break;
 
-				case 'Field':
+				case 'Barrier':
 
-					/* TODO: Create Field and implement collisions with it */
+					/* Delegate to barrier */
+					other.handleCollision(this, dt);
 
 					break;
 
@@ -23542,34 +23708,6 @@ var EnemyShip = function (_Entity) {
 	}]);
 	return EnemyShip;
 }(Entity);
-
-/**
- * @author mrdoob / http://mrdoob.com/
- * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Cube.as
- */
-
-function BoxGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) {
-
-	Geometry.call( this );
-
-	this.type = 'BoxGeometry';
-
-	this.parameters = {
-		width: width,
-		height: height,
-		depth: depth,
-		widthSegments: widthSegments,
-		heightSegments: heightSegments,
-		depthSegments: depthSegments
-	};
-
-	this.fromBufferGeometry( new BoxBufferGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) );
-	this.mergeVertices();
-
-}
-
-BoxGeometry.prototype = Object.create( Geometry.prototype );
-BoxGeometry.prototype.constructor = BoxGeometry;
 
 /**
  * CG Space Invaders
@@ -23623,14 +23761,23 @@ var PlayerShip = function (_Entity) {
 			get(PlayerShip.prototype.__proto__ || Object.getPrototypeOf(PlayerShip.prototype), 'setDirection', this).call(this, x, 0, 0);
 		}
 	}, {
+		key: 'intersect',
+		value: function intersect(other) {
+
+			if (other.type === 'Barrier') return other.intersect(this);
+
+			return get(PlayerShip.prototype.__proto__ || Object.getPrototypeOf(PlayerShip.prototype), 'intersect', this).call(this, other);
+		}
+	}, {
 		key: 'handleCollision',
-		value: function handleCollision(other) {
+		value: function handleCollision(other, dt) {
 
 			switch (other.type) {
 
-				case 'Field':
+				case 'Barrier':
 
-					/* TODO: Create Field and implement collisions it */
+					/* Delegate to barrier */
+					other.handleCollision(this, dt);
 
 					break;
 
@@ -23686,6 +23833,25 @@ var KEY_A = 65;
 
 var KEY_D = 68;
 
+
+
+
+
+
+
+
+
+
+
+var KEY_P = 80;
+
+var KEY_R = 82;
+
+
+
+
+var KEY_W = 87;
+
 /**
  * CG Space Invaders
  * CG45179 16'17
@@ -23713,7 +23879,7 @@ var Game = function () {
 
 		this.topCamera = function (self) {
 
-			var camera = new OrthographicCamera(~WIDTH >> 1, WIDTH >> 1, HEIGHT >> 1, ~HEIGHT >> 1, 1, 1000);
+			var camera = new OrthographicCamera(~WIDTH >> 1, WIDTH >> 1, HEIGHT >> 1, ~HEIGHT >> 1, 1, 200);
 
 			camera.position.set(0, 100, 0);
 			camera.lookAt(self.scene.position);
@@ -23735,6 +23901,8 @@ var Game = function () {
 		}(this);
 		this.camera = this.topCamera;
 
+		this.field = new Field(0, 0, 0, WIDTH - 4, HEIGHT - 4);
+
 		this.playerShip = new PlayerShip(0, 0, (HEIGHT >> 1) - 50, new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000));
 
 		this.gameObjects = new Array();
@@ -23748,39 +23916,11 @@ var Game = function () {
 
 			document.body.appendChild(this.renderer.domElement);
 
-			this.scene.add(new AxisHelper(50));
-
 			window.addEventListener('resize', this.resize.bind(this));
 			window.addEventListener('keydown', this.keyDown.bind(this));
 			window.addEventListener('keyup', this.keyUp.bind(this));
 
-			/* TODO: Setup function, reset the game on startup and restart */
-			//setup();
-
-			var nx = 6,
-			    nz = 3;
-			var segX = (WIDTH - 100) / nx,
-			    segZ = ((HEIGHT >> 1) - 60) / nz;
-
-
-			this.scene.add(this.playerShip);
-			this.gameObjects.push(this.playerShip);
-
-			for (var i = 0; i < nz; ++i) {
-
-				for (var j = 0; j < nx; ++j) {
-					var posX = segX * (j - (nx - 1) / 2),
-					    posZ = segZ * (i - (nz - 1) / 2);
-
-
-					var alien = new EnemyShip(posX, 0, posZ);
-
-					this.scene.add(alien);
-					this.gameObjects.push(alien);
-				}
-			}
-
-			this.gameClock.start();
+			this.setup();
 
 			/* HACK: Force a first resize */
 			this.resize();
@@ -23788,27 +23928,82 @@ var Game = function () {
 			this.update();
 		}
 	}, {
-		key: 'update',
-		value: function update() {
+		key: 'setup',
+		value: function setup() {
 
-			var l = this.gameObjects.length;
-			var dt = this.gameClock.getDelta();
+			/* Clear the scene */
+			for (var i = this.scene.children.length; i > 0; --i) {
 
-			for (var i = 0; i < l; ++i) {
-
-				for (var j = i + 1; j < l; ++j) {
-					var _ref = [this.gameObjects[i], this.gameObjects[j]],
-					    o1 = _ref[0],
-					    o2 = _ref[1];
-
-
-					o1.intersect(o2) && o1.handleCollision(o2);
-				}
+				this.scene.remove(this.scene.children[i]);
 			}
 
-			this.gameObjects.forEach(function (obj) {
-				return obj.update(dt);
-			});
+			this.gameObjects = new Array();
+
+			/* Build the scene */
+
+			this.scene.add(new AxisHelper(50));
+
+			var nx = 6,
+			    nz = 3;
+			var segX = (WIDTH - 120) / nx,
+			    segZ = ((HEIGHT >> 1) - 60) / nz;
+
+
+			this.field.children.forEach(function (b) {
+
+				if (b.type === 'Barrier') {
+
+					this.gameObjects.push(b);
+				}
+			}, this);
+			this.scene.add(this.field);
+
+			this.playerShip.position.set(0, 0, (HEIGHT >> 1) - 50);
+			this.playerShip.velocity.setScalar(0);
+			this.gameObjects.push(this.playerShip);
+			this.scene.add(this.playerShip);
+
+			for (var _i = 0; _i < nz; ++_i) {
+
+				for (var j = 0; j < nx; ++j) {
+					var posX = segX * (j - (nx - 1) / 2),
+					    posZ = segZ * (_i - (nz + 1) / 2);
+
+
+					var alien = new EnemyShip(posX, 0, posZ);
+
+					this.gameObjects.push(alien);
+					this.scene.add(alien);
+				}
+			}
+		}
+	}, {
+		key: 'update',
+		value: function update() {
+			var _this = this;
+
+			if (this.gameClock.running) {
+				(function () {
+
+					var dt = _this.gameClock.getDelta();
+
+					for (var i = 0; i < _this.gameObjects.length; ++i) {
+
+						for (var j = i + 1; j < _this.gameObjects.length; ++j) {
+							var _ref = [_this.gameObjects[i], _this.gameObjects[j]],
+							    o1 = _ref[0],
+							    o2 = _ref[1];
+
+
+							o1.intersect(o2) && o1.handleCollision(o2, dt);
+						}
+					}
+
+					_this.gameObjects.forEach(function (obj) {
+						return obj.update(dt);
+					});
+				})();
+			}
 
 			this.renderer.render(this.scene, this.camera);
 
@@ -23888,8 +24083,35 @@ var Game = function () {
 
 					break;
 
-				default:
+				case KEY_P:
 
+					this.gameClock.running ? this.gameClock.stop() : this.gameClock.start();
+
+					break;
+
+				case KEY_R:
+
+					this.gameClock.stop();
+					this.setup();
+
+					break;
+
+				case KEY_W:
+
+					this.gameObjects.forEach(function (obj) {
+
+						obj.children.forEach(function (child) {
+
+							if (child.type === 'Mesh') {
+
+								child.material.wireframe = !child.material.wireframe;
+							}
+						});
+					});
+
+					break;
+
+				default:
 					break;
 
 			}
@@ -23899,6 +24121,7 @@ var Game = function () {
 		value: function keyUp(event) {
 
 			switch (event.keyCode) {
+
 				case KEY_A:
 				case KEY_LEFT:
 				case KEY_D:
@@ -23910,6 +24133,7 @@ var Game = function () {
 
 				default:
 					break;
+
 			}
 		}
 	}]);
