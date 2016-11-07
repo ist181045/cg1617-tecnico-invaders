@@ -40,6 +40,7 @@ class Barrier extends Collidable {
 
 	handleCollision ( other, dt ) {
 
+		/* HACK: Calculating normal due to the field's centered position */
 		let n = this.position.clone().negate().normalize();
 
 		switch ( other.type ) {
@@ -47,12 +48,13 @@ class Barrier extends Collidable {
 			case 'PlayerShip':
 
 				other.direction.negate();
-				other.velocity.negate().multiplyScalar( 0.4 );
+				other.velocity.negate();
 				other.update( dt );
+				other.velocity.multiplyScalar( 0.4 );
 
 				break;
 
-			case 'EnemyShip': {
+			case 'EnemyShip':
 
 				other.direction.reflect( n );
 				other.velocity.reflect( n );
@@ -60,7 +62,7 @@ class Barrier extends Collidable {
 
 				break;
 
-			}
+			default: break;
 
 		}
 
