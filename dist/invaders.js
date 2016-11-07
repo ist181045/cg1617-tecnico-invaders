@@ -1,4 +1,4 @@
-var Invaders = (function () {
+(function () {
 'use strict';
 
 // Polyfills
@@ -23320,7 +23320,7 @@ var Collidable = function (_GameObject) {
 
 		_this.type = 'Collidable';
 
-		_this.updateBoundingBox = false;
+		_this.updateBoundries = false;
 
 		_this.boundingBox = new Box3();
 		_this.boundingSphere = new Sphere();
@@ -23341,20 +23341,28 @@ var Collidable = function (_GameObject) {
 				    b = _ref[1];
 
 
-				return a.min.x <= b.max.x && a.max.x >= b.min.x && a.min.y <= b.max.y && a.max.y >= b.min.y && a.min.z <= b.max.z && a.max.z >= b.min.z;
+				return a.min.x < b.max.x && a.max.x > b.min.x && a.min.y < b.max.y && a.max.y > b.min.y && a.min.z < b.max.z && a.max.z > b.min.z;
 			}
 
 			return false;
 		}
 	}, {
+		key: 'handleCollision',
+		value: function handleCollision(other) {
+
+			return;
+		}
+	}, {
 		key: 'update',
 		value: function update() {
 
-			if (this.updateBoundingBox) {
+			if (this.updateBoundries) {
 
-				this.updateBoundingBox = false;
+				this.updateBoundries = false;
 				this.boundingBox.setFromObject(this);
 				this.boundingBox.getBoundingSphere(this.boundingSphere);
+
+				console.log(this.type, 'updatd boundries!');
 			}
 		}
 	}]);
@@ -23382,7 +23390,7 @@ var Entity = function (_Collidable) {
 
 		_this.MAX_VELOCITY = 1000;
 
-		_this.updateBoundingBox = true;
+		_this.updateBoundries = true;
 
 		_this.moving = false;
 		_this.direction = new Vector3();
@@ -23491,7 +23499,7 @@ var EnemyShip = function (_Entity) {
 
 		_this.add(function (self) {
 
-			return new Mesh(new DodecahedronGeometry(10, 1), self.material);
+			return new Mesh(new DodecahedronGeometry(15, 0), self.material);
 		}(_this));
 
 		return _this;
@@ -23501,14 +23509,35 @@ var EnemyShip = function (_Entity) {
 		key: 'setDirection',
 		value: function setDirection(x, y, z) {
 
-			/* HACK: Do not allow direction changes from outside */
+			/* HACK: Do not allow direction changes */
 			return;
 		}
 	}, {
-		key: 'intersect',
-		value: function intersect(other) {
+		key: 'handleCollision',
+		value: function handleCollision(other) {
 
-			return other.type !== 'PlayerShip' && get(EnemyShip.prototype.__proto__ || Object.getPrototypeOf(EnemyShip.prototype), 'intersect', this).call(this, other);
+			switch (other.type) {
+
+				case 'EnemyShip':
+
+					this.direction.negate();
+					this.velocity.negate();
+
+					other.direction.negate();
+					other.velocity.negate();
+
+					break;
+
+				case 'Field':
+
+					/* TODO: Create Field and implement collisions with it */
+
+					break;
+
+				default:
+					break;
+
+			}
 		}
 	}]);
 	return EnemyShip;
@@ -23594,14 +23623,20 @@ var PlayerShip = function (_Entity) {
 			get(PlayerShip.prototype.__proto__ || Object.getPrototypeOf(PlayerShip.prototype), 'setDirection', this).call(this, x, 0, 0);
 		}
 	}, {
-		key: 'intersect',
-		value: function intersect(other) {
+		key: 'handleCollision',
+		value: function handleCollision(other) {
 
-			if (other.type === 'Barrier') {
-				/* TODO: Barrier collision */
-			} else {
+			switch (other.type) {
 
-				get(PlayerShip.prototype.__proto__ || Object.getPrototypeOf(PlayerShip.prototype), 'intersect', this).call(this, other);
+				case 'Field':
+
+					/* TODO: Create Field and implement collisions it */
+
+					break;
+
+				default:
+					break;
+
 			}
 		}
 	}]);
@@ -23703,7 +23738,6 @@ var Game = function () {
 		this.playerShip = new PlayerShip(0, 0, (HEIGHT >> 1) - 50, new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000));
 
 		this.gameObjects = new Array();
-		/* TODO: Game Objects array, player ship, and so on */
 
 		this.gameClock = new Clock(false);
 	}
@@ -23739,8 +23773,6 @@ var Game = function () {
 					    posZ = segZ * (i - (nz - 1) / 2);
 
 
-					console.log(posX, posZ);
-
 					var alien = new EnemyShip(posX, 0, posZ);
 
 					this.scene.add(alien);
@@ -23759,13 +23791,24 @@ var Game = function () {
 		key: 'update',
 		value: function update() {
 
+			var l = this.gameObjects.length;
 			var dt = this.gameClock.getDelta();
+
+			for (var i = 0; i < l; ++i) {
+
+				for (var j = i + 1; j < l; ++j) {
+					var _ref = [this.gameObjects[i], this.gameObjects[j]],
+					    o1 = _ref[0],
+					    o2 = _ref[1];
+
+
+					o1.intersect(o2) && o1.handleCollision(o2);
+				}
+			}
 
 			this.gameObjects.forEach(function (obj) {
 				return obj.update(dt);
 			});
-
-			/* TODO: Game objects' (TBA) updates */
 
 			this.renderer.render(this.scene, this.camera);
 
@@ -23874,7 +23917,5 @@ var Game = function () {
 }();
 
 new Game().start();
-
-return Game;
 
 }());
