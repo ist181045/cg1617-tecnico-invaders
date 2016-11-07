@@ -55,13 +55,17 @@ class PlayerShip extends Entity {
 
 	}
 
-	intersect ( other ) {
+	handleCollision ( other ) {
 
-		if ( other.type === 'Barrier' ) {
-			/* TODO: Barrier collision */
-		} else {
+		switch ( other.type ) {
 
-			super.intersect( other );
+			case 'Field':
+
+				/* TODO: Create Field and implement collisions with it */
+
+				break;
+
+			default: break;
 
 		}
 
