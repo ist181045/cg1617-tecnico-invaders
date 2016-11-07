@@ -20,7 +20,7 @@ class Bullet extends Entity {
 
 		this.type = 'Bullet';
 
-		this.MAX_VELOCITY = 600;
+		this.MAX_VELOCITY = 400;
 
 		this.moving = true;
 
@@ -29,19 +29,6 @@ class Bullet extends Entity {
 			return new Mesh( new BoxGeometry( 4, 4, 10 ), self.material );
 
 		}( this ) );
-
-	}
-
-	update ( dt ) {
-
-		if ( this.direciton.lengthSq() > 0
-				&& this.velocity.length() < this.MAX_VELOCITY ) {
-
-			this.velocity.copy( this.direction ).multiplyScalar( this.MAX_VELOCITY );
-
-		}
-
-		super.update( dt );
 
 	}
 
