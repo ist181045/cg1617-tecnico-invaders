@@ -60,8 +60,6 @@ class Collidable extends GameObject {
 			this.boundingBox.setFromObject( this );
 			this.boundingBox.getBoundingSphere( this.boundingSphere );
 
-			console.log( this.type, 'updatd boundries!' );
-
 		}
 
 	}
