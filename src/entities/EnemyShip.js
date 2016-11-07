@@ -79,6 +79,13 @@ class EnemyShip extends Entity {
 
 				break;
 
+			case 'Bullet':
+
+				this.alive = false;
+				other.alive = false;
+
+				break;
+
 			default: break;
 
 		}

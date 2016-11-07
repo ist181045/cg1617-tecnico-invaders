@@ -120,17 +120,16 @@ class Game {
 
 		this.field.children.forEach( function ( b ) {
 
-			if ( b.type === 'Barrier' ) {
-
-				this.gameObjects.push( b );
-
-			}
+			b.type === 'Barrier' && this.gameObjects.push( b );
 
 		}, this );
+
 		this.scene.add( this.field );
 
 		this.playerShip.position.set( 0, 0, ( HEIGHT >> 1 ) - 50 );
 		this.playerShip.velocity.setScalar( 0 );
+		this.playerShip.updateBoundries = true;
+
 		this.gameObjects.push( this.playerShip );
 		this.scene.add( this.playerShip );
 
@@ -160,6 +159,15 @@ class Game {
 
 			let dt = this.gameClock.getDelta();
 
+			if ( this.playerShip.bullets.length > 0 ) {
+
+				this.scene.add( this.playerShip.bullets[0] );
+				this.gameObjects.push( this.playerShip.bullets[0] );
+				console.log( this.gameObjects );
+				this.playerShip.bullets.splice( 0, 1 );
+
+			}
+
 			for ( let i = 0; i < this.gameObjects.length; ++i ) {
 
 				for ( let j = i + 1; j < this.gameObjects.length; ++j ) {
@@ -172,7 +180,23 @@ class Game {
 
 			}
 
-			this.gameObjects.forEach( ( obj ) => obj.update( dt ) );
+			this.gameObjects.forEach( function ( obj, index ) {
+
+				if ( obj.alive !== undefined && !obj.alive ) {
+
+					this.scene.remove( obj );
+					this.gameObjects.splice( index, 1 );
+					console.log( obj, 'DEAD' );
+
+				} else {
+
+					obj.update( dt );
+
+				}
+
+			}, this );
+
+			this.playerShip.shooting && this.playerShip.fire();
 
 		}
 
@@ -258,6 +282,13 @@ class Game {
 
 				break;
 
+			case Keyboard.KEY_B:
+			case Keyboard.KEY_SPACEBAR:
+
+				this.playerShip.shooting = true;
+
+				break;
+
 			case Keyboard.KEY_P:
 
 				this.gameClock.running ?
@@ -307,6 +338,13 @@ class Game {
 			case Keyboard.KEY_RIGHT:
 
 				this.playerShip.moving = false;
+
+				break;
+
+			case Keyboard.KEY_B:
+			case Keyboard.KEY_SPACEBAR:
+
+				this.playerShip.shooting = false;
 
 				break;
 
