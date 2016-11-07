@@ -84,7 +84,7 @@ class Entity extends Collidable {
 
 		} else {
 
-			this.velocity.setLength( 0 );
+			this.velocity.setScalar( 0 );
 
 		}
 
