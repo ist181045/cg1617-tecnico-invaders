@@ -62,7 +62,7 @@ class Game {
 				75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000
 			);
 
-			camera.position.set( 0, 200, ( HEIGHT >> 1 ) + 100 );
+			camera.position.set( 0, 250, ( HEIGHT >> 1 ) + 150 );
 			camera.lookAt( self.scene.position );
 
 			camera.updateProjectionMatrix();
