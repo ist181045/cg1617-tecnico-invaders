@@ -115,12 +115,6 @@ class Game {
 
 		this.scene.add( new AxisHelper( 50 ) );
 
-		let [ nx, nz ] = [ 6, 3 ];
-		let [ segX, segZ ] = [
-			( this.field.width - 120 ) / nx,
-			( ( this.field.height >> 1 ) - 60 ) / nz
-		];
-
 		this.field.children.forEach( function ( b ) {
 
 			b.type === 'Barrier' && this.gameObjects.push( b );
@@ -135,6 +129,12 @@ class Game {
 
 		this.gameObjects.push( this.playerShip );
 		this.scene.add( this.playerShip );
+
+		let [ nx, nz ] = [ 6, 3 ];
+		let [ segX, segZ ] = [
+			( this.field.width - 120 ) / nx,
+			( ( this.field.height - 120 ) >> 1 ) / nz
+		];
 
 		for ( let i = 0; i < nz; ++i ) {
 
