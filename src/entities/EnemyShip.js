@@ -48,7 +48,15 @@ class EnemyShip extends Entity {
 
 	}
 
-	handleCollision ( other ) {
+	intersect ( other ) {
+
+		if ( other.type === 'Barrier' ) return other.intersect( this );
+
+		return super.intersect( other );
+
+	}
+
+	handleCollision ( other, dt ) {
 
 		switch ( other.type ) {
 
@@ -56,15 +64,18 @@ class EnemyShip extends Entity {
 
 				this.direction.negate();
 				this.velocity.negate();
+				this.update( dt );
 
 				other.direction.negate();
 				other.velocity.negate();
+				other.update( dt );
 
 				break;
 
-			case 'Field':
+			case 'Barrier':
 
-				/* TODO: Create Field and implement collisions with it */
+				/* Delegate to barrier */
+				other.handleCollision( this, dt );
 
 				break;
 
