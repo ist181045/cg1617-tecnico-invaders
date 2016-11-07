@@ -163,7 +163,6 @@ class Game {
 
 				this.scene.add( this.playerShip.bullets[0] );
 				this.gameObjects.push( this.playerShip.bullets[0] );
-				console.log( this.gameObjects );
 				this.playerShip.bullets.splice( 0, 1 );
 
 			}
@@ -186,7 +185,6 @@ class Game {
 
 					this.scene.remove( obj );
 					this.gameObjects.splice( index, 1 );
-					console.log( obj, 'DEAD' );
 
 				} else {
 
