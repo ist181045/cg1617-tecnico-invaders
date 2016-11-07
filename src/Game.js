@@ -44,7 +44,7 @@ class Game {
 		this.topCamera = (function ( self ) {
 
 			let camera = new OrthographicCamera(
-				~WIDTH >> 1, WIDTH >> 1, HEIGHT >> 1, ~HEIGHT >> 1, 1, 1000
+				~WIDTH >> 1, WIDTH >> 1, HEIGHT >> 1, ~HEIGHT >> 1, 1, 200
 			);
 
 			camera.position.set( 0, 100, 0 );
@@ -130,19 +130,18 @@ class Game {
 
 		if ( this.gameClock.running ) {
 
-			let l  = this.gameObjects.length;
 			let dt = this.gameClock.getDelta();
 
-			for ( let i = 0; i < l; ++i ) {
+			for ( let i = 0; i < this.gameObjects.length; ++i ) {
 
-				for ( let j = i + 1; j < l; ++j ) {
+				for ( let j = i + 1; j < this.gameObjects.length; ++j ) {
 
 					let [ o1, o2 ] = [ this.gameObjects[i], this.gameObjects[j] ];
 
 					o1.intersect( o2 ) && o1.handleCollision( o2 );
 
 				}
-				
+
 			}
 
 			this.gameObjects.forEach( ( obj ) => obj.update( dt ) );
@@ -239,9 +238,25 @@ class Game {
 
 				break;
 
-			default:
+			case Keyboard.KEY_W:
+
+				this.gameObjects.forEach( function ( obj ) {
+
+					obj.children.forEach( function ( child ) {
+
+						if ( child.type === 'Mesh' )  {
+
+							child.material.wireframe = !child.material.wireframe;
+
+						}
+
+					});
+
+				} );
 
 				break;
+
+			default: break;
 
 		}
 
@@ -250,6 +265,7 @@ class Game {
 	keyUp ( event ) {
 
 		switch ( event.keyCode ) {
+
 			case Keyboard.KEY_A:
 			case Keyboard.KEY_LEFT:
 			case Keyboard.KEY_D:
@@ -259,8 +275,8 @@ class Game {
 
 				break;
 
-			default:
-				break;
+			default: break;
+
 		}
 	}
 
