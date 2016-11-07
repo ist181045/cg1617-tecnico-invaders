@@ -34,7 +34,8 @@ class Bullet extends Entity {
 
 	update ( dt ) {
 
-		if ( this.velocity.length() < this.MAX_VELOCITY ) {
+		if ( this.direciton.lengthSq() > 0
+				&& this.velocity.length() < this.MAX_VELOCITY ) {
 
 			this.velocity.copy( this.direction ).multiplyScalar( this.MAX_VELOCITY );
 
