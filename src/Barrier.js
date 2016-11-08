@@ -51,6 +51,7 @@ class Barrier extends Collidable {
 				other.velocity.negate();
 				other.update( dt );
 
+				other.moving = false;
 				other.velocity.multiplyScalar( 0.3 );
 
 				break;
