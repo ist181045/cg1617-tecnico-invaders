@@ -19,6 +19,8 @@ class Entity extends Collidable {
 
 		this.type = 'Entity';
 
+		this.isEntity = true;
+
 		this.MAX_VELOCITY = 1000;
 
 		this.updateBoundries = true;
