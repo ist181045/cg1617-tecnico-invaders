@@ -20,6 +20,8 @@ class Collidable extends GameObject {
 
 		this.type = 'Collidable';
 
+		this.isCollidable = true;
+
 		this.updateBoundries = false;
 
 		this.boundingBox    = new Box3();

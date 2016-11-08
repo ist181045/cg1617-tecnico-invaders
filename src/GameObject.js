@@ -18,6 +18,8 @@ class GameObject extends Object3D {
 
 		this.type = 'GameObject';
 
+		this.isGameObject = true;
+
 		this.material = new MeshNormalMaterial();
 
 		this.position.set( x || 0, y || 0, z || 0 );
