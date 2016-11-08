@@ -22911,6 +22911,8 @@ var GameObject = function (_Object3D) {
 
     _this.type = 'GameObject';
 
+    _this.isGameObject = true;
+
     _this.material = new MeshNormalMaterial();
 
     _this.position.set(x || 0, y || 0, z || 0);
@@ -22967,6 +22969,8 @@ var Collidable = function (_GameObject) {
 		var _this = possibleConstructorReturn(this, (Collidable.__proto__ || Object.getPrototypeOf(Collidable)).call(this, x, y, z));
 
 		_this.type = 'Collidable';
+
+		_this.isCollidable = true;
 
 		_this.updateBoundries = false;
 
@@ -23092,6 +23096,7 @@ var Barrier = function (_Collidable) {
 					other.velocity.negate();
 					other.update(dt);
 
+					other.moving = false;
 					other.velocity.multiplyScalar(0.3);
 
 					break;
@@ -23552,6 +23557,8 @@ var Entity = function (_Collidable) {
 		var _this = possibleConstructorReturn(this, (Entity.__proto__ || Object.getPrototypeOf(Entity)).call(this, x, y, z));
 
 		_this.type = 'Entity';
+
+		_this.isEntity = true;
 
 		_this.MAX_VELOCITY = 1000;
 
@@ -24058,9 +24065,7 @@ var Game = function () {
 
 			this.scene.add(this.field);
 
-			this.playerShip.position.set(0, 0, (this.field.height >> 1) - 50);
-			this.playerShip.velocity.setScalar(0);
-			this.playerShip.updateBoundries = true;
+			this.playerShip = new PlayerShip(0, 0, (this.field.height >> 1) - 50, new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000));
 
 			this.gameObjects.push(this.playerShip);
 			this.scene.add(this.playerShip);
@@ -24088,46 +24093,40 @@ var Game = function () {
 	}, {
 		key: 'update',
 		value: function update() {
-			var _this = this;
 
 			if (this.gameClock.running) {
-				(function () {
 
-					var dt = _this.gameClock.getDelta();
+				var dt = this.gameClock.getDelta();
 
-					if (_this.playerShip.bullets.length > 0) {
+				if (this.playerShip.bullets.length > 0) {
 
-						_this.scene.add(_this.playerShip.bullets[0]);
-						_this.gameObjects.push(_this.playerShip.bullets[0]);
-						_this.playerShip.bullets.splice(0, 1);
+					this.scene.add(this.playerShip.bullets[0]);
+					this.gameObjects.push(this.playerShip.bullets[0]);
+					this.playerShip.bullets.splice(0, 1);
+				}
+
+				for (var i = 0; i < this.gameObjects.length; ++i) {
+
+					var o1 = this.gameObjects[i];
+
+					for (var j = i + 1; j < this.gameObjects.length; ++j) {
+
+						var o2 = this.gameObjects[j];
+
+						o1.intersect(o2) && o1.handleCollision(o2, dt);
 					}
 
-					for (var i = 0; i < _this.gameObjects.length; ++i) {
+					if (o1.isEntity && !o1.alive) {
 
-						for (var j = i + 1; j < _this.gameObjects.length; ++j) {
-							var _ref = [_this.gameObjects[i], _this.gameObjects[j]],
-							    o1 = _ref[0],
-							    o2 = _ref[1];
+						this.scene.remove(o1);
+						this.gameObjects.splice(i, 1);
+					} else {
 
-
-							o1.intersect(o2) && o1.handleCollision(o2, dt);
-						}
+						o1.update(dt);
 					}
+				}
 
-					_this.gameObjects.forEach(function (obj, index) {
-
-						if (obj.alive !== undefined && !obj.alive) {
-
-							this.scene.remove(obj);
-							this.gameObjects.splice(index, 1);
-						} else {
-
-							obj.update(dt);
-						}
-					}, _this);
-
-					_this.playerShip.shooting && _this.playerShip.fire();
-				})();
+				this.playerShip.shooting && this.playerShip.fire();
 			}
 
 			this.renderer.render(this.scene, this.camera);
@@ -24230,15 +24229,12 @@ var Game = function () {
 
 				case KEY_W:
 
-					this.gameObjects.forEach(function (obj) {
+					this.scene.traverse(function (node) {
 
-						obj.children.forEach(function (child) {
+						if (node.isMesh) {
 
-							if (child.type === 'Mesh') {
-
-								child.material.wireframe = !child.material.wireframe;
-							}
-						});
+							node.material.wireframe = !node.material.wireframe;
+						}
 					});
 
 					break;
