@@ -123,9 +123,8 @@ class Game {
 
 		this.scene.add( this.field );
 
-		this.playerShip.position.set( 0, 0, ( this.field.height >> 1 ) - 50 );
-		this.playerShip.velocity.setScalar( 0 );
-		this.playerShip.updateBoundries = true;
+		this.playerShip = new PlayerShip( 0, 0, ( this.field.height >> 1 ) - 50,
+			new PerspectiveCamera( 75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000 ) );
 
 		this.gameObjects.push( this.playerShip );
 		this.scene.add( this.playerShip );
@@ -172,30 +171,28 @@ class Game {
 
 			for ( let i = 0; i < this.gameObjects.length; ++i ) {
 
+				let o1 = this.gameObjects[i];
+
 				for ( let j = i + 1; j < this.gameObjects.length; ++j ) {
 
-					let [ o1, o2 ] = [ this.gameObjects[i], this.gameObjects[j] ];
+					let o2 = this.gameObjects[j];
 
 					o1.intersect( o2 ) && o1.handleCollision( o2, dt );
 
 				}
 
-			}
+				if ( o1.isEntity && !o1.alive ) {
 
-			this.gameObjects.forEach( function ( obj, index ) {
-
-				if ( obj.alive !== undefined && !obj.alive ) {
-
-					this.scene.remove( obj );
-					this.gameObjects.splice( index, 1 );
+					this.scene.remove( o1 );
+					this.gameObjects.splice( i, 1 );
 
 				} else {
 
-					obj.update( dt );
+					o1.update( dt );
 
 				}
 
-			}, this );
+			}
 
 			this.playerShip.shooting && this.playerShip.fire();
 
@@ -307,19 +304,15 @@ class Game {
 
 			case Keyboard.KEY_W:
 
-				this.gameObjects.forEach( function ( obj ) {
+				this.scene.traverse( function ( node ) {
 
-					obj.children.forEach( function ( child ) {
+					if ( node.isMesh ) {
 
-						if ( child.type === 'Mesh' )  {
+						node.material.wireframe = !node.material.wireframe;
 
-							child.material.wireframe = !child.material.wireframe;
+					}
 
-						}
-
-					});
-
-				} );
+				});
 
 				break;
 
