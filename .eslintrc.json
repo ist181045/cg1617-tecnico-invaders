@@ -39,6 +39,9 @@
 		],
 		"no-console": [
 			"off"
+		],
+		"no-fallthrough": [
+			"off"
 		]
 	}
 }
