@@ -20,9 +20,33 @@ class GameObject extends Object3D {
 
 		this.isGameObject = true;
 
-		this.material = new MeshNormalMaterial();
+		this.materials = [
+			new MeshNormalMaterial()
+		];
+
+		this.material = this.materials[0];
+
+		this.materialIndex = 0;
+
+		this.phong = false;
 
 		this.position.set( x || 0, y || 0, z || 0 );
+
+	}
+
+	changeMaterial ( index ) {
+
+		let newMaterial = this.materials[ index ];
+		this.materialIndex = index;
+
+		this.children.forEach( function ( child ) {
+
+			if ( child.isGameObject ) child.changeMaterial( index );
+			else if ( child.isMesh ) child.material = newMaterial;
+
+		});
+
+		this.material = newMaterial;
 
 	}
 
