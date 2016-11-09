@@ -11,11 +11,16 @@ import './lib/threejs/polyfills.js';
 
 import { AxisHelper } from './lib/threejs/extras/helpers/AxisHelper';
 
-import { Clock } from './lib/threejs/core/Clock';
-import { OrthographicCamera } from './lib/threejs/cameras/OrthographicCamera';
-import { PerspectiveCamera } from './lib/threejs/cameras/PerspectiveCamera';
 import { Scene } from './lib/threejs/scenes/Scene';
 import { WebGLRenderer } from './lib/threejs/renderers/WebGLRenderer';
+
+import { OrthographicCamera } from './lib/threejs/cameras/OrthographicCamera';
+import { PerspectiveCamera } from './lib/threejs/cameras/PerspectiveCamera';
+
+import { DirectionalLight } from './lib/threejs/lights/DirectionalLight';
+import { PointLight } from './lib/threejs/lights/PointLight';
+
+import { Clock } from './lib/threejs/core/Clock';
 
 import { WIDTH, HEIGHT } from './Constants';
 import { WINDOW_PIXEL_RATIO, WINDOW_WIDTH, WINDOW_HEIGHT } from './Constants';
@@ -81,6 +86,33 @@ class Game {
 
 		this.gameClock = new Clock( false );
 
+		this.sun = (function ( self ) {
+
+			let sun = new DirectionalLight( 0xffffff, 2 );
+
+			sun.position.set( self.field.height >> 2, 100, self.field.height >> 2 );
+			sun.target  = self.scene;
+
+			return sun;
+
+		})( this );
+
+		this.stars = (function ( self, n ) {
+
+			let stars = new Array();
+
+			for ( let i = 0; i < n; ++i ) {
+
+				stars.push( new PointLight( 0xffffff, 0.4 ) );
+
+			}
+
+			return stars;
+
+		}( this, 6 ));
+
+		this.lightsOn = false;
+
 	}
 
 	start () {
@@ -121,15 +153,19 @@ class Game {
 
 		}, this );
 
+		this.field.changeMaterial( 0 );
 		this.scene.add( this.field );
 
-		this.playerShip = new PlayerShip( 0, 0, ( this.field.height >> 1 ) - 50,
-			new PerspectiveCamera( 75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000 ) );
+		this.playerShip.moving = false;
+		this.playerShip.updateBoundries = true;
+		this.playerShip.velocity.setScalar( 0 );
+		this.playerShip.position.set( 0, 0, ( this.field.height >> 1 ) - 50 );
+		this.playerShip.changeMaterial( 0 );
 
 		this.gameObjects.push( this.playerShip );
 		this.scene.add( this.playerShip );
 
-		let [ nx, nz ] = [ 6, 3 ];
+		let [ nx, nz ] = [ 5, 2 ];
 		let [ segX, segZ ] = [
 			( this.field.width - 120 ) / nx,
 			( ( this.field.height - 120 ) >> 1 ) / nz
@@ -152,6 +188,23 @@ class Game {
 			}
 
 		}
+
+		this.lightsOn = false;
+		this.sun.visible = false;
+		this.scene.add( this.sun );
+
+		this.stars.forEach( function ( star ) {
+
+			star.position.set(
+				( this.field.width * ( Math.random() - 0.5 ) ) >> 1,
+				100,
+				( this.field.height * ( Math.random() - 0.5 ) ) >> 1
+			);
+
+			star.visible = false;
+			this.scene.add( star );
+
+		}, this );
 
 	}
 
@@ -201,6 +254,20 @@ class Game {
 		this.renderer.render( this.scene, this.camera );
 
 		window.requestAnimationFrame( this.update.bind( this ) );
+
+	}
+
+	updateMaterials () {
+
+		this.gameObjects.forEach( function ( obj ) {
+
+			let index = this.lightsOn ? (obj.phong ? 1 : 2) : 0;
+
+			obj.phong = !obj.phong;
+
+			obj.changeMaterial( index );
+
+		}, this );
 
 	}
 
@@ -287,11 +354,37 @@ class Game {
 
 				break;
 
+			case Keyboard.KEY_C:
+
+				this.stars.forEach( function( star ) {
+
+					star.visible = !star.visible;
+
+				});
+
+				break;
+
+			case Keyboard.KEY_L:
+
+				this.lightsOn = !this.lightsOn;
+				this.updateMaterials();
+
+				break;
+
+			case Keyboard.KEY_G:
+
+				this.updateMaterials();
+				break;
+
+			case Keyboard.KEY_N:
+
+				this.sun.visible = !this.sun.visible;
+
+				break;
+
 			case Keyboard.KEY_P:
 
-				this.gameClock.running ?
-					this.gameClock.stop() :
-					this.gameClock.start();
+				this.gameClock.running ? this.gameClock.stop() : this.gameClock.start();
 
 				break;
 
