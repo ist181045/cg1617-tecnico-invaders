@@ -10,6 +10,8 @@
 import { DodecahedronGeometry } from '../lib/threejs/geometries/DodecahedronGeometry';
 import { Mesh } from '../lib/threejs/objects/Mesh';
 import { Vector3 } from '../lib/threejs/math/Vector3';
+import { MeshLambertMaterial } from '../lib/threejs/materials/MeshLambertMaterial';
+import { MeshPhongMaterial } from '../lib/threejs/materials/MeshPhongMaterial';
 
 import Entity from './Entity.js';
 
@@ -32,6 +34,15 @@ class EnemyShip extends Entity {
 		}( this ));
 
 		this.moving = true;
+
+		this.materials.push( new MeshLambertMaterial( { color: 0xe04040 } ) );
+		this.materials.push( new MeshPhongMaterial(
+			{
+				color: 0xe04040,
+				specular: 0x777777,
+				shininess: 4
+			}
+		));
 
 		this.add( function( self ) {
 

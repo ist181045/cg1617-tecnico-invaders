@@ -10,6 +10,8 @@
 import { BoxGeometry } from '../lib/threejs/geometries/BoxGeometry';
 import { Mesh } from '../lib/threejs/objects/Mesh';
 import { Vector3 } from '../lib/threejs/math/Vector3';
+import { MeshLambertMaterial } from '../lib/threejs/materials/MeshLambertMaterial';
+import { MeshPhongMaterial } from '../lib/threejs/materials/MeshPhongMaterial';
 
 import Entity from './Entity';
 import Bullet from './Bullet';
@@ -42,8 +44,17 @@ class PlayerShip extends Entity {
 			return camera;
 
 		})( this );
-
 		this.add( this.camera );
+
+		this.materials.push( new MeshLambertMaterial( { color: 0x4040e0 } ) );
+		this.materials.push( new MeshPhongMaterial(
+			{
+				color: 0x4040e0,
+				specular: 0x777777,
+				shininess: 4
+			}
+		));
+
 		this.add( function( self ) {
 
 			/* TODO: Build player ship */
@@ -72,7 +83,7 @@ class PlayerShip extends Entity {
 
 		if ( this.reload === 0 ) {
 
-			let bullet = new Bullet( 0, 0, -20 );
+			let bullet = new Bullet( 0, 0, -20, this.materialIndex );
 
 			bullet.direction.set( -Math.sin( this.rotation.y ), 0, -Math.cos( this.rotation.y ) );
 			bullet.velocity.copy( bullet.direction ).multiplyScalar( bullet.MAX_VELOCITY );
