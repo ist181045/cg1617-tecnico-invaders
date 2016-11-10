@@ -7,8 +7,8 @@
  * @author: Sara Azinhal ( ist181700 )
  */
 
-import { Object3D } from './lib/threejs/core/Object3D';
-import { MeshNormalMaterial } from './lib/threejs/materials/MeshNormalMaterial';
+import { Object3D } from '../lib/threejs/core/Object3D';
+import { MeshNormalMaterial } from '../lib/threejs/materials/MeshNormalMaterial';
 
 class GameObject extends Object3D {
 

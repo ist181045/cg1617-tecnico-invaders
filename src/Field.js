@@ -7,8 +7,8 @@
  * @author: Sara Azinhal ( ist181700 )
  */
 
-import GameObject from './GameObject';
-import Barrier from './Barrier';
+import GameObject from './objects/GameObject';
+import Barrier from './objects/Barrier';
 
 class Field extends GameObject {
 
