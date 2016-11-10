@@ -9,8 +9,6 @@
 
 import './lib/threejs/polyfills.js';
 
-import { AxisHelper } from './lib/threejs/extras/helpers/AxisHelper';
-
 import { Scene } from './lib/threejs/scenes/Scene';
 import { WebGLRenderer } from './lib/threejs/renderers/WebGLRenderer';
 
@@ -144,8 +142,6 @@ class Game {
 		this.gameObjects = new Array();
 
 		/* Build the scene */
-
-		this.scene.add( new AxisHelper( 50 ) );
 
 		this.field.children.forEach( function ( b ) {
 
