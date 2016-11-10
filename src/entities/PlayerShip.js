@@ -94,7 +94,6 @@ class PlayerShip extends Entity {
 
 			lhalf.vertices = vertices;
 			lhalf.faces = faces;
-			lhalf.mergeVertices();
 			lhalf.computeFaceNormals();
 
 			let rhalf = lhalf.clone();
