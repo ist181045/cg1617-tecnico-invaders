@@ -7,9 +7,10 @@
  * @author: Sara Azinhal ( ist181700 )
  */
 
-import { BoxGeometry } from '../lib/threejs/geometries/BoxGeometry';
+import { Geometry } from '../lib/threejs/core/Geometry';
 import { Mesh } from '../lib/threejs/objects/Mesh';
 import { Vector3 } from '../lib/threejs/math/Vector3';
+import { Face3 } from '../lib/threejs/core/Face3';
 import { MeshLambertMaterial } from '../lib/threejs/materials/MeshLambertMaterial';
 import { MeshPhongMaterial } from '../lib/threejs/materials/MeshPhongMaterial';
 
@@ -57,9 +58,59 @@ class PlayerShip extends Entity {
 
 		this.add( function( self ) {
 
-			/* TODO: Build player ship */
+			let vertices = [
 
-			return new Mesh( new BoxGeometry( 10, 10, 10 ), self.material );
+				new Vector3( -1,    0,    1    ),
+				new Vector3( -1,    0.25, 1    ),
+				new Vector3( -1,    0,    0.66 ),
+				new Vector3( -0.33, 0,    1    ),
+				new Vector3(  0,   -0.33, 1    ),
+				new Vector3(  0,    0.33, 1    ),
+				new Vector3(  0,    0,    0.9  ),
+				new Vector3(  0,    0,   -1    )
+
+			];
+
+			let faces = [
+
+				new Face3( 0, 1, 2 ),
+				new Face3( 0, 2, 1 ),
+
+				new Face3( 0, 3, 2 ),
+
+				new Face3( 2, 3, 7 ),
+
+				new Face3( 3, 7, 4 ),
+
+				new Face3( 3, 4, 6 ),
+
+				new Face3( 3, 6, 5 ),
+
+				new Face3( 3, 5, 7 )
+
+			];
+
+			let lhalf = new Geometry();
+
+			lhalf.vertices = vertices;
+			lhalf.faces = faces;
+			lhalf.mergeVertices();
+			lhalf.computeFaceNormals();
+
+			let rhalf = lhalf.clone();
+			rhalf.scale( -1, 1, 1 );
+			rhalf.faces.forEach( function ( face ) {
+
+				let b = face.b;
+				face.b = face.c;
+				face.c = b;
+
+			} );
+			rhalf.computeFaceNormals();
+
+			lhalf.merge( rhalf );
+
+			return new Mesh( lhalf.scale( 30, 30, 30 ), self.material );
 
 		}( this ));
 
