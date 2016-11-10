@@ -7,10 +7,10 @@
  * @author: Sara Azinhal ( ist181700 )
  */
 
-import { Mesh } from './lib/threejs/objects/Mesh';
-import { BoxGeometry } from './lib/threejs/geometries/BoxGeometry';
-import { MeshLambertMaterial } from './lib/threejs/materials/MeshLambertMaterial';
-import { MeshPhongMaterial } from './lib/threejs/materials/MeshPhongMaterial';
+import { Mesh } from '../lib/threejs/objects/Mesh';
+import { BoxGeometry } from '../lib/threejs/geometries/BoxGeometry';
+import { MeshLambertMaterial } from '../lib/threejs/materials/MeshLambertMaterial';
+import { MeshPhongMaterial } from '../lib/threejs/materials/MeshPhongMaterial';
 
 import Collidable from './Collidable';
 

@@ -9,7 +9,7 @@
 
 import { Vector3 }  from '../lib/threejs/math/Vector3';
 
-import Collidable from '../Collidable';
+import Collidable from '../objects/Collidable';
 
 class Entity extends Collidable {
 

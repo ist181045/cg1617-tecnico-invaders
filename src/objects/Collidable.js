@@ -7,8 +7,8 @@
  * @author: Sara Azinhal ( ist181700 )
  */
 
-import { Box3 } from './lib/threejs/math/Box3';
-import { Sphere } from './lib/threejs/math/Sphere';
+import { Box3 } from '../lib/threejs/math/Box3';
+import { Sphere } from '../lib/threejs/math/Sphere';
 
 import GameObject from './GameObject';
 
