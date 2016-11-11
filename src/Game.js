@@ -88,7 +88,7 @@ class Game {
 
 			let sun = new DirectionalLight( 0xffffff, 2 );
 
-			sun.position.set( self.field.height >> 2, 100, self.field.height >> 2 );
+			sun.position.set( self.field.width >> 2, 100, self.field.height >> 2 );
 			sun.target  = self.scene;
 
 			return sun;
@@ -192,9 +192,9 @@ class Game {
 		this.stars.forEach( function ( star ) {
 
 			star.position.set(
-				( this.field.width * ( Math.random() - 0.5 ) ) >> 1,
+				this.field.width * ( Math.random() - 0.5 ),
 				100,
-				( this.field.height * ( Math.random() - 0.5 ) ) >> 1
+				this.field.height * ( Math.random() - 0.5 )
 			);
 
 			star.visible = false;
