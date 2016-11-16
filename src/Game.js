@@ -91,7 +91,7 @@ class Game {
 		this.camera = this.cameras[0];
 
 		this.gameObjects = new Array();
-		
+
 		this.playerShip = new PlayerShip( 0, 0, ( this.field.height >> 1 ) - 50,
 			new PerspectiveCamera( 75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000 ) );
 
@@ -254,14 +254,6 @@ class Game {
 
 					let o1 = this.gameObjects[i];
 
-					for ( let j = i + 1; j < this.gameObjects.length; ++j ) {
-
-						let o2 = this.gameObjects[j];
-
-						o1.intersect( o2 ) && o1.handleCollision( o2, dt );
-
-					}
-
 					if ( o1.isEntity && !o1.alive ) {
 
 						this.scene.remove( o1 );
@@ -270,6 +262,14 @@ class Game {
 					} else {
 
 						o1.update( dt );
+
+					}
+
+					for ( let j = i + 1; j < this.gameObjects.length; ++j ) {
+
+						let o2 = this.gameObjects[j];
+
+						o1.intersect( o2 ) && o1.handleCollision( o2, dt );
 
 					}
 
