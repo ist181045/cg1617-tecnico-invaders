@@ -222,6 +222,9 @@ class Game {
 
 		}, this );
 
+		this.gameOver = false;
+		this.gameWon = true;
+
 	}
 
 	update () {
@@ -354,8 +357,12 @@ class Game {
 				case Keyboard.KEY_2: /* Perspective (back camera) */
 				case Keyboard.KEY_3: /* Perspective (player view camera) */
 
-					this.camera = this.cameras[ event.keyCode - Keyboard.KEY_1 ];
-					this.resize();
+					if ( this.gameClock.running ) {
+
+						this.camera = this.cameras[ event.keyCode - Keyboard.KEY_1 ];
+						this.resize();
+
+					}
 
 					break;
 
@@ -432,7 +439,7 @@ class Game {
 						if ( node.isMesh ) {
 
 							node.material.wireframe = !node.material.wireframe;
-							
+
 						}
 
 					});
