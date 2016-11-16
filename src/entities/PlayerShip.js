@@ -25,7 +25,6 @@ class PlayerShip extends Entity {
 
 		this.type = 'PlayerShip';
 
-		this.bullets  = new Array();
 		this.shooting = false;
 		this.reload   = 0;
 
