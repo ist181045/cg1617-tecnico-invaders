@@ -96,6 +96,7 @@ class EnemyShip extends Entity {
 
 				this.alive = false;
 				other.alive = false;
+				--EnemyShip.count;
 
 				break;
 
