@@ -16,7 +16,7 @@ import Entity from './Entity';
 
 class Bullet extends Entity {
 
-	constructor ( x, y, z, matIndex = 0 ) {
+	constructor ( x, y, z ) {
 
 		super( x, y, z );
 
@@ -37,7 +37,7 @@ class Bullet extends Entity {
 
 		this.add( function( self ) {
 
-			return new Mesh( new BoxGeometry( 4, 4, 10 ), self.materials[ matIndex ] );
+			return new Mesh( new BoxGeometry( 4, 4, 10 ), self.materials[0] );
 
 		}( this ) );
 
