@@ -113,6 +113,8 @@ class Game {
 
 		this.gameOver = false;
 
+		this.gameWon = true;
+
 	}
 
 	start () {
@@ -214,39 +216,49 @@ class Game {
 
 			let dt = this.gameClock.getDelta();
 
-			if ( this.playerShip.shooting ) {
+			if ( EnemyShip.count === 0 || !this.playerShip.alive ) {
 
-				let playerBullet = this.playerShip.fire();
+				this.gameOver = true;
+				this.gameWon = this.playerShip.alive;
+				this.gameClock.stop();
 
-				if ( playerBullet !== null ) {
+			} else {
 
-					this.scene.add( playerBullet );
-					this.gameObjects.push( playerBullet );
+				if ( this.playerShip.shooting ) {
 
-				}
+					let playerBullet = this.playerShip.fire();
 
-			}
+					if ( playerBullet !== null ) {
 
-			for ( let i = 0; i < this.gameObjects.length; ++i ) {
+						this.scene.add( playerBullet );
+						this.gameObjects.push( playerBullet );
 
-				let o1 = this.gameObjects[i];
-
-				for ( let j = i + 1; j < this.gameObjects.length; ++j ) {
-
-					let o2 = this.gameObjects[j];
-
-					o1.intersect( o2 ) && o1.handleCollision( o2, dt );
+					}
 
 				}
 
-				if ( o1.isEntity && !o1.alive ) {
+				for ( let i = 0; i < this.gameObjects.length; ++i ) {
 
-					this.scene.remove( o1 );
-					this.gameObjects.splice( i, 1 );
+					let o1 = this.gameObjects[i];
 
-				} else {
+					for ( let j = i + 1; j < this.gameObjects.length; ++j ) {
 
-					o1.update( dt );
+						let o2 = this.gameObjects[j];
+
+						o1.intersect( o2 ) && o1.handleCollision( o2, dt );
+
+					}
+
+					if ( o1.isEntity && !o1.alive ) {
+
+						this.scene.remove( o1 );
+						this.gameObjects.splice( i, 1 );
+
+					} else {
+
+						o1.update( dt );
+
+					}
 
 				}
 
@@ -309,111 +321,120 @@ class Game {
 
 	keyDown ( event ) {
 
-		/* TODO: Other keybindings for other game objects */
+		if ( this.gameOver ) {
 
-		switch ( event.keyCode ) {
-
-			case Keyboard.KEY_1:
-
-				this.camera = this.topCamera;
-				this.resize();
-
-				break;
-
-			case Keyboard.KEY_2:
-
-				this.camera = this.backCamera;
-				this.resize();
-
-				break;
-
-			case Keyboard.KEY_3:
-
-				this.camera = this.playerShip.camera;
-				this.resize();
-
-				break;
-
-			case Keyboard.KEY_A:
-			case Keyboard.KEY_LEFT:
-
-				if ( !this.playerShip.moving ) this.playerShip.moving = true;
-				this.playerShip.setDirection( -1, 0, 0 );
-
-				break;
-
-			case Keyboard.KEY_D:
-			case Keyboard.KEY_RIGHT:
-
-				if ( !this.playerShip.moving ) this.playerShip.moving = true;
-				this.playerShip.setDirection( 1, 0, 0 );
-
-				break;
-
-			case Keyboard.KEY_B:
-			case Keyboard.KEY_SPACEBAR:
-
-				this.playerShip.shooting = true;
-
-				break;
-
-			case Keyboard.KEY_C:
-
-				this.stars.forEach( function( star ) {
-
-					star.visible = !star.visible;
-
-				});
-
-				break;
-
-			case Keyboard.KEY_L:
-
-				this.lightsOn = !this.lightsOn;
-				this.updateMaterials();
-
-				break;
-
-			case Keyboard.KEY_G:
-
-				this.updateMaterials();
-				break;
-
-			case Keyboard.KEY_N:
-
-				this.sun.visible = !this.sun.visible;
-
-				break;
-
-			case Keyboard.KEY_P:
-
-				this.gameClock.running ? this.gameClock.stop() : this.gameClock.start();
-
-				break;
-
-			case Keyboard.KEY_R:
-
-				this.gameClock.stop();
+			if ( event.keyCode === Keyboard.KEY_R ) {
+				
+				this.gameOver = false;
 				this.setup();
 
-				break;
+			}
 
-			case Keyboard.KEY_W:
+		} else {
 
-				this.scene.traverse( function ( node ) {
+			switch ( event.keyCode ) {
 
-					if ( node.isMesh ) {
+				case Keyboard.KEY_1:
 
-						node.material.wireframe = !node.material.wireframe;
+					this.camera = this.topCamera;
+					this.resize();
 
-					}
+					break;
 
-				});
+				case Keyboard.KEY_2:
 
-				break;
+					this.camera = this.backCamera;
+					this.resize();
 
-			default: break;
+					break;
 
+				case Keyboard.KEY_3:
+
+					this.camera = this.playerShip.camera;
+					this.resize();
+
+					break;
+
+				case Keyboard.KEY_A:
+				case Keyboard.KEY_LEFT:
+
+					if ( !this.playerShip.moving ) this.playerShip.moving = true;
+					this.playerShip.setDirection( -1, 0, 0 );
+
+					break;
+
+				case Keyboard.KEY_D:
+				case Keyboard.KEY_RIGHT:
+
+					if ( !this.playerShip.moving ) this.playerShip.moving = true;
+					this.playerShip.setDirection( 1, 0, 0 );
+
+					break;
+
+				case Keyboard.KEY_B:
+				case Keyboard.KEY_SPACEBAR:
+
+					this.playerShip.shooting = true;
+
+					break;
+
+				case Keyboard.KEY_C:
+
+					this.stars.forEach( function( star ) {
+
+						star.visible = !star.visible;
+
+					});
+
+					break;
+
+				case Keyboard.KEY_L:
+
+					this.lightsOn = !this.lightsOn;
+					this.updateMaterials();
+
+					break;
+
+				case Keyboard.KEY_G:
+
+					this.updateMaterials();
+					break;
+
+				case Keyboard.KEY_N:
+
+					this.sun.visible = !this.sun.visible;
+
+					break;
+
+				case Keyboard.KEY_P:
+
+					this.gameClock.running ? this.gameClock.stop() : this.gameClock.start();
+
+					break;
+
+				case Keyboard.KEY_R:
+
+					this.gameOver && this.setup();
+
+					break;
+
+				case Keyboard.KEY_W:
+
+					this.scene.traverse( function ( node ) {
+
+						if ( node.isMesh ) {
+
+							node.material.wireframe = !node.material.wireframe;
+
+						}
+
+					});
+
+					break;
+
+				default: break;
+
+			}
 		}
 
 	}
