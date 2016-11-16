@@ -111,6 +111,8 @@ class Game {
 
 		this.lightsOn = false;
 
+		this.gameOver = false;
+
 	}
 
 	start () {
