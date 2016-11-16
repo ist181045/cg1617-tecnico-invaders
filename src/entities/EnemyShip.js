@@ -50,6 +50,8 @@ class EnemyShip extends Entity {
 
 		}( this ));
 
+		++EnemyShip.count;
+
 	}
 
 	setDirection ( x, y, z ) {
@@ -103,5 +105,7 @@ class EnemyShip extends Entity {
 	}
 
 }
+
+EnemyShip.count = 0;
 
 export default EnemyShip;

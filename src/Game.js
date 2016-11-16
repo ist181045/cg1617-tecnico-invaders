@@ -167,6 +167,8 @@ class Game {
 			( ( this.field.height - 120 ) >> 1 ) / nz
 		];
 
+		EnemyShip.count = 0;
+
 		for ( let i = 0; i < nz; ++i ) {
 
 			for ( let j = 0; j < nx; ++j ) {
