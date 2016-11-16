@@ -22863,7 +22863,7 @@ var GameObject = function (_Object3D) {
 		value: function changeMaterial(index) {
 
 			var newMaterial = this.materials[index];
-			this.materialIndex = index;
+			newMaterial.wireframe = this.material.wireframe;
 
 			this.children.forEach(function (child) {
 
@@ -22871,6 +22871,7 @@ var GameObject = function (_Object3D) {
 			});
 
 			this.material = newMaterial;
+			this.materialIndex = index;
 		}
 	}]);
 	return GameObject;
@@ -23295,12 +23296,14 @@ var Collidable = function (_GameObject) {
 var Barrier = function (_Collidable) {
 	inherits(Barrier, _Collidable);
 
-	function Barrier(x, y, z, w, h, l) {
+	function Barrier(x, y, z, w, h, l, n) {
 		classCallCheck(this, Barrier);
 
 		var _this = possibleConstructorReturn(this, (Barrier.__proto__ || Object.getPrototypeOf(Barrier)).call(this, x, y, z));
 
 		_this.type = 'Barrier';
+
+		_this.normal = n.normalize();
 
 		_this.updateBoundries = true;
 
@@ -23331,9 +23334,6 @@ var Barrier = function (_Collidable) {
 		key: 'handleCollision',
 		value: function handleCollision(other, dt) {
 
-			/* HACK: Calculating normal due to the field's centered position */
-			var n = this.position.clone().negate().normalize();
-
 			switch (other.type) {
 
 				case 'PlayerShip':
@@ -23349,8 +23349,8 @@ var Barrier = function (_Collidable) {
 
 				case 'EnemyShip':
 
-					other.direction.reflect(n);
-					other.velocity.reflect(n);
+					other.direction.reflect(this.normal);
+					other.velocity.reflect(this.normal);
 					other.update(dt);
 
 					break;
@@ -23394,10 +23394,13 @@ var Field = function (_GameObject) {
 		_this.width = w;
 		_this.height = h;
 
-		_this.add(new Barrier((x - w >> 1) + 2, y, z, 4, 10, h));
-		_this.add(new Barrier((x + w >> 1) - 2, y, z, 4, 10, h));
-		_this.add(new Barrier(x, y, (z - h >> 1) + 2, w, 10, 4));
-		_this.add(new Barrier(x, y, (z + h >> 1) - 2, w, 10, 4));
+		_this.add(new Barrier((x - w >> 1) + 2, y, z, 4, 10, h, new Vector3(-1, 0, 0)));
+
+		_this.add(new Barrier((x + w >> 1) - 2, y, z, 4, 10, h, new Vector3(1, 0, 0)));
+
+		_this.add(new Barrier(x, y, (z - h >> 1) + 2, w, 10, 4, new Vector3(0, 0, 1)));
+
+		_this.add(new Barrier(x, y, (z + h >> 1) - 2, w, 10, 4, new Vector3(0, 0, -1)));
 
 		return _this;
 	}
@@ -23806,7 +23809,7 @@ var Entity = function (_Collidable) {
 
 		_this.isEntity = true;
 
-		_this.MAX_VELOCITY = 1000;
+		_this.MAX_VELOCITY = 400;
 
 		_this.updateBoundries = true;
 
@@ -23905,7 +23908,7 @@ var EnemyShip = function (_Entity) {
 
 		_this.type = 'EnemyShip';
 
-		_this.MAX_VELOCITY = 200;
+		_this.MAX_VELOCITY = 70;
 
 		_this.direction = function (self) {
 			var x = Math.random() - 0.5,
@@ -23928,6 +23931,8 @@ var EnemyShip = function (_Entity) {
 
 			return new Mesh(new DodecahedronGeometry(15, 0), self.material);
 		}(_this));
+
+		++EnemyShip.count;
 
 		return _this;
 	}
@@ -23976,6 +23981,7 @@ var EnemyShip = function (_Entity) {
 
 					this.alive = false;
 					other.alive = false;
+					--EnemyShip.count;
 
 					break;
 
@@ -23987,6 +23993,8 @@ var EnemyShip = function (_Entity) {
 	}]);
 	return EnemyShip;
 }(Entity);
+
+EnemyShip.count = 0;
 
 /**
  * CG Space Invaders
@@ -24001,7 +24009,6 @@ var Bullet = function (_Entity) {
 	inherits(Bullet, _Entity);
 
 	function Bullet(x, y, z) {
-		var matIndex = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
 		classCallCheck(this, Bullet);
 
 		var _this = possibleConstructorReturn(this, (Bullet.__proto__ || Object.getPrototypeOf(Bullet)).call(this, x, y, z));
@@ -24021,7 +24028,7 @@ var Bullet = function (_Entity) {
 
 		_this.add(function (self) {
 
-			return new Mesh(new BoxGeometry(4, 4, 10), self.materials[matIndex]);
+			return new Mesh(new BoxGeometry(4, 4, 10), self.materials[0]);
 		}(_this));
 
 		return _this;
@@ -24072,14 +24079,8 @@ var PlayerShip = function (_Entity) {
 
 		var _this = possibleConstructorReturn(this, (PlayerShip.__proto__ || Object.getPrototypeOf(PlayerShip)).call(this, x, y, z));
 
-		if (camera === undefined || camera.type !== 'PerspectiveCamera') {
-
-			throw new TypeError('PlayerShip: \'camera\' undefined or not PerspectiveCamera');
-		}
-
 		_this.type = 'PlayerShip';
 
-		_this.bullets = new Array();
 		_this.shooting = false;
 		_this.reload = 0;
 
@@ -24151,15 +24152,20 @@ var PlayerShip = function (_Entity) {
 
 			if (this.reload === 0) {
 
-				var bullet = new Bullet(0, 0, -20, this.materialIndex);
+				var bullet = new Bullet(0, 0, -20);
+				bullet.material.wireframe = this.material.wireframe;
+				bullet.changeMaterial(this.materialIndex);
 
 				bullet.direction.set(-Math.sin(this.rotation.y), 0, -Math.cos(this.rotation.y));
 				bullet.velocity.copy(bullet.direction).multiplyScalar(bullet.MAX_VELOCITY);
 				bullet.position.applyMatrix4(this.matrixWorld);
 
-				this.bullets.push(bullet);
 				this.reload = 25;
+
+				return bullet;
 			}
+
+			return null;
 		}
 	}, {
 		key: 'intersect',
@@ -24246,10 +24252,10 @@ var KEY_L = 76;
 
 var KEY_N = 78;
 
-var KEY_P = 80;
+
 
 var KEY_R = 82;
-
+var KEY_S = 83;
 
 
 
@@ -24280,48 +24286,57 @@ var Game = function () {
 			return renderer;
 		}();
 
+		this.gameClock = new Clock(false);
+
 		this.field = new Field(0, 0, 0, WIDTH - 10, HEIGHT - 10);
 
-		this.topCamera = function (self) {
+		this.cameras = function (self) {
 
-			var camera = new OrthographicCamera(~WIDTH >> 1, WIDTH >> 1, HEIGHT >> 1, ~HEIGHT >> 1, 1, 200);
+			var cameras = new Array();
 
-			camera.position.set(0, 100, 0);
-			camera.lookAt(self.scene.position);
+			/* Ortho camera (bird's eye) */
+			cameras.push(function () {
 
-			camera.updateProjectionMatrix();
+				var camera = new OrthographicCamera(~WIDTH >> 1, WIDTH >> 1, HEIGHT >> 1, ~HEIGHT >> 1, 1, 200);
 
-			return camera;
+				camera.position.set(0, 100, 0);
+				camera.lookAt(self.scene.position);
+
+				camera.updateProjectionMatrix();
+
+				return camera;
+			}());
+
+			/* Back perspective camera */
+			cameras.push(function () {
+
+				var camera = new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000);
+
+				camera.position.set(0, 250, (self.field.height >> 1) + 150);
+				camera.lookAt(self.scene.position);
+
+				camera.updateProjectionMatrix();
+
+				return camera;
+			}());
+
+			return cameras;
 		}(this);
-		this.backCamera = function (self) {
-
-			var camera = new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000);
-
-			camera.position.set(0, 250, (self.field.height >> 1) + 150);
-			camera.lookAt(self.scene.position);
-
-			camera.updateProjectionMatrix();
-
-			return camera;
-		}(this);
-		this.camera = this.topCamera;
-
-		this.playerShip = new PlayerShip(0, 0, (this.field.height >> 1) - 50, new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000));
+		this.camera = this.cameras[0];
 
 		this.gameObjects = new Array();
 
-		this.gameClock = new Clock(false);
+		this.playerShip = new PlayerShip(0, 0, (this.field.height >> 1) - 50, new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000));
 
 		this.sun = function (self) {
 
 			var sun = new DirectionalLight(0xffffff, 2);
 
-			sun.position.set(self.field.width >> 2, 100, self.field.height >> 2);
+			sun.position.set(~self.field.width >> 2, 100, self.field.height >> 2);
 			sun.target = self.scene;
 
 			return sun;
 		}(this);
-
 		this.stars = function (self, n) {
 
 			var stars = new Array();
@@ -24335,6 +24350,9 @@ var Game = function () {
 		}(this, 6);
 
 		this.lightsOn = false;
+
+		this.gameOver = false;
+		this.gameWon = true;
 	}
 
 	createClass(Game, [{
@@ -24382,6 +24400,9 @@ var Game = function () {
 			this.playerShip.position.set(0, 0, (this.field.height >> 1) - 50);
 			this.playerShip.changeMaterial(0);
 
+			this.cameras.length > 2 && this.cameras.pop();
+			this.cameras.push(this.playerShip.camera);
+
 			this.gameObjects.push(this.playerShip);
 			this.scene.add(this.playerShip);
 
@@ -24416,6 +24437,9 @@ var Game = function () {
 				star.visible = false;
 				this.scene.add(star);
 			}, this);
+
+			this.gameOver = false;
+			this.gameWon = true;
 		}
 	}, {
 		key: 'update',
@@ -24425,35 +24449,45 @@ var Game = function () {
 
 				var dt = this.gameClock.getDelta();
 
-				if (this.playerShip.bullets.length > 0) {
+				if (EnemyShip.count === 0 || !this.playerShip.alive) {
 
-					this.scene.add(this.playerShip.bullets[0]);
-					this.gameObjects.push(this.playerShip.bullets[0]);
-					this.playerShip.bullets.splice(0, 1);
-				}
+					this.gameOver = true;
+					this.gameWon = this.playerShip.alive;
+					this.gameClock.stop();
+				} else {
 
-				for (var i = 0; i < this.gameObjects.length; ++i) {
+					if (this.playerShip.shooting) {
 
-					var o1 = this.gameObjects[i];
+						var playerBullet = this.playerShip.fire();
 
-					for (var j = i + 1; j < this.gameObjects.length; ++j) {
+						if (playerBullet !== null) {
 
-						var o2 = this.gameObjects[j];
-
-						o1.intersect(o2) && o1.handleCollision(o2, dt);
+							this.scene.add(playerBullet);
+							this.gameObjects.push(playerBullet);
+						}
 					}
 
-					if (o1.isEntity && !o1.alive) {
+					for (var i = 0; i < this.gameObjects.length; ++i) {
 
-						this.scene.remove(o1);
-						this.gameObjects.splice(i, 1);
-					} else {
+						var o1 = this.gameObjects[i];
 
-						o1.update(dt);
+						for (var j = i + 1; j < this.gameObjects.length; ++j) {
+
+							var o2 = this.gameObjects[j];
+
+							o1.intersect(o2) && o1.handleCollision(o2, dt);
+						}
+
+						if (o1.isEntity && !o1.alive) {
+
+							this.scene.remove(o1);
+							this.gameObjects.splice(i, 1);
+						} else {
+
+							o1.update(dt);
+						}
 					}
 				}
-
-				this.playerShip.shooting && this.playerShip.fire();
 			}
 
 			this.renderer.render(this.scene, this.camera);
@@ -24506,109 +24540,113 @@ var Game = function () {
 		key: 'keyDown',
 		value: function keyDown(event) {
 
-			/* TODO: Other keybindings for other game objects */
+			if (this.gameOver) {
 
-			switch (event.keyCode) {
+				/* Restart the game */
+				if (event.keyCode === KEY_R) {
 
-				case KEY_1:
-
-					this.camera = this.topCamera;
-					this.resize();
-
-					break;
-
-				case KEY_2:
-
-					this.camera = this.backCamera;
-					this.resize();
-
-					break;
-
-				case KEY_3:
-
-					this.camera = this.playerShip.camera;
-					this.resize();
-
-					break;
-
-				case KEY_A:
-				case KEY_LEFT:
-
-					if (!this.playerShip.moving) this.playerShip.moving = true;
-					this.playerShip.setDirection(-1, 0, 0);
-
-					break;
-
-				case KEY_D:
-				case KEY_RIGHT:
-
-					if (!this.playerShip.moving) this.playerShip.moving = true;
-					this.playerShip.setDirection(1, 0, 0);
-
-					break;
-
-				case KEY_B:
-				case KEY_SPACEBAR:
-
-					this.playerShip.shooting = true;
-
-					break;
-
-				case KEY_C:
-
-					this.stars.forEach(function (star) {
-
-						star.visible = !star.visible;
-					});
-
-					break;
-
-				case KEY_L:
-
-					this.lightsOn = !this.lightsOn;
-					this.updateMaterials();
-
-					break;
-
-				case KEY_G:
-
-					this.updateMaterials();
-					break;
-
-				case KEY_N:
-
-					this.sun.visible = !this.sun.visible;
-
-					break;
-
-				case KEY_P:
-
-					this.gameClock.running ? this.gameClock.stop() : this.gameClock.start();
-
-					break;
-
-				case KEY_R:
-
-					this.gameClock.stop();
+					this.gameOver = false;
 					this.setup();
+				}
+			} else {
 
-					break;
+				switch (event.keyCode) {
 
-				case KEY_W:
+					/* Toggle cameras */
+					case KEY_1: /* Orthographic (top bird's eye camera) */
+					case KEY_2: /* Perspective (back camera) */
+					case KEY_3:
+						/* Perspective (player view camera) */
 
-					this.scene.traverse(function (node) {
+						if (this.gameClock.running) {
 
-						if (node.isMesh) {
-
-							node.material.wireframe = !node.material.wireframe;
+							this.camera = this.cameras[event.keyCode - KEY_1];
+							this.resize();
 						}
-					});
 
-					break;
+						break;
 
-				default:
-					break;
+					/* Player movement: Left */
+					case KEY_A:
+					case KEY_LEFT:
 
+						if (!this.playerShip.moving) this.playerShip.moving = true;
+						this.playerShip.setDirection(-1, 0, 0);
+
+						break;
+
+					/* Player movement: Right */
+					case KEY_D:
+					case KEY_RIGHT:
+
+						if (!this.playerShip.moving) this.playerShip.moving = true;
+						this.playerShip.setDirection(1, 0, 0);
+
+						break;
+
+					/* Player action: Toggle shooting */
+					case KEY_B:
+					case KEY_SPACEBAR:
+
+						this.playerShip.shooting = true;
+
+						break;
+
+					/* Show / hide stars */
+					case KEY_C:
+
+						this.stars.forEach(function (star) {
+
+							star.visible = !star.visible;
+						});
+
+						break;
+
+					/* Toggle lights */
+					case KEY_L:
+
+						this.lightsOn = !this.lightsOn;
+						this.updateMaterials();
+
+						break;
+
+					/* Toggle Gouraud / Lambert Shading */
+					case KEY_G:
+
+						this.updateMaterials();
+						break;
+
+					/* Toggle the sun (day/night modes) */
+					case KEY_N:
+
+						this.sun.visible = !this.sun.visible;
+
+						break;
+
+					/* Start / Stop the game (clock) */
+					case KEY_S:
+
+						this.gameClock.running ? this.gameClock.stop() : this.gameClock.start();
+
+						break;
+
+					/* Toggle wireframe of the objects in the scene */
+					case KEY_W:
+
+						this.scene.traverse(function (node) {
+
+							if (node.isMesh) {
+
+								node.material.wireframe = !node.material.wireframe;
+							}
+						});
+
+						break;
+
+					default:
+						break;
+
+				}
 			}
 		}
 	}, {
