@@ -214,11 +214,16 @@ class Game {
 
 			let dt = this.gameClock.getDelta();
 
-			if ( this.playerShip.bullets.length > 0 ) {
+			if ( this.playerShip.shooting ) {
 
-				this.scene.add( this.playerShip.bullets[0] );
-				this.gameObjects.push( this.playerShip.bullets[0] );
-				this.playerShip.bullets.splice( 0, 1 );
+				let playerBullet = this.playerShip.fire();
+
+				if ( playerBullet !== null ) {
+
+					this.scene.add( playerBullet );
+					this.gameObjects.push( playerBullet );
+
+				}
 
 			}
 
@@ -246,8 +251,6 @@ class Game {
 				}
 
 			}
-
-			this.playerShip.shooting && this.playerShip.fire();
 
 		}
 

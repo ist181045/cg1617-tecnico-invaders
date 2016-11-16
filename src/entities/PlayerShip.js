@@ -134,15 +134,19 @@ class PlayerShip extends Entity {
 		if ( this.reload === 0 ) {
 
 			let bullet = new Bullet( 0, 0, -20, this.materialIndex );
+			bullet.material.wireframe = this.material.wireframe;
 
 			bullet.direction.set( -Math.sin( this.rotation.y ), 0, -Math.cos( this.rotation.y ) );
 			bullet.velocity.copy( bullet.direction ).multiplyScalar( bullet.MAX_VELOCITY );
 			bullet.position.applyMatrix4( this.matrixWorld );
 
-			this.bullets.push( bullet );
 			this.reload = 25;
 
+			return bullet;
+
 		}
+
+		return null;
 
 	}
 
