@@ -23,7 +23,7 @@ class EnemyShip extends Entity {
 
 		this.type = 'EnemyShip';
 
-		this.MAX_VELOCITY = 200;
+		this.MAX_VELOCITY = 70;
 
 		this.direction = (function( self ) {
 
