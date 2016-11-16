@@ -16,11 +16,13 @@ import Collidable from './Collidable';
 
 class Barrier extends Collidable {
 
-	constructor ( x, y, z, w, h, l ) {
+	constructor ( x, y, z, w, h, l, n ) {
 
 		super( x, y, z );
 
 		this.type = 'Barrier';
+
+		this.normal = n.normalize();
 
 		this.updateBoundries = true;
 
@@ -51,9 +53,6 @@ class Barrier extends Collidable {
 
 	handleCollision ( other, dt ) {
 
-		/* HACK: Calculating normal due to the field's centered position */
-		let n = this.position.clone().negate().normalize();
-
 		switch ( other.type ) {
 
 			case 'PlayerShip':
@@ -69,8 +68,8 @@ class Barrier extends Collidable {
 
 			case 'EnemyShip':
 
-				other.direction.reflect( n );
-				other.velocity.reflect( n );
+				other.direction.reflect( this.normal );
+				other.velocity.reflect( this.normal );
 				other.update( dt );
 
 				break;
