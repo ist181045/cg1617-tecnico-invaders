@@ -406,7 +406,7 @@ class Game {
 
 					break;
 
-				case Keyboard.KEY_P:
+				case Keyboard.KEY_S:
 
 					this.gameClock.running ? this.gameClock.stop() : this.gameClock.start();
 
