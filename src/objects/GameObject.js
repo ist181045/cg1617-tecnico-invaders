@@ -37,7 +37,7 @@ class GameObject extends Object3D {
 	changeMaterial ( index ) {
 
 		let newMaterial = this.materials[ index ];
-		newMaterial.wireframe = this.wireframe;
+		newMaterial.wireframe = this.material.wireframe;
 		this.materialIndex = index;
 
 		this.children.forEach( function ( child ) {
