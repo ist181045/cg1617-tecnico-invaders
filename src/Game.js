@@ -34,7 +34,6 @@ class Game {
 	constructor () {
 
 		this.scene = new Scene();
-
 		this.renderer = (function () {
 
 			let renderer = new WebGLRenderer();
@@ -46,10 +45,9 @@ class Game {
 
 		})();
 
-		this.field = new Field( 0, 0, 0, WIDTH - 10, HEIGHT - 10 );
+		this.gameClock = new Clock( false );
 
-		this.playerShip = new PlayerShip( 0, 0, ( this.field.height >> 1 ) - 50,
-			new PerspectiveCamera( 75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000 ) );
+		this.field = new Field( 0, 0, 0, WIDTH - 10, HEIGHT - 10 );
 
 		this.cameras = (function ( self ) {
 
@@ -90,12 +88,12 @@ class Game {
 			return cameras;
 
 		})( this );
-
 		this.camera = this.cameras[0];
 
 		this.gameObjects = new Array();
-
-		this.gameClock = new Clock( false );
+		
+		this.playerShip = new PlayerShip( 0, 0, ( this.field.height >> 1 ) - 50,
+			new PerspectiveCamera( 75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000 ) );
 
 		this.sun = (function ( self ) {
 
@@ -107,7 +105,6 @@ class Game {
 			return sun;
 
 		})( this );
-
 		this.stars = (function ( self, n ) {
 
 			let stars = new Array();
@@ -125,7 +122,6 @@ class Game {
 		this.lightsOn = false;
 
 		this.gameOver = false;
-
 		this.gameWon = true;
 
 	}
