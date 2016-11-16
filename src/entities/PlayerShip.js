@@ -23,12 +23,6 @@ class PlayerShip extends Entity {
 
 		super( x, y, z );
 
-		if ( camera === undefined || camera.type !== 'PerspectiveCamera' ) {
-
-			throw new TypeError( 'PlayerShip: \'camera\' undefined or not PerspectiveCamera' );
-
-		}
-
 		this.type = 'PlayerShip';
 
 		this.bullets  = new Array();
