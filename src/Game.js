@@ -47,38 +47,53 @@ class Game {
 
 		this.field = new Field( 0, 0, 0, WIDTH - 10, HEIGHT - 10 );
 
-		this.topCamera = (function ( self ) {
-
-			let camera = new OrthographicCamera(
-				~WIDTH >> 1, WIDTH >> 1, HEIGHT >> 1, ~HEIGHT >> 1, 1, 200
-			);
-
-			camera.position.set( 0, 100, 0 );
-			camera.lookAt( self.scene.position );
-
-			camera.updateProjectionMatrix();
-
-			return camera;
-
-		})( this );
-		this.backCamera = (function ( self ) {
-
-			let camera = new PerspectiveCamera(
-				75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000
-			);
-
-			camera.position.set( 0, 250, ( self.field.height >> 1 ) + 150 );
-			camera.lookAt( self.scene.position );
-
-			camera.updateProjectionMatrix();
-
-			return camera;
-
-		})( this );
-		this.camera = this.topCamera;
-
 		this.playerShip = new PlayerShip( 0, 0, ( this.field.height >> 1 ) - 50,
 			new PerspectiveCamera( 75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000 ) );
+
+		this.cameras = (function ( self ) {
+
+			let cameras = new Array();
+
+			/* Ortho camera (bird's eye) */
+			cameras.push( function () {
+
+				let camera = new OrthographicCamera(
+					~WIDTH >> 1, WIDTH >> 1, HEIGHT >> 1, ~HEIGHT >> 1, 1, 200
+				);
+
+				camera.position.set( 0, 100, 0 );
+				camera.lookAt( self.scene.position );
+
+				camera.updateProjectionMatrix();
+
+				return camera;
+
+			}());
+
+			/* Back perspective camera */
+			cameras.push( function () {
+
+				let camera = new PerspectiveCamera(
+					75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000
+				);
+
+				camera.position.set( 0, 250, ( self.field.height >> 1 ) + 150 );
+				camera.lookAt( self.scene.position );
+
+				camera.updateProjectionMatrix();
+
+				return camera;
+
+			}());
+
+			/* Player camera */
+			cameras.push( self.playerShip.camera );
+
+			return cameras;
+
+		})( this );
+
+		this.camera = this.cameras[0];
 
 		this.gameObjects = new Array();
 
@@ -335,22 +350,10 @@ class Game {
 			switch ( event.keyCode ) {
 
 				case Keyboard.KEY_1:
-
-					this.camera = this.topCamera;
-					this.resize();
-
-					break;
-
 				case Keyboard.KEY_2:
-
-					this.camera = this.backCamera;
-					this.resize();
-
-					break;
-
 				case Keyboard.KEY_3:
 
-					this.camera = this.playerShip.camera;
+					this.camera = this.cameras[ event.keyCode - Keyboard.KEY_1 ];
 					this.resize();
 
 					break;
