@@ -34,6 +34,7 @@ class Game {
 	constructor () {
 
 		this.scene = new Scene();
+
 		this.renderer = (function () {
 
 			let renderer = new WebGLRenderer();
@@ -85,9 +86,6 @@ class Game {
 				return camera;
 
 			}());
-
-			/* Player camera */
-			cameras.push( self.playerShip.camera );
 
 			return cameras;
 
@@ -177,6 +175,9 @@ class Game {
 		this.playerShip.position.set( 0, 0, ( this.field.height >> 1 ) - 50 );
 		this.playerShip.changeMaterial( 0 );
 
+		this.cameras.length > 2 && this.cameras.pop();
+		this.cameras.push( this.playerShip.camera );
+
 		this.gameObjects.push( this.playerShip );
 		this.scene.add( this.playerShip );
 
@@ -185,8 +186,6 @@ class Game {
 			( this.field.width - 120 ) / nx,
 			( ( this.field.height - 120 ) >> 1 ) / nz
 		];
-
-		EnemyShip.count = 0;
 
 		for ( let i = 0; i < nz; ++i ) {
 
@@ -338,6 +337,7 @@ class Game {
 
 		if ( this.gameOver ) {
 
+			/* Restart the game */
 			if ( event.keyCode === Keyboard.KEY_R ) {
 
 				this.gameOver = false;
@@ -349,15 +349,17 @@ class Game {
 
 			switch ( event.keyCode ) {
 
-				case Keyboard.KEY_1:
-				case Keyboard.KEY_2:
-				case Keyboard.KEY_3:
+				/* Toggle cameras */
+				case Keyboard.KEY_1: /* Orthographic (top bird's eye camera) */
+				case Keyboard.KEY_2: /* Perspective (back camera) */
+				case Keyboard.KEY_3: /* Perspective (player view camera) */
 
 					this.camera = this.cameras[ event.keyCode - Keyboard.KEY_1 ];
 					this.resize();
 
 					break;
 
+				/* Player movement: Left */
 				case Keyboard.KEY_A:
 				case Keyboard.KEY_LEFT:
 
@@ -366,6 +368,7 @@ class Game {
 
 					break;
 
+				/* Player movement: Right */
 				case Keyboard.KEY_D:
 				case Keyboard.KEY_RIGHT:
 
@@ -374,6 +377,7 @@ class Game {
 
 					break;
 
+				/* Player action: Toggle shooting */
 				case Keyboard.KEY_B:
 				case Keyboard.KEY_SPACEBAR:
 
@@ -381,6 +385,7 @@ class Game {
 
 					break;
 
+				/* Show / hide stars */
 				case Keyboard.KEY_C:
 
 					this.stars.forEach( function( star ) {
@@ -391,6 +396,7 @@ class Game {
 
 					break;
 
+				/* Toggle lights */
 				case Keyboard.KEY_L:
 
 					this.lightsOn = !this.lightsOn;
@@ -398,37 +404,35 @@ class Game {
 
 					break;
 
+				/* Toggle Gouraud / Lambert Shading */
 				case Keyboard.KEY_G:
 
 					this.updateMaterials();
 					break;
 
+				/* Toggle the sun (day/night modes) */
 				case Keyboard.KEY_N:
 
 					this.sun.visible = !this.sun.visible;
 
 					break;
 
+				/* Start / Stop the game (clock) */
 				case Keyboard.KEY_S:
 
 					this.gameClock.running ? this.gameClock.stop() : this.gameClock.start();
 
 					break;
 
-				case Keyboard.KEY_R:
-
-					this.gameOver && this.setup();
-
-					break;
-
+				/* Toggle wireframe of the objects in the scene */
 				case Keyboard.KEY_W:
 
-					this.scene.traverse( function ( node ) {
+					this.scene.traverse( function( node ) {
 
 						if ( node.isMesh ) {
 
 							node.material.wireframe = !node.material.wireframe;
-
+							
 						}
 
 					});
