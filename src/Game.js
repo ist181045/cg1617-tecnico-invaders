@@ -23,7 +23,7 @@ import { Clock } from './lib/threejs/core/Clock';
 import { WIDTH, HEIGHT } from './Constants';
 import { WINDOW_PIXEL_RATIO, WINDOW_WIDTH, WINDOW_HEIGHT } from './Constants';
 
-import Field from './Field';
+import Field from './objects/Field';
 import EnemyShip from './entities/EnemyShip';
 import PlayerShip from './entities/PlayerShip';
 
