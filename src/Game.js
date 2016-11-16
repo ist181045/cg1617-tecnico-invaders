@@ -88,7 +88,7 @@ class Game {
 
 			let sun = new DirectionalLight( 0xffffff, 2 );
 
-			sun.position.set( self.field.width >> 2, 100, self.field.height >> 2 );
+			sun.position.set( ~self.field.width >> 2, 100, self.field.height >> 2 );
 			sun.target  = self.scene;
 
 			return sun;
@@ -324,7 +324,7 @@ class Game {
 		if ( this.gameOver ) {
 
 			if ( event.keyCode === Keyboard.KEY_R ) {
-				
+
 				this.gameOver = false;
 				this.setup();
 
