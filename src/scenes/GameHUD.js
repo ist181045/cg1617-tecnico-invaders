@@ -39,7 +39,7 @@ class GameHUD extends Scene {
 		let i = 0;
 
 		while ( i < this.lives ) this.ships[i++].visible = true;
-		while ( i < this.ships.length ) this.ships[i++].visible = false;
+		while ( i < this.maxLives ) this.ships[i++].visible = false;
 
 	}
 
