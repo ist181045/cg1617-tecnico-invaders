@@ -33,15 +33,22 @@ class PlayerShip extends Entity {
 
 		this.camera = (function ( self ) {
 
-			camera.position.add( new Vector3( 0, 30, 75 ) );
-			camera.lookAt( self.position.clone().negate() );
+			if ( camera !== undefined && camera.isCamera ) {
 
-			camera.updateProjectionMatrix();
+				camera.position.add( new Vector3( 0, 30, 75 ) );
+				camera.lookAt( self.position.clone().negate() );
 
-			return camera;
+				camera.updateProjectionMatrix();
+
+				self.add( camera );
+
+				return camera;
+
+			}
+
+			return null;
 
 		})( this );
-		this.add( this.camera );
 
 		this.materials.push( new MeshLambertMaterial( { color: 0x4040e0 } ) );
 		this.materials.push( new MeshPhongMaterial(
