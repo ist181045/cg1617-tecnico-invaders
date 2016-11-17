@@ -161,13 +161,8 @@ class Game {
 		this.field.changeMaterial( 0 );
 		this.scene.add( this.field );
 
-		this.playerShip.moving = false;
-		this.playerShip.alive = true;
-		this.playerShip.lives = this.playerShip.MAX_LIVES;
-		this.playerShip.updateBoundries = true;
-		this.playerShip.velocity.setScalar( 0 );
-		this.playerShip.position.set( 0, 0, ( this.field.height >> 1 ) - 50 );
-		this.playerShip.changeMaterial( 0 );
+		this.playerShip = new PlayerShip( 0, 0, ( this.field.height >> 1 ) - 50,
+			new PerspectiveCamera( 75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000 ) );
 
 		this.HUD.setup();
 
@@ -265,7 +260,7 @@ class Game {
 					if ( o1.isEntity && !o1.alive ) {
 
 						this.scene.remove( o1 );
-						this.gameObjects.splice( i, 1 );
+						this.gameObjects.splice( i--, 1 );
 
 					}
 
