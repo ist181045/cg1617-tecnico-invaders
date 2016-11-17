@@ -146,9 +146,9 @@ class Game {
 	setup () {
 
 		/* Clear the scene */
-		for ( let i = this.scene.children.length; i > 0; --i ) {
+		for ( let i = 0; i < this.scene.children.length; ++i ) {
 
-			this.scene.remove( this.scene.children[i - 1] );
+			this.scene.remove( this.scene.children[i] );
 
 		}
 
