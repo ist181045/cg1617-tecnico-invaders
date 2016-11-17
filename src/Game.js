@@ -123,10 +123,6 @@ class Game {
 
 		this.gameOver = false;
 
-	}
-
-	start () {
-
 		document.body.appendChild( this.renderer.domElement );
 
 		window.addEventListener( 'resize',  this.resize.bind( this ) );
@@ -473,4 +469,4 @@ class Game {
 
 }
 
-new Game().start();
+new Game();
