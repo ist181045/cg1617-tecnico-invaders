@@ -40,7 +40,7 @@ class EnemyShip extends Entity {
 			{
 				color: 0xe04040,
 				specular: 0x777777,
-				shininess: 4
+				shininess: 10
 			}
 		));
 
