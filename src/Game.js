@@ -23,6 +23,8 @@ import { Clock } from './lib/threejs/core/Clock';
 import { WIDTH, HEIGHT } from './Constants';
 import { WINDOW_PIXEL_RATIO, WINDOW_WIDTH, WINDOW_HEIGHT } from './Constants';
 
+import GameHUD from './scenes/GameHUD';
+
 import Field from './objects/Field';
 import EnemyShip from './entities/EnemyShip';
 import PlayerShip from './entities/PlayerShip';
@@ -44,6 +46,8 @@ class Game {
 			return renderer;
 
 		})();
+
+		this.HUD = new GameHUD( this.renderer, this.playerShip.MAX_LIVES );
 
 		this.gameClock = new Clock( false );
 
@@ -272,7 +276,10 @@ class Game {
 
 		}
 
+		this.renderer.setViewport( 0, 0, WINDOW_WIDTH(), WINDOW_HEIGHT() );
 		this.renderer.render( this.scene, this.camera );
+
+		this.HUD.update();
 
 		window.requestAnimationFrame( this.update.bind( this ) );
 
