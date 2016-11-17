@@ -146,11 +146,7 @@ class Game {
 	setup () {
 
 		/* Clear the scene */
-		for ( let i = 0; i < this.scene.children.length; ++i ) {
-
-			this.scene.remove( this.scene.children[i] );
-
-		}
+		this.scene = new Scene();
 
 		this.gameObjects = new Array();
 
@@ -166,10 +162,14 @@ class Game {
 		this.scene.add( this.field );
 
 		this.playerShip.moving = false;
+		this.playerShip.alive = true;
+		this.playerShip.lives = this.playerShip.MAX_LIVES;
 		this.playerShip.updateBoundries = true;
 		this.playerShip.velocity.setScalar( 0 );
 		this.playerShip.position.set( 0, 0, ( this.field.height >> 1 ) - 50 );
 		this.playerShip.changeMaterial( 0 );
+
+		this.HUD.setup();
 
 		this.cameras.length > 2 && this.cameras.pop();
 		this.cameras.push( this.playerShip.camera );
@@ -252,16 +252,7 @@ class Game {
 
 					let o1 = this.gameObjects[i];
 
-					if ( o1.isEntity && !o1.alive ) {
-
-						this.scene.remove( o1 );
-						this.gameObjects.splice( i, 1 );
-
-					} else {
-
-						o1.update( dt );
-
-					}
+					o1.update( dt );
 
 					for ( let j = i + 1; j < this.gameObjects.length; ++j ) {
 
@@ -270,6 +261,20 @@ class Game {
 						o1.intersect( o2 ) && o1.handleCollision( o2, dt );
 
 					}
+
+					if ( o1.isEntity && !o1.alive ) {
+
+						this.scene.remove( o1 );
+						this.gameObjects.splice( i, 1 );
+
+					}
+
+				}
+
+				if ( this.playerShip.lives < this.HUD.lives ) {
+
+					--this.HUD.lives;
+					this.HUD.setVisibility();
 
 				}
 
@@ -304,7 +309,7 @@ class Game {
 	resize () {
 
 		this.renderer.setSize( WINDOW_WIDTH(), WINDOW_HEIGHT() );
-		
+
 		let size = this.renderer.getSize();
 		let ratio = size.width / size.height;
 
