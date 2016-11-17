@@ -22552,6 +22552,292 @@ var WINDOW_HEIGHT = function WINDOW_HEIGHT() {
 
 /**
  * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ *
+ * parameters = {
+ *  color: <hex>,
+ *  opacity: <float>,
+ *
+ *  map: new THREE.Texture( <Image> ),
+ *
+ *  lightMap: new THREE.Texture( <Image> ),
+ *  lightMapIntensity: <float>
+ *
+ *  aoMap: new THREE.Texture( <Image> ),
+ *  aoMapIntensity: <float>
+ *
+ *  emissive: <hex>,
+ *  emissiveIntensity: <float>
+ *  emissiveMap: new THREE.Texture( <Image> ),
+ *
+ *  specularMap: new THREE.Texture( <Image> ),
+ *
+ *  alphaMap: new THREE.Texture( <Image> ),
+ *
+ *  envMap: new THREE.TextureCube( [posx, negx, posy, negy, posz, negz] ),
+ *  combine: THREE.Multiply,
+ *  reflectivity: <float>,
+ *  refractionRatio: <float>,
+ *
+ *  wireframe: <boolean>,
+ *  wireframeLinewidth: <float>,
+ *
+ *  skinning: <bool>,
+ *  morphTargets: <bool>,
+ *  morphNormals: <bool>
+ * }
+ */
+
+function MeshLambertMaterial( parameters ) {
+
+	Material.call( this );
+
+	this.type = 'MeshLambertMaterial';
+
+	this.color = new Color( 0xffffff ); // diffuse
+
+	this.map = null;
+
+	this.lightMap = null;
+	this.lightMapIntensity = 1.0;
+
+	this.aoMap = null;
+	this.aoMapIntensity = 1.0;
+
+	this.emissive = new Color( 0x000000 );
+	this.emissiveIntensity = 1.0;
+	this.emissiveMap = null;
+
+	this.specularMap = null;
+
+	this.alphaMap = null;
+
+	this.envMap = null;
+	this.combine = MultiplyOperation;
+	this.reflectivity = 1;
+	this.refractionRatio = 0.98;
+
+	this.wireframe = false;
+	this.wireframeLinewidth = 1;
+	this.wireframeLinecap = 'round';
+	this.wireframeLinejoin = 'round';
+
+	this.skinning = false;
+	this.morphTargets = false;
+	this.morphNormals = false;
+
+	this.setValues( parameters );
+
+}
+
+MeshLambertMaterial.prototype = Object.create( Material.prototype );
+MeshLambertMaterial.prototype.constructor = MeshLambertMaterial;
+
+MeshLambertMaterial.prototype.isMeshLambertMaterial = true;
+
+MeshLambertMaterial.prototype.copy = function ( source ) {
+
+	Material.prototype.copy.call( this, source );
+
+	this.color.copy( source.color );
+
+	this.map = source.map;
+
+	this.lightMap = source.lightMap;
+	this.lightMapIntensity = source.lightMapIntensity;
+
+	this.aoMap = source.aoMap;
+	this.aoMapIntensity = source.aoMapIntensity;
+
+	this.emissive.copy( source.emissive );
+	this.emissiveMap = source.emissiveMap;
+	this.emissiveIntensity = source.emissiveIntensity;
+
+	this.specularMap = source.specularMap;
+
+	this.alphaMap = source.alphaMap;
+
+	this.envMap = source.envMap;
+	this.combine = source.combine;
+	this.reflectivity = source.reflectivity;
+	this.refractionRatio = source.refractionRatio;
+
+	this.wireframe = source.wireframe;
+	this.wireframeLinewidth = source.wireframeLinewidth;
+	this.wireframeLinecap = source.wireframeLinecap;
+	this.wireframeLinejoin = source.wireframeLinejoin;
+
+	this.skinning = source.skinning;
+	this.morphTargets = source.morphTargets;
+	this.morphNormals = source.morphNormals;
+
+	return this;
+
+};
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ *
+ * parameters = {
+ *  color: <hex>,
+ *  specular: <hex>,
+ *  shininess: <float>,
+ *  opacity: <float>,
+ *
+ *  map: new THREE.Texture( <Image> ),
+ *
+ *  lightMap: new THREE.Texture( <Image> ),
+ *  lightMapIntensity: <float>
+ *
+ *  aoMap: new THREE.Texture( <Image> ),
+ *  aoMapIntensity: <float>
+ *
+ *  emissive: <hex>,
+ *  emissiveIntensity: <float>
+ *  emissiveMap: new THREE.Texture( <Image> ),
+ *
+ *  bumpMap: new THREE.Texture( <Image> ),
+ *  bumpScale: <float>,
+ *
+ *  normalMap: new THREE.Texture( <Image> ),
+ *  normalScale: <Vector2>,
+ *
+ *  displacementMap: new THREE.Texture( <Image> ),
+ *  displacementScale: <float>,
+ *  displacementBias: <float>,
+ *
+ *  specularMap: new THREE.Texture( <Image> ),
+ *
+ *  alphaMap: new THREE.Texture( <Image> ),
+ *
+ *  envMap: new THREE.TextureCube( [posx, negx, posy, negy, posz, negz] ),
+ *  combine: THREE.Multiply,
+ *  reflectivity: <float>,
+ *  refractionRatio: <float>,
+ *
+ *  wireframe: <boolean>,
+ *  wireframeLinewidth: <float>,
+ *
+ *  skinning: <bool>,
+ *  morphTargets: <bool>,
+ *  morphNormals: <bool>
+ * }
+ */
+
+function MeshPhongMaterial( parameters ) {
+
+	Material.call( this );
+
+	this.type = 'MeshPhongMaterial';
+
+	this.color = new Color( 0xffffff ); // diffuse
+	this.specular = new Color( 0x111111 );
+	this.shininess = 30;
+
+	this.map = null;
+
+	this.lightMap = null;
+	this.lightMapIntensity = 1.0;
+
+	this.aoMap = null;
+	this.aoMapIntensity = 1.0;
+
+	this.emissive = new Color( 0x000000 );
+	this.emissiveIntensity = 1.0;
+	this.emissiveMap = null;
+
+	this.bumpMap = null;
+	this.bumpScale = 1;
+
+	this.normalMap = null;
+	this.normalScale = new Vector2( 1, 1 );
+
+	this.displacementMap = null;
+	this.displacementScale = 1;
+	this.displacementBias = 0;
+
+	this.specularMap = null;
+
+	this.alphaMap = null;
+
+	this.envMap = null;
+	this.combine = MultiplyOperation;
+	this.reflectivity = 1;
+	this.refractionRatio = 0.98;
+
+	this.wireframe = false;
+	this.wireframeLinewidth = 1;
+	this.wireframeLinecap = 'round';
+	this.wireframeLinejoin = 'round';
+
+	this.skinning = false;
+	this.morphTargets = false;
+	this.morphNormals = false;
+
+	this.setValues( parameters );
+
+}
+
+MeshPhongMaterial.prototype = Object.create( Material.prototype );
+MeshPhongMaterial.prototype.constructor = MeshPhongMaterial;
+
+MeshPhongMaterial.prototype.isMeshPhongMaterial = true;
+
+MeshPhongMaterial.prototype.copy = function ( source ) {
+
+	Material.prototype.copy.call( this, source );
+
+	this.color.copy( source.color );
+	this.specular.copy( source.specular );
+	this.shininess = source.shininess;
+
+	this.map = source.map;
+
+	this.lightMap = source.lightMap;
+	this.lightMapIntensity = source.lightMapIntensity;
+
+	this.aoMap = source.aoMap;
+	this.aoMapIntensity = source.aoMapIntensity;
+
+	this.emissive.copy( source.emissive );
+	this.emissiveMap = source.emissiveMap;
+	this.emissiveIntensity = source.emissiveIntensity;
+
+	this.bumpMap = source.bumpMap;
+	this.bumpScale = source.bumpScale;
+
+	this.normalMap = source.normalMap;
+	this.normalScale.copy( source.normalScale );
+
+	this.displacementMap = source.displacementMap;
+	this.displacementScale = source.displacementScale;
+	this.displacementBias = source.displacementBias;
+
+	this.specularMap = source.specularMap;
+
+	this.alphaMap = source.alphaMap;
+
+	this.envMap = source.envMap;
+	this.combine = source.combine;
+	this.reflectivity = source.reflectivity;
+	this.refractionRatio = source.refractionRatio;
+
+	this.wireframe = source.wireframe;
+	this.wireframeLinewidth = source.wireframeLinewidth;
+	this.wireframeLinecap = source.wireframeLinecap;
+	this.wireframeLinejoin = source.wireframeLinejoin;
+
+	this.skinning = source.skinning;
+	this.morphTargets = source.morphTargets;
+	this.morphNormals = source.morphNormals;
+
+	return this;
+
+};
+
+/**
+ * @author mrdoob / http://mrdoob.com/
  *
  * parameters = {
  *  opacity: <float>,
@@ -22878,320 +23164,6 @@ var GameObject = function (_Object3D) {
 }(Object3D);
 
 /**
- * @author mrdoob / http://mrdoob.com/
- * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Cube.as
- */
-
-function BoxGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) {
-
-	Geometry.call( this );
-
-	this.type = 'BoxGeometry';
-
-	this.parameters = {
-		width: width,
-		height: height,
-		depth: depth,
-		widthSegments: widthSegments,
-		heightSegments: heightSegments,
-		depthSegments: depthSegments
-	};
-
-	this.fromBufferGeometry( new BoxBufferGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) );
-	this.mergeVertices();
-
-}
-
-BoxGeometry.prototype = Object.create( Geometry.prototype );
-BoxGeometry.prototype.constructor = BoxGeometry;
-
-/**
- * @author mrdoob / http://mrdoob.com/
- * @author alteredq / http://alteredqualia.com/
- *
- * parameters = {
- *  color: <hex>,
- *  opacity: <float>,
- *
- *  map: new THREE.Texture( <Image> ),
- *
- *  lightMap: new THREE.Texture( <Image> ),
- *  lightMapIntensity: <float>
- *
- *  aoMap: new THREE.Texture( <Image> ),
- *  aoMapIntensity: <float>
- *
- *  emissive: <hex>,
- *  emissiveIntensity: <float>
- *  emissiveMap: new THREE.Texture( <Image> ),
- *
- *  specularMap: new THREE.Texture( <Image> ),
- *
- *  alphaMap: new THREE.Texture( <Image> ),
- *
- *  envMap: new THREE.TextureCube( [posx, negx, posy, negy, posz, negz] ),
- *  combine: THREE.Multiply,
- *  reflectivity: <float>,
- *  refractionRatio: <float>,
- *
- *  wireframe: <boolean>,
- *  wireframeLinewidth: <float>,
- *
- *  skinning: <bool>,
- *  morphTargets: <bool>,
- *  morphNormals: <bool>
- * }
- */
-
-function MeshLambertMaterial( parameters ) {
-
-	Material.call( this );
-
-	this.type = 'MeshLambertMaterial';
-
-	this.color = new Color( 0xffffff ); // diffuse
-
-	this.map = null;
-
-	this.lightMap = null;
-	this.lightMapIntensity = 1.0;
-
-	this.aoMap = null;
-	this.aoMapIntensity = 1.0;
-
-	this.emissive = new Color( 0x000000 );
-	this.emissiveIntensity = 1.0;
-	this.emissiveMap = null;
-
-	this.specularMap = null;
-
-	this.alphaMap = null;
-
-	this.envMap = null;
-	this.combine = MultiplyOperation;
-	this.reflectivity = 1;
-	this.refractionRatio = 0.98;
-
-	this.wireframe = false;
-	this.wireframeLinewidth = 1;
-	this.wireframeLinecap = 'round';
-	this.wireframeLinejoin = 'round';
-
-	this.skinning = false;
-	this.morphTargets = false;
-	this.morphNormals = false;
-
-	this.setValues( parameters );
-
-}
-
-MeshLambertMaterial.prototype = Object.create( Material.prototype );
-MeshLambertMaterial.prototype.constructor = MeshLambertMaterial;
-
-MeshLambertMaterial.prototype.isMeshLambertMaterial = true;
-
-MeshLambertMaterial.prototype.copy = function ( source ) {
-
-	Material.prototype.copy.call( this, source );
-
-	this.color.copy( source.color );
-
-	this.map = source.map;
-
-	this.lightMap = source.lightMap;
-	this.lightMapIntensity = source.lightMapIntensity;
-
-	this.aoMap = source.aoMap;
-	this.aoMapIntensity = source.aoMapIntensity;
-
-	this.emissive.copy( source.emissive );
-	this.emissiveMap = source.emissiveMap;
-	this.emissiveIntensity = source.emissiveIntensity;
-
-	this.specularMap = source.specularMap;
-
-	this.alphaMap = source.alphaMap;
-
-	this.envMap = source.envMap;
-	this.combine = source.combine;
-	this.reflectivity = source.reflectivity;
-	this.refractionRatio = source.refractionRatio;
-
-	this.wireframe = source.wireframe;
-	this.wireframeLinewidth = source.wireframeLinewidth;
-	this.wireframeLinecap = source.wireframeLinecap;
-	this.wireframeLinejoin = source.wireframeLinejoin;
-
-	this.skinning = source.skinning;
-	this.morphTargets = source.morphTargets;
-	this.morphNormals = source.morphNormals;
-
-	return this;
-
-};
-
-/**
- * @author mrdoob / http://mrdoob.com/
- * @author alteredq / http://alteredqualia.com/
- *
- * parameters = {
- *  color: <hex>,
- *  specular: <hex>,
- *  shininess: <float>,
- *  opacity: <float>,
- *
- *  map: new THREE.Texture( <Image> ),
- *
- *  lightMap: new THREE.Texture( <Image> ),
- *  lightMapIntensity: <float>
- *
- *  aoMap: new THREE.Texture( <Image> ),
- *  aoMapIntensity: <float>
- *
- *  emissive: <hex>,
- *  emissiveIntensity: <float>
- *  emissiveMap: new THREE.Texture( <Image> ),
- *
- *  bumpMap: new THREE.Texture( <Image> ),
- *  bumpScale: <float>,
- *
- *  normalMap: new THREE.Texture( <Image> ),
- *  normalScale: <Vector2>,
- *
- *  displacementMap: new THREE.Texture( <Image> ),
- *  displacementScale: <float>,
- *  displacementBias: <float>,
- *
- *  specularMap: new THREE.Texture( <Image> ),
- *
- *  alphaMap: new THREE.Texture( <Image> ),
- *
- *  envMap: new THREE.TextureCube( [posx, negx, posy, negy, posz, negz] ),
- *  combine: THREE.Multiply,
- *  reflectivity: <float>,
- *  refractionRatio: <float>,
- *
- *  wireframe: <boolean>,
- *  wireframeLinewidth: <float>,
- *
- *  skinning: <bool>,
- *  morphTargets: <bool>,
- *  morphNormals: <bool>
- * }
- */
-
-function MeshPhongMaterial( parameters ) {
-
-	Material.call( this );
-
-	this.type = 'MeshPhongMaterial';
-
-	this.color = new Color( 0xffffff ); // diffuse
-	this.specular = new Color( 0x111111 );
-	this.shininess = 30;
-
-	this.map = null;
-
-	this.lightMap = null;
-	this.lightMapIntensity = 1.0;
-
-	this.aoMap = null;
-	this.aoMapIntensity = 1.0;
-
-	this.emissive = new Color( 0x000000 );
-	this.emissiveIntensity = 1.0;
-	this.emissiveMap = null;
-
-	this.bumpMap = null;
-	this.bumpScale = 1;
-
-	this.normalMap = null;
-	this.normalScale = new Vector2( 1, 1 );
-
-	this.displacementMap = null;
-	this.displacementScale = 1;
-	this.displacementBias = 0;
-
-	this.specularMap = null;
-
-	this.alphaMap = null;
-
-	this.envMap = null;
-	this.combine = MultiplyOperation;
-	this.reflectivity = 1;
-	this.refractionRatio = 0.98;
-
-	this.wireframe = false;
-	this.wireframeLinewidth = 1;
-	this.wireframeLinecap = 'round';
-	this.wireframeLinejoin = 'round';
-
-	this.skinning = false;
-	this.morphTargets = false;
-	this.morphNormals = false;
-
-	this.setValues( parameters );
-
-}
-
-MeshPhongMaterial.prototype = Object.create( Material.prototype );
-MeshPhongMaterial.prototype.constructor = MeshPhongMaterial;
-
-MeshPhongMaterial.prototype.isMeshPhongMaterial = true;
-
-MeshPhongMaterial.prototype.copy = function ( source ) {
-
-	Material.prototype.copy.call( this, source );
-
-	this.color.copy( source.color );
-	this.specular.copy( source.specular );
-	this.shininess = source.shininess;
-
-	this.map = source.map;
-
-	this.lightMap = source.lightMap;
-	this.lightMapIntensity = source.lightMapIntensity;
-
-	this.aoMap = source.aoMap;
-	this.aoMapIntensity = source.aoMapIntensity;
-
-	this.emissive.copy( source.emissive );
-	this.emissiveMap = source.emissiveMap;
-	this.emissiveIntensity = source.emissiveIntensity;
-
-	this.bumpMap = source.bumpMap;
-	this.bumpScale = source.bumpScale;
-
-	this.normalMap = source.normalMap;
-	this.normalScale.copy( source.normalScale );
-
-	this.displacementMap = source.displacementMap;
-	this.displacementScale = source.displacementScale;
-	this.displacementBias = source.displacementBias;
-
-	this.specularMap = source.specularMap;
-
-	this.alphaMap = source.alphaMap;
-
-	this.envMap = source.envMap;
-	this.combine = source.combine;
-	this.reflectivity = source.reflectivity;
-	this.refractionRatio = source.refractionRatio;
-
-	this.wireframe = source.wireframe;
-	this.wireframeLinewidth = source.wireframeLinewidth;
-	this.wireframeLinecap = source.wireframeLinecap;
-	this.wireframeLinejoin = source.wireframeLinejoin;
-
-	this.skinning = source.skinning;
-	this.morphTargets = source.morphTargets;
-	this.morphNormals = source.morphNormals;
-
-	return this;
-
-};
-
-/**
  * CG Space Invaders
  * CG45179 16'17
  *
@@ -23285,7 +23257,7 @@ var Collidable = function (_GameObject) {
 }(GameObject);
 
 /**
- * CG Space Invaders
+ * CG Tecnico Invaders
  * CG45179 16'17
  *
  * @author: Rui Ventura ( ist181045 )
@@ -23293,120 +23265,97 @@ var Collidable = function (_GameObject) {
  * @author: Sara Azinhal ( ist181700 )
  */
 
-var Barrier = function (_Collidable) {
-	inherits(Barrier, _Collidable);
+var Entity = function (_Collidable) {
+	inherits(Entity, _Collidable);
 
-	function Barrier(x, y, z, w, h, l, n) {
-		classCallCheck(this, Barrier);
+	function Entity(x, y, z) {
+		classCallCheck(this, Entity);
 
-		var _this = possibleConstructorReturn(this, (Barrier.__proto__ || Object.getPrototypeOf(Barrier)).call(this, x, y, z));
+		var _this = possibleConstructorReturn(this, (Entity.__proto__ || Object.getPrototypeOf(Entity)).call(this, x, y, z));
 
-		_this.type = 'Barrier';
+		_this.type = 'Entity';
 
-		_this.normal = n.normalize();
+		_this.isEntity = true;
+
+		_this.MAX_VELOCITY = 400;
 
 		_this.updateBoundries = true;
 
-		_this.boundingSphere = null;
+		_this.alive = true;
 
-		_this.materials.push(new MeshLambertMaterial({ color: 0x505050 }));
-		_this.materials.push(new MeshPhongMaterial({
-			color: 0x505050,
-			specular: 0x777777,
-			shininess: 4
-		}));
-
-		_this.add(function (self) {
-
-			return new Mesh(new BoxGeometry(w, h, l), self.material);
-		}(_this));
+		_this.moving = false;
+		_this.direction = new Vector3();
+		_this.velocity = new Vector3();
+		_this.acceleration = 300;
+		_this.friction = 350;
 
 		return _this;
 	}
 
-	createClass(Barrier, [{
-		key: 'intersect',
-		value: function intersect(other) {
+	createClass(Entity, [{
+		key: 'setDirection',
+		value: function setDirection(x, y, z) {
 
-			return this.type !== other.type && this.intersectBox(other);
+			this.direction.set(x, y, z).normalize();
 		}
 	}, {
-		key: 'handleCollision',
-		value: function handleCollision(other, dt) {
+		key: 'update',
+		value: function update(dt) {
 
-			switch (other.type) {
+			get(Entity.prototype.__proto__ || Object.getPrototypeOf(Entity.prototype), 'update', this).call(this);
 
-				case 'PlayerShip':
+			var updatePos = false;
 
-					other.direction.negate();
-					other.velocity.negate();
-					other.update(dt);
+			var v = this.velocity.length();
+			var dvf = this.friction * dt;
 
-					other.moving = false;
-					other.velocity.multiplyScalar(0.3);
+			var dot = this.direction.dot(this.velocity);
 
-					break;
+			if (this.moving) {
 
-				case 'EnemyShip':
+				updatePos = true;
 
-					other.direction.reflect(this.normal);
-					other.velocity.reflect(this.normal);
-					other.update(dt);
+				if (v !== this.MAX_VELOCITY) {
 
-					break;
+					var dv = this.acceleration * dt;
 
-				case 'Bullet':
+					if (v + dv > this.MAX_VELOCITY) {
 
-					other.alive = false;
+						this.velocity.setLength(this.MAX_VELOCITY);
+					} else if (v !== dot) {
 
-					break;
+						this.velocity.addScaledVector(this.direction, dvf);
+					}
 
-				default:
-					break;
+					this.velocity.addScaledVector(this.direction, dv);
+				}
+			} else if (v > dvf) {
 
+				updatePos = true;
+
+				if (v !== dot) {
+
+					this.direction.copy(this.velocity).normalize();
+				}
+
+				this.velocity.addScaledVector(this.direction, -dvf);
+			} else {
+
+				this.velocity.setScalar(0);
+			}
+
+			if (updatePos) {
+
+				var ds = this.velocity.clone();
+
+				this.position.add(ds.multiplyScalar(dt));
+				this.boundingBox.translate(ds);
+				this.boundingSphere.translate(ds);
 			}
 		}
 	}]);
-	return Barrier;
+	return Entity;
 }(Collidable);
-
-/**
- * CG Space Invaders
- * CG45179 16'17
- *
- * @author: Rui Ventura ( ist181045 )
- * @author: Diogo Freitas ( ist181586 )
- * @author: Sara Azinhal ( ist181700 )
- */
-
-var Field = function (_GameObject) {
-	inherits(Field, _GameObject);
-
-	function Field(x, y, z) {
-		var w = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 200;
-		var h = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 200;
-		classCallCheck(this, Field);
-
-		var _this = possibleConstructorReturn(this, (Field.__proto__ || Object.getPrototypeOf(Field)).call(this, x, y, z));
-
-		_this.type = 'Field';
-
-		_this.width = w;
-		_this.height = h;
-
-		_this.add(new Barrier((x - w >> 1) + 2, y, z, 4, 10, h, new Vector3(-1, 0, 0)));
-
-		_this.add(new Barrier((x + w >> 1) - 2, y, z, 4, 10, h, new Vector3(1, 0, 0)));
-
-		_this.add(new Barrier(x, y, (z - h >> 1) + 2, w, 10, 4, new Vector3(0, 0, 1)));
-
-		_this.add(new Barrier(x, y, (z + h >> 1) - 2, w, 10, 4, new Vector3(0, 0, -1)));
-
-		return _this;
-	}
-
-	return Field;
-}(GameObject);
 
 /**
  * @author Mugen87 / https://github.com/Mugen87
@@ -23789,107 +23738,6 @@ DodecahedronGeometry.prototype = Object.create( Geometry.prototype );
 DodecahedronGeometry.prototype.constructor = DodecahedronGeometry;
 
 /**
- * CG Tecnico Invaders
- * CG45179 16'17
- *
- * @author: Rui Ventura ( ist181045 )
- * @author: Diogo Freitas ( ist181586 )
- * @author: Sara Azinhal ( ist181700 )
- */
-
-var Entity = function (_Collidable) {
-	inherits(Entity, _Collidable);
-
-	function Entity(x, y, z) {
-		classCallCheck(this, Entity);
-
-		var _this = possibleConstructorReturn(this, (Entity.__proto__ || Object.getPrototypeOf(Entity)).call(this, x, y, z));
-
-		_this.type = 'Entity';
-
-		_this.isEntity = true;
-
-		_this.MAX_VELOCITY = 400;
-
-		_this.updateBoundries = true;
-
-		_this.alive = true;
-
-		_this.moving = false;
-		_this.direction = new Vector3();
-		_this.velocity = new Vector3();
-		_this.acceleration = 300;
-		_this.friction = 350;
-
-		return _this;
-	}
-
-	createClass(Entity, [{
-		key: 'setDirection',
-		value: function setDirection(x, y, z) {
-
-			this.direction.set(x, y, z).normalize();
-		}
-	}, {
-		key: 'update',
-		value: function update(dt) {
-
-			get(Entity.prototype.__proto__ || Object.getPrototypeOf(Entity.prototype), 'update', this).call(this);
-
-			var updatePos = false;
-
-			var v = this.velocity.length();
-			var dvf = this.friction * dt;
-
-			var dot = this.direction.dot(this.velocity);
-
-			if (this.moving) {
-
-				updatePos = true;
-
-				if (v !== this.MAX_VELOCITY) {
-
-					var dv = this.acceleration * dt;
-
-					if (v + dv > this.MAX_VELOCITY) {
-
-						this.velocity.setLength(this.MAX_VELOCITY);
-					} else if (v !== dot) {
-
-						this.velocity.addScaledVector(this.direction, dvf);
-					}
-
-					this.velocity.addScaledVector(this.direction, dv);
-				}
-			} else if (v > dvf) {
-
-				updatePos = true;
-
-				if (v !== dot) {
-
-					this.direction.copy(this.velocity).normalize();
-				}
-
-				this.velocity.addScaledVector(this.direction, -dvf);
-			} else {
-
-				this.velocity.setScalar(0);
-			}
-
-			if (updatePos) {
-
-				var ds = this.velocity.clone();
-
-				this.position.add(ds.multiplyScalar(dt));
-				this.boundingBox.translate(ds);
-				this.boundingSphere.translate(ds);
-			}
-		}
-	}]);
-	return Entity;
-}(Collidable);
-
-/**
  * CG Space Invaders
  * CG45179 16'17
  *
@@ -23924,7 +23772,7 @@ var EnemyShip = function (_Entity) {
 		_this.materials.push(new MeshPhongMaterial({
 			color: 0xe04040,
 			specular: 0x777777,
-			shininess: 4
+			shininess: 10
 		}));
 
 		_this.add(function (self) {
@@ -23958,6 +23806,15 @@ var EnemyShip = function (_Entity) {
 
 			switch (other.type) {
 
+				case 'PlayerShip':
+
+					this.alive = false;
+
+					--other.lives;
+					if (other.lives <= 0) other.alive = false;
+
+					break;
+
 				case 'EnemyShip':
 
 					this.direction.negate();
@@ -23981,7 +23838,6 @@ var EnemyShip = function (_Entity) {
 
 					this.alive = false;
 					other.alive = false;
-					--EnemyShip.count;
 
 					break;
 
@@ -23989,12 +23845,42 @@ var EnemyShip = function (_Entity) {
 					break;
 
 			}
+
+			!this.alive && --EnemyShip.count;
 		}
 	}]);
 	return EnemyShip;
 }(Entity);
 
 EnemyShip.count = 0;
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Cube.as
+ */
+
+function BoxGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) {
+
+	Geometry.call( this );
+
+	this.type = 'BoxGeometry';
+
+	this.parameters = {
+		width: width,
+		height: height,
+		depth: depth,
+		widthSegments: widthSegments,
+		heightSegments: heightSegments,
+		depthSegments: depthSegments
+	};
+
+	this.fromBufferGeometry( new BoxBufferGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) );
+	this.mergeVertices();
+
+}
+
+BoxGeometry.prototype = Object.create( Geometry.prototype );
+BoxGeometry.prototype.constructor = BoxGeometry;
 
 /**
  * CG Space Invaders
@@ -24084,16 +23970,25 @@ var PlayerShip = function (_Entity) {
 		_this.shooting = false;
 		_this.reload = 0;
 
+		_this.MAX_LIVES = 3;
+		_this.lives = _this.MAX_LIVES;
+
 		_this.camera = function (self) {
 
-			camera.position.add(new Vector3(0, 30, 75));
-			camera.lookAt(self.position.clone().negate());
+			if (camera !== undefined && camera.isCamera) {
 
-			camera.updateProjectionMatrix();
+				camera.position.add(new Vector3(0, 30, 75));
+				camera.lookAt(self.position.clone().negate());
 
-			return camera;
+				camera.updateProjectionMatrix();
+
+				self.add(camera);
+
+				return camera;
+			}
+
+			return null;
 		}(_this);
-		_this.add(_this.camera);
 
 		_this.materials.push(new MeshLambertMaterial({ color: 0x4040e0 }));
 		_this.materials.push(new MeshPhongMaterial({
@@ -24188,6 +24083,15 @@ var PlayerShip = function (_Entity) {
 
 					break;
 
+				case 'EnemyShip':
+
+					other.alive = false;
+
+					--this.lives;
+					if (this.lives <= 0) this.alive = false;
+
+					--EnemyShip.count;
+
 				default:
 					break;
 
@@ -24196,6 +24100,210 @@ var PlayerShip = function (_Entity) {
 	}]);
 	return PlayerShip;
 }(Entity);
+
+/**
+ * CG Space Invaders
+ * CG45179 16'17
+ *
+ * @author: Rui Ventura ( ist181045 )
+ * @author: Diogo Freitas ( ist181586 )
+ * @author: Sara Azinhal ( ist181700 )
+ */
+
+var GameHUD = function (_Scene) {
+	inherits(GameHUD, _Scene);
+
+	function GameHUD(renderer, maxLives) {
+		classCallCheck(this, GameHUD);
+
+		var _this = possibleConstructorReturn(this, (GameHUD.__proto__ || Object.getPrototypeOf(GameHUD)).call(this));
+
+		_this.renderer = renderer;
+
+		_this.maxLives = maxLives;
+		_this.lives = maxLives;
+
+		_this.ships = new Array();
+
+		_this.camera = new OrthographicCamera(0, 60 * _this.maxLives, 30, -30, -30, 30);
+		_this.camera.position.set(0, 1, 0);
+		_this.camera.lookAt(_this.position);
+
+		return _this;
+	}
+
+	createClass(GameHUD, [{
+		key: 'setVisibility',
+		value: function setVisibility() {
+
+			this.ships.forEach(function (ship, index) {
+
+				ship.visible = index < this.lives;
+			}, this);
+		}
+	}, {
+		key: 'setup',
+		value: function setup() {
+
+			for (var i = this.children.length; i > 0; --i) {
+
+				this.remove(this.children[i]);
+			}
+
+			this.ships = new Array();
+			for (var _i = 0; _i < this.maxLives; ++_i) {
+
+				var ship = new PlayerShip(30 * (2 * (this.maxLives - _i) - 1));
+
+				ship.rotateY(Math.PI / 2);
+				ship.scale.multiplyScalar(0.6);
+
+				this.ships.push(ship);
+				this.add(this.ships[_i]);
+			}
+
+			this.lives = this.maxLives;
+
+			this.setVisibility();
+			this.update();
+		}
+	}, {
+		key: 'update',
+		value: function update() {
+
+			var size = this.renderer.getSize();
+
+			this.renderer.setViewport(size.width - 60 * this.maxLives, size.height - 60, 60 * this.maxLives, 60);
+
+			this.renderer.render(this, this.camera);
+		}
+	}]);
+	return GameHUD;
+}(Scene);
+
+/**
+ * CG Space Invaders
+ * CG45179 16'17
+ *
+ * @author: Rui Ventura ( ist181045 )
+ * @author: Diogo Freitas ( ist181586 )
+ * @author: Sara Azinhal ( ist181700 )
+ */
+
+var Barrier = function (_Collidable) {
+	inherits(Barrier, _Collidable);
+
+	function Barrier(x, y, z, w, h, l, n) {
+		classCallCheck(this, Barrier);
+
+		var _this = possibleConstructorReturn(this, (Barrier.__proto__ || Object.getPrototypeOf(Barrier)).call(this, x, y, z));
+
+		_this.type = 'Barrier';
+
+		_this.normal = n.normalize();
+
+		_this.updateBoundries = true;
+
+		_this.boundingSphere = null;
+
+		_this.materials.push(new MeshLambertMaterial({ color: 0x505050 }));
+		_this.materials.push(new MeshPhongMaterial({
+			color: 0x505050,
+			specular: 0x777777,
+			shininess: 4
+		}));
+
+		_this.add(function (self) {
+
+			return new Mesh(new BoxGeometry(w, h, l), self.material);
+		}(_this));
+
+		return _this;
+	}
+
+	createClass(Barrier, [{
+		key: 'intersect',
+		value: function intersect(other) {
+
+			return this.type !== other.type && this.intersectBox(other);
+		}
+	}, {
+		key: 'handleCollision',
+		value: function handleCollision(other, dt) {
+
+			switch (other.type) {
+
+				case 'PlayerShip':
+
+					other.direction.negate();
+					other.velocity.negate();
+					other.update(dt);
+
+					other.moving = false;
+					other.velocity.multiplyScalar(0.3);
+
+					break;
+
+				case 'EnemyShip':
+
+					other.direction.reflect(this.normal);
+					other.velocity.reflect(this.normal);
+					other.update(dt);
+
+					break;
+
+				case 'Bullet':
+
+					other.alive = false;
+
+					break;
+
+				default:
+					break;
+
+			}
+		}
+	}]);
+	return Barrier;
+}(Collidable);
+
+/**
+ * CG Space Invaders
+ * CG45179 16'17
+ *
+ * @author: Rui Ventura ( ist181045 )
+ * @author: Diogo Freitas ( ist181586 )
+ * @author: Sara Azinhal ( ist181700 )
+ */
+
+var Field = function (_GameObject) {
+	inherits(Field, _GameObject);
+
+	function Field(x, y, z) {
+		var w = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 200;
+		var h = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 200;
+		classCallCheck(this, Field);
+
+		var _this = possibleConstructorReturn(this, (Field.__proto__ || Object.getPrototypeOf(Field)).call(this, x, y, z));
+
+		_this.type = 'Field';
+
+		_this.width = w;
+		_this.height = h;
+
+		_this.add(new Barrier((x - w >> 1) + 2, y, z, 4, 10, h, new Vector3(-1, 0, 0)));
+
+		_this.add(new Barrier((x + w >> 1) - 2, y, z, 4, 10, h, new Vector3(1, 0, 0)));
+
+		_this.add(new Barrier(x, y, (z - h >> 1) + 2, w, 10, 4, new Vector3(0, 0, 1)));
+
+		_this.add(new Barrier(x, y, (z + h >> 1) - 2, w, 10, 4, new Vector3(0, 0, -1)));
+
+		return _this;
+	}
+
+	return Field;
+}(GameObject);
 
 /**
  * CG Space Invaders
@@ -24275,16 +24383,17 @@ var Game = function () {
 		classCallCheck(this, Game);
 
 
-		this.scene = new Scene();
 		this.renderer = function () {
 
-			var renderer = new WebGLRenderer();
+			var renderer = new WebGLRenderer({ antialias: true });
 
 			renderer.setPixelRatio(WINDOW_PIXEL_RATIO);
 			renderer.setSize(WINDOW_WIDTH(), WINDOW_HEIGHT());
+			renderer.autoClear = false;
 
 			return renderer;
 		}();
+		this.scene = new Scene();
 
 		this.gameClock = new Clock(false);
 
@@ -24328,6 +24437,8 @@ var Game = function () {
 
 		this.playerShip = new PlayerShip(0, 0, (this.field.height >> 1) - 50, new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000));
 
+		this.HUD = new GameHUD(this.renderer, this.playerShip.MAX_LIVES);
+
 		this.sun = function (self) {
 
 			var sun = new DirectionalLight(0xffffff, 2);
@@ -24352,35 +24463,27 @@ var Game = function () {
 		this.lightsOn = false;
 
 		this.gameOver = false;
-		this.gameWon = true;
+
+		document.body.appendChild(this.renderer.domElement);
+
+		window.addEventListener('resize', this.resize.bind(this));
+		window.addEventListener('keydown', this.keyDown.bind(this));
+		window.addEventListener('keyup', this.keyUp.bind(this));
+
+		this.setup();
+
+		/* HACK: Force a first resize */
+		this.resize();
+
+		this.update();
 	}
 
 	createClass(Game, [{
-		key: 'start',
-		value: function start() {
-
-			document.body.appendChild(this.renderer.domElement);
-
-			window.addEventListener('resize', this.resize.bind(this));
-			window.addEventListener('keydown', this.keyDown.bind(this));
-			window.addEventListener('keyup', this.keyUp.bind(this));
-
-			this.setup();
-
-			/* HACK: Force a first resize */
-			this.resize();
-
-			this.update();
-		}
-	}, {
 		key: 'setup',
 		value: function setup() {
 
 			/* Clear the scene */
-			for (var i = this.scene.children.length; i > 0; --i) {
-
-				this.scene.remove(this.scene.children[i]);
-			}
+			this.scene = new Scene();
 
 			this.gameObjects = new Array();
 
@@ -24394,11 +24497,9 @@ var Game = function () {
 			this.field.changeMaterial(0);
 			this.scene.add(this.field);
 
-			this.playerShip.moving = false;
-			this.playerShip.updateBoundries = true;
-			this.playerShip.velocity.setScalar(0);
-			this.playerShip.position.set(0, 0, (this.field.height >> 1) - 50);
-			this.playerShip.changeMaterial(0);
+			this.playerShip = new PlayerShip(0, 0, (this.field.height >> 1) - 50, new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000));
+
+			this.HUD.setup();
 
 			this.cameras.length > 2 && this.cameras.pop();
 			this.cameras.push(this.playerShip.camera);
@@ -24412,11 +24513,11 @@ var Game = function () {
 			    segZ = (this.field.height - 120 >> 1) / nz;
 
 
-			for (var _i = 0; _i < nz; ++_i) {
+			for (var i = 0; i < nz; ++i) {
 
 				for (var j = 0; j < nx; ++j) {
 					var posX = segX * (j - (nx - 1) / 2),
-					    posZ = segZ * (_i - (nz + 1) / 2);
+					    posZ = segZ * (i - (nz + 1) / 2);
 
 
 					var alien = new EnemyShip(posX, 0, posZ);
@@ -24439,7 +24540,6 @@ var Game = function () {
 			}, this);
 
 			this.gameOver = false;
-			this.gameWon = true;
 		}
 	}, {
 		key: 'update',
@@ -24452,7 +24552,6 @@ var Game = function () {
 				if (EnemyShip.count === 0 || !this.playerShip.alive) {
 
 					this.gameOver = true;
-					this.gameWon = this.playerShip.alive;
 					this.gameClock.stop();
 				} else {
 
@@ -24471,6 +24570,8 @@ var Game = function () {
 
 						var o1 = this.gameObjects[i];
 
+						o1.update(dt);
+
 						for (var j = i + 1; j < this.gameObjects.length; ++j) {
 
 							var o2 = this.gameObjects[j];
@@ -24481,16 +24582,23 @@ var Game = function () {
 						if (o1.isEntity && !o1.alive) {
 
 							this.scene.remove(o1);
-							this.gameObjects.splice(i, 1);
-						} else {
-
-							o1.update(dt);
+							this.gameObjects.splice(i--, 1);
 						}
+					}
+
+					if (this.playerShip.lives < this.HUD.lives) {
+
+						--this.HUD.lives;
+						this.HUD.setVisibility();
 					}
 				}
 			}
 
+			this.renderer.clear();
+			this.renderer.setViewport(0, 0, WINDOW_WIDTH(), WINDOW_HEIGHT());
 			this.renderer.render(this.scene, this.camera);
+
+			this.HUD.update();
 
 			window.requestAnimationFrame(this.update.bind(this));
 		}
@@ -24511,7 +24619,10 @@ var Game = function () {
 		key: 'resize',
 		value: function resize() {
 
-			var ratio = WINDOW_WIDTH() / WINDOW_HEIGHT();
+			this.renderer.setSize(WINDOW_WIDTH(), WINDOW_HEIGHT());
+
+			var size = this.renderer.getSize();
+			var ratio = size.width / size.height;
 
 			if (this.camera.type === 'OrthographicCamera') {
 
@@ -24534,7 +24645,6 @@ var Game = function () {
 			}
 
 			this.camera.updateProjectionMatrix();
-			this.renderer.setSize(WINDOW_WIDTH(), WINDOW_HEIGHT());
 		}
 	}, {
 		key: 'keyDown',
@@ -24680,6 +24790,6 @@ var Game = function () {
 	return Game;
 }();
 
-new Game().start();
+new Game();
 
 }());
