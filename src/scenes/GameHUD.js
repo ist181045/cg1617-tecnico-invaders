@@ -10,8 +10,6 @@
 import { Scene } from '../lib/threejs/scenes/Scene';
 import { OrthographicCamera } from '../lib/threejs/cameras/OrthographicCamera';
 
-import { WINDOW_WIDTH, WINDOW_HEIGHT } from '../Constants';
-
 import PlayerShip from '../entities/PlayerShip';
 
 class GameHUD extends Scene {
@@ -27,7 +25,9 @@ class GameHUD extends Scene {
 
 		this.ships = new Array();
 
-		this.camera = new OrthographicCamera( -30 * this.maxLives, 15, 15, -15, -10, 10 );
+		this.camera = new OrthographicCamera( 0, 60 * this.maxLives, 30, -30, -30, 30 );
+		this.camera.position.set( 0, 1, 0 );
+		this.camera.lookAt( this.position );
 
 		this.setup();
 		this.update();
@@ -54,19 +54,28 @@ class GameHUD extends Scene {
 		this.ships = new Array();
 		for ( let i = 0; i < this.maxLives; ++i ) {
 
-			this.ships.push( new PlayerShip( 10 * ( i + 1 ) - 5 ) );
-			this.ships[i].scale.multiplyScalar( 0.6 );
+			let ship = new PlayerShip( 30 * ( 2 * ( i + 1 ) - 1 ) );
+
+			ship.rotateY( Math.PI / 2 );
+			ship.scale.multiplyScalar( 0.6 );
+
+			this.ships.push( ship );
 			this.add( this.ships[i] );
 
 		}
+
+		this.setVisibility();
 
 	}
 
 	update () {
 
+		let size = this.renderer.getSize();
+
 		this.renderer.setViewport(
-			WINDOW_WIDTH() - 30 * this.maxLives, WINDOW_HEIGHT() - 30,
-			30 * this.maxLives, 30);
+			size.width - 60 * this.maxLives, size.height - 60,
+			60 * this.maxLives, 60);
+
 		this.renderer.render( this, this.camera );
 
 	}
