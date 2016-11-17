@@ -20,10 +20,12 @@ class GameHUD extends Scene {
 
 		super();
 
-		this.ships = new Array();
+		this.renderer = renderer;
 
 		this.maxLives = maxLives;
 		this.lives = maxLives;
+
+		this.ships = new Array();
 
 		this.camera = new OrthographicCamera( -30 * this.maxLives, 15, 15, -15, -10, 10 );
 
