@@ -29,23 +29,21 @@ class GameHUD extends Scene {
 		this.camera.position.set( 0, 1, 0 );
 		this.camera.lookAt( this.position );
 
-		this.setup();
-		this.update();
-
 	}
 
 	setVisibility () {
 
-		let i = 0;
+		this.ships.forEach( function( ship, index ) {
 
-		while ( i < this.lives ) this.ships[i++].visible = true;
-		while ( i < this.maxLives ) this.ships[i++].visible = false;
+			ship.visible = index < this.lives;
+
+		}, this);
 
 	}
 
 	setup () {
 
-		for ( let i = 0; i < this.children.length; ++i ) {
+		for ( let i = this.children.length; i > 0; --i ) {
 
 			this.remove( this.children[i] );
 
@@ -54,7 +52,7 @@ class GameHUD extends Scene {
 		this.ships = new Array();
 		for ( let i = 0; i < this.maxLives; ++i ) {
 
-			let ship = new PlayerShip( 30 * ( 2 * ( i + 1 ) - 1 ) );
+			let ship = new PlayerShip( 30 * ( 2 * ( this.maxLives - i ) - 1 ) );
 
 			ship.rotateY( Math.PI / 2 );
 			ship.scale.multiplyScalar( 0.6 );
@@ -67,6 +65,7 @@ class GameHUD extends Scene {
 		this.lives = this.maxLives;
 
 		this.setVisibility();
+		this.update();
 
 	}
 
