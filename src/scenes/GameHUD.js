@@ -64,6 +64,8 @@ class GameHUD extends Scene {
 
 		}
 
+		this.lives = this.maxLives;
+
 		this.setVisibility();
 
 	}
