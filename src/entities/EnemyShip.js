@@ -73,6 +73,16 @@ class EnemyShip extends Entity {
 
 		switch ( other.type ) {
 
+			case 'PlayerShip':
+
+				this.alive = false;
+
+				--other.lives;
+				if ( other.lives <= 0 )
+					other.alive = false;
+
+				break;
+
 			case 'EnemyShip':
 
 				this.direction.negate();
@@ -96,13 +106,15 @@ class EnemyShip extends Entity {
 
 				this.alive = false;
 				other.alive = false;
-				--EnemyShip.count;
 
 				break;
 
 			default: break;
 
 		}
+
+		!this.alive && --EnemyShip.count;
+
 	}
 
 }
