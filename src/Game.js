@@ -35,19 +35,18 @@ class Game {
 
 	constructor () {
 
-		this.scene = new Scene();
 		this.renderer = (function () {
 
-			let renderer = new WebGLRenderer();
+			let renderer = new WebGLRenderer({ antialias: true });
 
 			renderer.setPixelRatio( WINDOW_PIXEL_RATIO );
 			renderer.setSize( WINDOW_WIDTH(), WINDOW_HEIGHT() );
+			renderer.autoClear = false;
 
 			return renderer;
 
 		})();
-
-		this.HUD = new GameHUD( this.renderer, this.playerShip.MAX_LIVES );
+		this.scene = new Scene();
 
 		this.gameClock = new Clock( false );
 
@@ -98,6 +97,8 @@ class Game {
 
 		this.playerShip = new PlayerShip( 0, 0, ( this.field.height >> 1 ) - 50,
 			new PerspectiveCamera( 75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000 ) );
+
+		this.HUD = new GameHUD( this.renderer, this.playerShip.MAX_LIVES );
 
 		this.sun = (function ( self ) {
 
@@ -276,6 +277,7 @@ class Game {
 
 		}
 
+		this.renderer.clear();
 		this.renderer.setViewport( 0, 0, WINDOW_WIDTH(), WINDOW_HEIGHT() );
 		this.renderer.render( this.scene, this.camera );
 
@@ -301,7 +303,10 @@ class Game {
 
 	resize () {
 
-		let ratio = WINDOW_WIDTH() / WINDOW_HEIGHT();
+		this.renderer.setSize( WINDOW_WIDTH(), WINDOW_HEIGHT() );
+		
+		let size = this.renderer.getSize();
+		let ratio = size.width / size.height;
 
 		if ( this.camera.type === 'OrthographicCamera' ) {
 
@@ -328,7 +333,6 @@ class Game {
 		}
 
 		this.camera.updateProjectionMatrix();
-		this.renderer.setSize( WINDOW_WIDTH(), WINDOW_HEIGHT() );
 
 	}
 
