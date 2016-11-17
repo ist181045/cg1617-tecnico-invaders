@@ -122,7 +122,6 @@ class Game {
 		this.lightsOn = false;
 
 		this.gameOver = false;
-		this.gameWon = true;
 
 	}
 
@@ -219,7 +218,6 @@ class Game {
 		}, this );
 
 		this.gameOver = false;
-		this.gameWon = true;
 
 	}
 
@@ -232,7 +230,6 @@ class Game {
 			if ( EnemyShip.count === 0 || !this.playerShip.alive ) {
 
 				this.gameOver = true;
-				this.gameWon = this.playerShip.alive;
 				this.gameClock.stop();
 
 			} else {
