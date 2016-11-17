@@ -28,6 +28,9 @@ class PlayerShip extends Entity {
 		this.shooting = false;
 		this.reload   = 0;
 
+		this.MAX_LIVES = 3;
+		this.lives = this.MAX_LIVES;
+
 		this.camera = (function ( self ) {
 
 			camera.position.add( new Vector3( 0, 30, 75 ) );
