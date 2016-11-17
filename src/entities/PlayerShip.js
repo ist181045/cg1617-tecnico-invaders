@@ -173,6 +173,14 @@ class PlayerShip extends Entity {
 
 				break;
 
+			case 'EnemyShip':
+
+				other.alive = false;
+
+				--this.lives;
+				if ( this.lives <= 0 )
+					this.alive = false;
+
 			default: break;
 
 		}
