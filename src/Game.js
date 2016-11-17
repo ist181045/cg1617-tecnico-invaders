@@ -350,7 +350,7 @@ class Game {
 				case Keyboard.KEY_2: /* Perspective (back camera) */
 				case Keyboard.KEY_3: /* Perspective (player view camera) */
 
-					if ( !this.gameOver ) {
+					if ( this.gameClock.running ) {
 
 						this.camera = this.cameras[ event.keyCode - Keyboard.KEY_1 ];
 						this.resize();
