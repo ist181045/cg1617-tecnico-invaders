@@ -15,6 +15,7 @@ import { MeshLambertMaterial } from '../lib/threejs/materials/MeshLambertMateria
 import { MeshPhongMaterial } from '../lib/threejs/materials/MeshPhongMaterial';
 
 import Entity from './Entity';
+import EnemyShip from './EnemyShip';
 import Bullet from './Bullet';
 
 class PlayerShip extends Entity {
@@ -180,6 +181,8 @@ class PlayerShip extends Entity {
 				--this.lives;
 				if ( this.lives <= 0 )
 					this.alive = false;
+
+				--EnemyShip.count;
 
 			default: break;
 
