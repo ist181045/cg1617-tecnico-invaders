@@ -7,7 +7,7 @@
  * @author: Sara Azinhal ( ist181700 )
  */
 
-import { DodecahedronGeometry } from '../lib/threejs/geometries/DodecahedronGeometry';
+import { IcosahedronGeometry } from '../lib/threejs/geometries/IcosahedronGeometry';
 import { Mesh } from '../lib/threejs/objects/Mesh';
 import { Vector3 } from '../lib/threejs/math/Vector3';
 import { MeshLambertMaterial } from '../lib/threejs/materials/MeshLambertMaterial';
@@ -46,7 +46,7 @@ class EnemyShip extends Entity {
 
 		this.add( function( self ) {
 
-			return new Mesh( new DodecahedronGeometry( 15, 0 ), self.material );
+			return new Mesh( new IcosahedronGeometry( 15, 0 ), self.material );
 
 		}( this ));
 
