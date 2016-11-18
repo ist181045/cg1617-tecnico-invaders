@@ -1,0 +1,47 @@
+{
+	"env": {
+		"browser": true,
+		"node": true,
+		"es6": true
+	},
+	"extends": "eslint:recommended",
+	"parserOptions": {
+		"sourceType": "module"
+	},
+	"globals": {
+		"ENV": true
+	},
+	"rules": {
+		"indent": [
+			"error",
+			"tab",
+			{
+				"SwitchCase": 1
+			}
+		],
+		"linebreak-style": [
+			"error",
+			"unix"
+		],
+		"quotes": [
+			"error",
+			"single"
+		],
+		"semi": [
+			"error",
+			"always"
+		],
+		"no-unused-vars": [
+			"error",
+			{ 
+				"args": "none"
+			}
+		],
+		"no-console": [
+			"off"
+		],
+		"no-fallthrough": [
+			"off"
+		]
+	}
+}
