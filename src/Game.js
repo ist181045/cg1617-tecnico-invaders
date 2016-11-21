@@ -146,7 +146,8 @@ class Game {
 	setup () {
 
 		/* Clear the scene */
-		this.scene = new Scene();
+		this.scene.children.splice( 0, this.scene.children.length );
+		console.log( this.scene.children );
 
 		this.gameObjects = new Array();
 
@@ -168,6 +169,7 @@ class Game {
 
 		this.cameras.length > 2 && this.cameras.pop();
 		this.cameras.push( this.playerShip.camera );
+		this.camera = this.cameras[0];
 
 		this.gameObjects.push( this.playerShip );
 		this.scene.add( this.playerShip );
