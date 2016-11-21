@@ -13,6 +13,7 @@ import { Vector3 } from '../lib/threejs/math/Vector3';
 import { Face3 } from '../lib/threejs/core/Face3';
 import { MeshLambertMaterial } from '../lib/threejs/materials/MeshLambertMaterial';
 import { MeshPhongMaterial } from '../lib/threejs/materials/MeshPhongMaterial';
+import { SpotLight } from '../lib/threejs/lights/SpotLight';
 
 import Entity from './Entity';
 import EnemyShip from './EnemyShip';
@@ -50,6 +51,23 @@ class PlayerShip extends Entity {
 			return null;
 
 		})( this );
+
+		this.flashlight = (function ( self ) {
+
+			let spotlight = new SpotLight( 0xffffff, 4 );
+
+			spotlight.distance = 450;
+			spotlight.angle = Math.PI / 3;
+			spotlight.penumbra = 0.4;
+			spotlight.position.add( new Vector3( 0, 40, 60 ) );
+			spotlight.target.position.add( self.position.clone().negate() );
+
+			spotlight.visible = false;
+			self.add( spotlight, spotlight.target );
+
+			return spotlight;
+
+		}( this ));
 
 		this.materials.push( new MeshLambertMaterial( { color: 0x4040e0 } ) );
 		this.materials.push( new MeshPhongMaterial(
@@ -130,6 +148,12 @@ class PlayerShip extends Entity {
 		super.update( dt );
 
 		this.reload > 0 && --this.reload;
+
+	}
+
+	toggleFlashlight () {
+
+		this.flashlight.visible = !this.flashlight.visible;
 
 	}
 

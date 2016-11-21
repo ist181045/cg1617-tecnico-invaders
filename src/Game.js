@@ -411,6 +411,12 @@ class Game {
 
 					break;
 
+				case Keyboard.KEY_H: /* Toggle playerShip flashlight */
+
+					this.playerShip.toggleFlashlight();
+
+					break;
+
 				/* Toggle Gouraud / Lambert Shading */
 				case Keyboard.KEY_G:
 
