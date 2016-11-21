@@ -11,6 +11,7 @@ import './lib/threejs/polyfills.js';
 
 import { Scene } from './lib/threejs/scenes/Scene';
 import { WebGLRenderer } from './lib/threejs/renderers/WebGLRenderer';
+import { TextureLoader } from './lib/threejs/loaders/TextureLoader';
 
 import { OrthographicCamera } from './lib/threejs/cameras/OrthographicCamera';
 import { PerspectiveCamera } from './lib/threejs/cameras/PerspectiveCamera';
@@ -47,6 +48,7 @@ class Game {
 
 		})();
 		this.scene = new Scene();
+		this.scene.background = new TextureLoader().load('./resources/scene_game_bg.png');
 
 		this.gameClock = new Clock( false );
 
