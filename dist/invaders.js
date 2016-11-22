@@ -25087,7 +25087,7 @@ var Game = function () {
 			/* Build the scene */
 			this.scene.add(function (self) {
 
-				var bgMesh = new Mesh(new PlaneGeometry(4 * WIDTH, 4 * HEIGHT), new MeshBasicMaterial());
+				var bgMesh = new Mesh(new PlaneGeometry(4 * WIDTH, 6 * HEIGHT), new MeshBasicMaterial());
 
 				var loader = new TextureLoader();
 
