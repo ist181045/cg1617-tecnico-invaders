@@ -22238,6 +22238,482 @@ function WebGLRenderer( parameters ) {
 
 /**
  * @author mrdoob / http://mrdoob.com/
+ */
+
+var Cache = {
+
+	enabled: false,
+
+	files: {},
+
+	add: function ( key, file ) {
+
+		if ( this.enabled === false ) return;
+
+		// console.log( 'THREE.Cache', 'Adding key:', key );
+
+		this.files[ key ] = file;
+
+	},
+
+	get: function ( key ) {
+
+		if ( this.enabled === false ) return;
+
+		// console.log( 'THREE.Cache', 'Checking key:', key );
+
+		return this.files[ key ];
+
+	},
+
+	remove: function ( key ) {
+
+		delete this.files[ key ];
+
+	},
+
+	clear: function () {
+
+		this.files = {};
+
+	}
+
+};
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
+
+function LoadingManager( onLoad, onProgress, onError ) {
+
+	var scope = this;
+
+	var isLoading = false, itemsLoaded = 0, itemsTotal = 0;
+
+	this.onStart = undefined;
+	this.onLoad = onLoad;
+	this.onProgress = onProgress;
+	this.onError = onError;
+
+	this.itemStart = function ( url ) {
+
+		itemsTotal ++;
+
+		if ( isLoading === false ) {
+
+			if ( scope.onStart !== undefined ) {
+
+				scope.onStart( url, itemsLoaded, itemsTotal );
+
+			}
+
+		}
+
+		isLoading = true;
+
+	};
+
+	this.itemEnd = function ( url ) {
+
+		itemsLoaded ++;
+
+		if ( scope.onProgress !== undefined ) {
+
+			scope.onProgress( url, itemsLoaded, itemsTotal );
+
+		}
+
+		if ( itemsLoaded === itemsTotal ) {
+
+			isLoading = false;
+
+			if ( scope.onLoad !== undefined ) {
+
+				scope.onLoad();
+
+			}
+
+		}
+
+	};
+
+	this.itemError = function ( url ) {
+
+		if ( scope.onError !== undefined ) {
+
+			scope.onError( url );
+
+		}
+
+	};
+
+}
+
+var DefaultLoadingManager = new LoadingManager();
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
+
+function XHRLoader( manager ) {
+
+	this.manager = ( manager !== undefined ) ? manager : DefaultLoadingManager;
+
+}
+
+Object.assign( XHRLoader.prototype, {
+
+	load: function ( url, onLoad, onProgress, onError ) {
+
+		if ( url === undefined ) url = '';
+
+		if ( this.path !== undefined ) url = this.path + url;
+
+		var scope = this;
+
+		var cached = Cache.get( url );
+
+		if ( cached !== undefined ) {
+
+			scope.manager.itemStart( url );
+
+			setTimeout( function () {
+
+				if ( onLoad ) onLoad( cached );
+
+				scope.manager.itemEnd( url );
+
+			}, 0 );
+
+			return cached;
+
+		}
+
+		// Check for data: URI
+		var dataUriRegex = /^data:(.*?)(;base64)?,(.*)$/;
+		var dataUriRegexResult = url.match( dataUriRegex );
+
+		// Safari can not handle Data URIs through XMLHttpRequest so process manually
+		if ( dataUriRegexResult ) {
+
+			var mimeType = dataUriRegexResult[1];
+			var isBase64 = !!dataUriRegexResult[2];
+			var data = dataUriRegexResult[3];
+
+			data = window.decodeURIComponent(data);
+
+			if( isBase64 ) {
+				data = window.atob(data);
+			}
+
+			try {
+
+				var response;
+				var responseType = ( this.responseType || '' ).toLowerCase();
+
+				switch ( responseType ) {
+
+					case 'arraybuffer':
+					case 'blob':
+
+					 	response = new ArrayBuffer( data.length );
+						var view = new Uint8Array( response );
+						for ( var i = 0; i < data.length; i ++ ) {
+
+								view[ i ] = data.charCodeAt( i );
+
+						}
+
+						if ( responseType === 'blob' ) {
+
+							response = new Blob( [ response ], { "type" : mimeType } );
+
+						}
+
+						break;
+
+					case 'document':
+
+						var parser = new DOMParser();
+						response = parser.parseFromString( data, mimeType );
+
+						break;
+
+					case 'json':
+
+						response = JSON.parse( data );
+
+						break;
+
+					default: // 'text' or other
+
+						response = data;
+
+						break;
+
+				}
+
+				// Wait for next browser tick
+				window.setTimeout( function() {
+
+					if ( onLoad ) onLoad( response );
+
+					scope.manager.itemEnd( url );
+
+				}, 0);
+
+			} catch ( error ) {
+
+				// Wait for next browser tick
+				window.setTimeout( function() {
+
+					if ( onError ) onError( error );
+
+					scope.manager.itemError( url );
+
+				}, 0);
+
+			}
+
+		} else {
+
+			var request = new XMLHttpRequest();
+			request.open( 'GET', url, true );
+
+			request.addEventListener( 'load', function ( event ) {
+
+				var response = event.target.response;
+
+				Cache.add( url, response );
+
+				if ( this.status === 200 ) {
+
+					if ( onLoad ) onLoad( response );
+
+					scope.manager.itemEnd( url );
+
+				} else if ( this.status === 0 ) {
+
+					// Some browsers return HTTP Status 0 when using non-http protocol
+					// e.g. 'file://' or 'data://'. Handle as success.
+
+					console.warn( 'THREE.XHRLoader: HTTP Status 0 received.' );
+
+					if ( onLoad ) onLoad( response );
+
+					scope.manager.itemEnd( url );
+
+				} else {
+
+					if ( onError ) onError( event );
+
+					scope.manager.itemError( url );
+
+				}
+
+			}, false );
+
+			if ( onProgress !== undefined ) {
+
+				request.addEventListener( 'progress', function ( event ) {
+
+					onProgress( event );
+
+				}, false );
+
+			}
+
+			request.addEventListener( 'error', function ( event ) {
+
+				if ( onError ) onError( event );
+
+				scope.manager.itemError( url );
+
+			}, false );
+
+			if ( this.responseType !== undefined ) request.responseType = this.responseType;
+			if ( this.withCredentials !== undefined ) request.withCredentials = this.withCredentials;
+
+			if ( request.overrideMimeType ) request.overrideMimeType( 'text/plain' );
+
+			request.send( null );
+
+		}
+
+		scope.manager.itemStart( url );
+
+		return request;
+
+	},
+
+	setPath: function ( value ) {
+
+		this.path = value;
+		return this;
+
+	},
+
+	setResponseType: function ( value ) {
+
+		this.responseType = value;
+		return this;
+
+	},
+
+	setWithCredentials: function ( value ) {
+
+		this.withCredentials = value;
+		return this;
+
+	}
+
+} );
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
+
+function ImageLoader( manager ) {
+
+	this.manager = ( manager !== undefined ) ? manager : DefaultLoadingManager;
+
+}
+
+Object.assign( ImageLoader.prototype, {
+
+	load: function ( url, onLoad, onProgress, onError ) {
+
+		var scope = this;
+
+		var image = document.createElementNS( 'http://www.w3.org/1999/xhtml', 'img' );
+		image.onload = function () {
+
+			image.onload = null;
+
+			URL.revokeObjectURL( image.src );
+
+			if ( onLoad ) onLoad( image );
+
+			scope.manager.itemEnd( url );
+
+		};
+		image.onerror = onError;
+
+		if ( url.indexOf( 'data:' ) === 0 ) {
+
+			image.src = url;
+
+		} else {
+
+			var loader = new XHRLoader();
+			loader.setPath( this.path );
+			loader.setResponseType( 'blob' );
+			loader.setWithCredentials( this.withCredentials );
+			loader.load( url, function ( blob ) {
+
+				image.src = URL.createObjectURL( blob );
+
+			}, onProgress, onError );
+
+		}
+
+		scope.manager.itemStart( url );
+
+		return image;
+
+	},
+
+	setCrossOrigin: function ( value ) {
+
+		this.crossOrigin = value;
+		return this;
+
+	},
+
+	setWithCredentials: function ( value ) {
+
+		this.withCredentials = value;
+		return this;
+
+	},
+
+	setPath: function ( value ) {
+
+		this.path = value;
+		return this;
+
+	}
+
+} );
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
+
+function TextureLoader( manager ) {
+
+	this.manager = ( manager !== undefined ) ? manager : DefaultLoadingManager;
+
+}
+
+Object.assign( TextureLoader.prototype, {
+
+	load: function ( url, onLoad, onProgress, onError ) {
+
+		var texture = new Texture();
+
+		var loader = new ImageLoader( this.manager );
+		loader.setCrossOrigin( this.crossOrigin );
+		loader.setWithCredentials( this.withCredentials );
+		loader.setPath( this.path );
+		loader.load( url, function ( image ) {
+
+			// JPEGs can't have an alpha channel, so memory can be saved by storing them as RGB.
+			var isJPEG = url.search( /\.(jpg|jpeg)$/ ) > 0 || url.search( /^data\:image\/jpeg/ ) === 0;
+
+			texture.format = isJPEG ? RGBFormat : RGBAFormat;
+			texture.image = image;
+			texture.needsUpdate = true;
+
+			if ( onLoad !== undefined ) {
+
+				onLoad( texture );
+
+			}
+
+		}, onProgress, onError );
+
+		return texture;
+
+	},
+
+	setCrossOrigin: function ( value ) {
+
+		this.crossOrigin = value;
+		return this;
+
+	},
+
+	setWithCredentials: function ( value ) {
+
+		this.withCredentials = value;
+		return this;
+
+	},
+
+	setPath: function ( value ) {
+
+		this.path = value;
+		return this;
+
+	}
+
+
+
+} );
+
+/**
+ * @author mrdoob / http://mrdoob.com/
  * @author alteredq / http://alteredqualia.com/
  */
 
@@ -22835,6 +23311,105 @@ MeshPhongMaterial.prototype.copy = function ( source ) {
 	return this;
 
 };
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
+
+function SpotLightShadow() {
+
+	LightShadow.call( this, new PerspectiveCamera( 50, 1, 0.5, 500 ) );
+
+}
+
+SpotLightShadow.prototype = Object.assign( Object.create( LightShadow.prototype ), {
+
+	constructor: SpotLightShadow,
+
+	isSpotLightShadow: true,
+
+	update: function ( light ) {
+
+		var fov = _Math.RAD2DEG * 2 * light.angle;
+		var aspect = this.mapSize.width / this.mapSize.height;
+		var far = light.distance || 500;
+
+		var camera = this.camera;
+
+		if ( fov !== camera.fov || aspect !== camera.aspect || far !== camera.far ) {
+
+			camera.fov = fov;
+			camera.aspect = aspect;
+			camera.far = far;
+			camera.updateProjectionMatrix();
+
+		}
+
+	}
+
+} );
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ */
+
+function SpotLight( color, intensity, distance, angle, penumbra, decay ) {
+
+	Light.call( this, color, intensity );
+
+	this.type = 'SpotLight';
+
+	this.position.copy( Object3D.DefaultUp );
+	this.updateMatrix();
+
+	this.target = new Object3D();
+
+	Object.defineProperty( this, 'power', {
+		get: function () {
+			// intensity = power per solid angle.
+			// ref: equation (17) from http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr.pdf
+			return this.intensity * Math.PI;
+		},
+		set: function ( power ) {
+			// intensity = power per solid angle.
+			// ref: equation (17) from http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr.pdf
+			this.intensity = power / Math.PI;
+		}
+	} );
+
+	this.distance = ( distance !== undefined ) ? distance : 0;
+	this.angle = ( angle !== undefined ) ? angle : Math.PI / 3;
+	this.penumbra = ( penumbra !== undefined ) ? penumbra : 0;
+	this.decay = ( decay !== undefined ) ? decay : 1;	// for physically correct lights, should be 2.
+
+	this.shadow = new SpotLightShadow();
+
+}
+
+SpotLight.prototype = Object.assign( Object.create( Light.prototype ), {
+
+	constructor: SpotLight,
+
+	isSpotLight: true,
+
+	copy: function ( source ) {
+
+		Light.prototype.copy.call( this, source );
+
+		this.distance = source.distance;
+		this.angle = source.angle;
+		this.penumbra = source.penumbra;
+		this.decay = source.decay;
+
+		this.target = source.target.clone();
+
+		this.shadow = source.shadow.clone();
+
+		return this;
+
+	}
+
+} );
 
 /**
  * @author mrdoob / http://mrdoob.com/
@@ -23659,50 +24234,26 @@ PolyhedronBufferGeometry.prototype.constructor = PolyhedronBufferGeometry;
  * @author Mugen87 / https://github.com/Mugen87
  */
 
-function DodecahedronBufferGeometry( radius, detail ) {
+function IcosahedronBufferGeometry( radius, detail ) {
 
 	var t = ( 1 + Math.sqrt( 5 ) ) / 2;
-	var r = 1 / t;
 
 	var vertices = [
-
-		// (±1, ±1, ±1)
-		- 1, - 1, - 1,    - 1, - 1,  1,
-		- 1,  1, - 1,    - 1,  1,  1,
-		 1, - 1, - 1,     1, - 1,  1,
-		 1,  1, - 1,     1,  1,  1,
-
-		// (0, ±1/φ, ±φ)
-		 0, - r, - t,     0, - r,  t,
-		 0,  r, - t,     0,  r,  t,
-
-		// (±1/φ, ±φ, 0)
-		- r, - t,  0,    - r,  t,  0,
-		 r, - t,  0,     r,  t,  0,
-
-		// (±φ, 0, ±1/φ)
-		- t,  0, - r,     t,  0, - r,
-		- t,  0,  r,     t,  0,  r
+		- 1,  t,  0,    1,  t,  0,   - 1, - t,  0,    1, - t,  0,
+		 0, - 1,  t,    0,  1,  t,    0, - 1, - t,    0,  1, - t,
+		 t,  0, - 1,    t,  0,  1,   - t,  0, - 1,   - t,  0,  1
 	];
 
 	var indices = [
-		 3, 11,  7,      3,  7, 15,      3, 15, 13,
-		 7, 19, 17,      7, 17,  6,      7,  6, 15,
-		17,  4,  8,     17,  8, 10,     17, 10,  6,
-		 8,  0, 16,      8, 16,  2,      8,  2, 10,
-		 0, 12,  1,      0,  1, 18,      0, 18, 16,
-		 6, 10,  2,      6,  2, 13,      6, 13, 15,
-		 2, 16, 18,      2, 18,  3,      2,  3, 13,
-		18,  1,  9,     18,  9, 11,     18, 11,  3,
-		 4, 14, 12,      4, 12,  0,      4,  0,  8,
-		11,  9,  5,     11,  5, 19,     11, 19,  7,
-		19,  5, 14,     19, 14,  4,     19,  4, 17,
-		 1, 12, 14,      1, 14,  5,      1,  5,  9
+		 0, 11,  5,    0,  5,  1,    0,  1,  7,    0,  7, 10,    0, 10, 11,
+		 1,  5,  9,    5, 11,  4,   11, 10,  2,   10,  7,  6,    7,  1,  8,
+		 3,  9,  4,    3,  4,  2,    3,  2,  6,    3,  6,  8,    3,  8,  9,
+		 4,  9,  5,    2,  4, 11,    6,  2, 10,    8,  6,  7,    9,  8,  1
 	];
 
 	PolyhedronBufferGeometry.call( this, vertices, indices, radius, detail );
 
-	this.type = 'DodecahedronBufferGeometry';
+	this.type = 'IcosahedronBufferGeometry';
 
 	this.parameters = {
 		radius: radius,
@@ -23711,31 +24262,31 @@ function DodecahedronBufferGeometry( radius, detail ) {
 
 }
 
-DodecahedronBufferGeometry.prototype = Object.create( PolyhedronBufferGeometry.prototype );
-DodecahedronBufferGeometry.prototype.constructor = DodecahedronBufferGeometry;
+IcosahedronBufferGeometry.prototype = Object.create( PolyhedronBufferGeometry.prototype );
+IcosahedronBufferGeometry.prototype.constructor = IcosahedronBufferGeometry;
 
 /**
- * @author Abe Pazos / https://hamoid.com
+ * @author timothypratley / https://github.com/timothypratley
  */
 
-function DodecahedronGeometry( radius, detail ) {
+function IcosahedronGeometry( radius, detail ) {
 
-	Geometry.call( this );
+ 	Geometry.call( this );
 
-	this.type = 'DodecahedronGeometry';
+	this.type = 'IcosahedronGeometry';
 
 	this.parameters = {
 		radius: radius,
 		detail: detail
 	};
 
-	this.fromBufferGeometry( new DodecahedronBufferGeometry( radius, detail ) );
+	this.fromBufferGeometry( new IcosahedronBufferGeometry( radius, detail ) );
 	this.mergeVertices();
 
 }
 
-DodecahedronGeometry.prototype = Object.create( Geometry.prototype );
-DodecahedronGeometry.prototype.constructor = DodecahedronGeometry;
+IcosahedronGeometry.prototype = Object.create( Geometry.prototype );
+IcosahedronGeometry.prototype.constructor = IcosahedronGeometry;
 
 /**
  * CG Space Invaders
@@ -23777,7 +24328,7 @@ var EnemyShip = function (_Entity) {
 
 		_this.add(function (self) {
 
-			return new Mesh(new DodecahedronGeometry(15, 0), self.material);
+			return new Mesh(new IcosahedronGeometry(15, 0), self.material);
 		}(_this));
 
 		++EnemyShip.count;
@@ -23990,6 +24541,22 @@ var PlayerShip = function (_Entity) {
 			return null;
 		}(_this);
 
+		_this.flashlight = function (self) {
+
+			var spotlight = new SpotLight(0xffffff, 4);
+
+			spotlight.distance = 450;
+			spotlight.angle = Math.PI / 3;
+			spotlight.penumbra = 0.4;
+			spotlight.position.add(new Vector3(0, 40, 60));
+			spotlight.target.position.add(self.position.clone().negate());
+
+			spotlight.visible = false;
+			self.add(spotlight, spotlight.target);
+
+			return spotlight;
+		}(_this);
+
 		_this.materials.push(new MeshLambertMaterial({ color: 0x4040e0 }));
 		_this.materials.push(new MeshPhongMaterial({
 			color: 0x4040e0,
@@ -24040,6 +24607,12 @@ var PlayerShip = function (_Entity) {
 			get(PlayerShip.prototype.__proto__ || Object.getPrototypeOf(PlayerShip.prototype), 'update', this).call(this, dt);
 
 			this.reload > 0 && --this.reload;
+		}
+	}, {
+		key: 'toggleFlashlight',
+		value: function toggleFlashlight() {
+
+			this.flashlight.visible = !this.flashlight.visible;
 		}
 	}, {
 		key: 'fire',
@@ -24352,7 +24925,7 @@ var KEY_D = 68;
 
 
 var KEY_G = 71;
-
+var KEY_H = 72;
 
 
 
@@ -24394,6 +24967,7 @@ var Game = function () {
 			return renderer;
 		}();
 		this.scene = new Scene();
+		this.scene.background = new TextureLoader().load('./resources/scene_game_bg.png');
 
 		this.gameClock = new Clock(false);
 
@@ -24483,7 +25057,8 @@ var Game = function () {
 		value: function setup() {
 
 			/* Clear the scene */
-			this.scene = new Scene();
+			this.scene.children.splice(0, this.scene.children.length);
+			console.log(this.scene.children);
 
 			this.gameObjects = new Array();
 
@@ -24503,6 +25078,7 @@ var Game = function () {
 
 			this.cameras.length > 2 && this.cameras.pop();
 			this.cameras.push(this.playerShip.camera);
+			this.camera = this.cameras[0];
 
 			this.gameObjects.push(this.playerShip);
 			this.scene.add(this.playerShip);
@@ -24717,6 +25293,13 @@ var Game = function () {
 
 						this.lightsOn = !this.lightsOn;
 						this.updateMaterials();
+
+						break;
+
+					case KEY_H:
+						/* Toggle playerShip flashlight */
+
+						this.playerShip.toggleFlashlight();
 
 						break;
 
