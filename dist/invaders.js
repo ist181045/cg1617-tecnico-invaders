@@ -25087,12 +25087,12 @@ var Game = function () {
 			/* Build the scene */
 			this.scene.add(function (self) {
 
-				var bgMesh = new Mesh(new PlaneGeometry(2 * WIDTH, 2 * HEIGHT), new MeshBasicMaterial());
+				var bgMesh = new Mesh(new PlaneGeometry(4 * WIDTH, 4 * HEIGHT), new MeshBasicMaterial());
 
 				var loader = new TextureLoader();
 
-				bgMesh.rotateX(-Math.PI / 4);
-				bgMesh.position.set(0, -100, -300);
+				bgMesh.rotateX(-Math.PI / 3);
+				bgMesh.position.set(0, -200, -200);
 
 				bgMesh.material.map = loader.load('./resources/bg/game_scene_bg.jpg');
 

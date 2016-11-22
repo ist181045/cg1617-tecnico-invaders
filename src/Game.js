@@ -159,7 +159,7 @@ class Game {
 		this.scene.add( function ( self ) {
 
 			let bgMesh = new Mesh(
-				new PlaneGeometry( 4 * WIDTH, 4 * HEIGHT ),
+				new PlaneGeometry( 4 * WIDTH, 6 * HEIGHT ),
 				new MeshBasicMaterial()
 			);
 
