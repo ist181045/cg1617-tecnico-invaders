@@ -11,8 +11,9 @@
     "dist/js/invaders.min.js"
   ],
   "scripts": {
-    "dev": "rollup -c -w",
-    "dist": "rollup -c && uglifyjs dist/invaders.js -cm > dist/js/invaders.min.js",
+		"copy": "cp src/dev.html dist/dev && cp -r src/resources dist/dev",
+    "dev": "npm run copy && rollup -c -w",
+    "dist": "npm run copy && cp src/index.html dist/ && cp -r src/resources dist/js && rollup -c && uglifyjs dist/dev/invaders.js -cm > dist/js/invaders.min.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

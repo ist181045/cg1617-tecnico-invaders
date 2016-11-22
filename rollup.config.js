@@ -39,7 +39,7 @@ export default {
 	targets: [
 		{
 			format: 'iife',
-			dest: 'dist/invaders.js',
+			dest: 'dist/dev/invaders.js',
 			moduleName: 'Invaders'
 		}
 	]
