@@ -9,9 +9,8 @@
 
 import './lib/threejs/polyfills.js';
 
-import { Scene } from './lib/threejs/scenes/Scene';
 import { WebGLRenderer } from './lib/threejs/renderers/WebGLRenderer';
-import { TextureLoader } from './lib/threejs/loaders/TextureLoader';
+import { Scene } from './lib/threejs/scenes/Scene';
 
 import { OrthographicCamera } from './lib/threejs/cameras/OrthographicCamera';
 import { PerspectiveCamera } from './lib/threejs/cameras/PerspectiveCamera';
@@ -20,6 +19,12 @@ import { DirectionalLight } from './lib/threejs/lights/DirectionalLight';
 import { PointLight } from './lib/threejs/lights/PointLight';
 
 import { Clock } from './lib/threejs/core/Clock';
+
+import { Mesh } from './lib/threejs/objects/Mesh';
+import { MeshBasicMaterial } from './lib/threejs/materials/MeshBasicMaterial';
+import { PlaneGeometry } from './lib/threejs/geometries/PlaneGeometry';
+import { TextureLoader } from './lib/threejs/loaders/TextureLoader';
+
 
 import { WIDTH, HEIGHT } from './Constants';
 import { WINDOW_PIXEL_RATIO, WINDOW_WIDTH, WINDOW_HEIGHT } from './Constants';
@@ -48,7 +53,6 @@ class Game {
 
 		})();
 		this.scene = new Scene();
-		this.scene.background = new TextureLoader().load('./resources/scene_game_bg.jpg');
 
 		this.gameClock = new Clock( false );
 
@@ -147,13 +151,28 @@ class Game {
 
 	setup () {
 
-		/* Clear the scene */
-		this.scene.children.splice( 0, this.scene.children.length );
-		console.log( this.scene.children );
-
-		this.gameObjects = new Array();
+		/* Clear the scene + reset gameObjects array */
+		this.scene.children.length = 0;
+		this.gameObjects.length = 0;
 
 		/* Build the scene */
+		this.scene.add( function ( self ) {
+
+			let bgMesh = new Mesh(
+				new PlaneGeometry( 2 * WIDTH, 2 * HEIGHT ),
+				new MeshBasicMaterial()
+			);
+
+			let loader = new TextureLoader();
+
+			bgMesh.rotateX( -Math.PI / 4 );
+			bgMesh.position.set( 0, -100, -300 );
+
+			bgMesh.material.map = loader.load('./resources/bg/game_scene_bg.jpg');
+
+			return bgMesh;
+
+		}( this ));
 
 		this.field.children.forEach( function ( b ) {
 
