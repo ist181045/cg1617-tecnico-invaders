@@ -24967,7 +24967,7 @@ var Game = function () {
 			return renderer;
 		}();
 		this.scene = new Scene();
-		this.scene.background = new TextureLoader().load('./resources/scene_game_bg.png');
+		this.scene.background = new TextureLoader().load('./resources/scene_game_bg.jpg');
 
 		this.gameClock = new Clock(false);
 
