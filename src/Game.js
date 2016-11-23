@@ -66,7 +66,7 @@ class Game {
 			cameras.push( function () {
 
 				let camera = new OrthographicCamera(
-					~WIDTH >> 1, WIDTH >> 1, HEIGHT >> 1, ~HEIGHT >> 1, 1, 200
+					~WIDTH >> 1, WIDTH >> 1, HEIGHT >> 1, ~HEIGHT >> 1, 1, 2000
 				);
 
 				camera.position.set( 0, 100, 0 );
@@ -159,15 +159,16 @@ class Game {
 		this.scene.add( function ( self ) {
 
 			let bgMesh = new Mesh(
-				new PlaneGeometry( 4 * WIDTH, 6 * HEIGHT ),
+				new PlaneGeometry( 6 * WIDTH, 6 * WIDTH ),
 				new MeshBasicMaterial()
 			);
 
 			let loader = new TextureLoader();
 
-			bgMesh.rotateX( -Math.PI / 3 );
-			bgMesh.position.set( 0, -200, -200 );
+			bgMesh.rotateX( -Math.PI / 6 );
+			bgMesh.position.set( 0, -40, HEIGHT / -2 );
 
+			bgMesh.material.depthWrite = false;
 			bgMesh.material.map = loader.load('./resources/bg/game_scene_bg.jpg');
 
 			return bgMesh;
