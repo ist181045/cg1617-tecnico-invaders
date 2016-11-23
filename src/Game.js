@@ -8,6 +8,7 @@
  */
 
 import './lib/threejs/polyfills.js';
+import * as THREE from './lib/threejs/constants';
 
 import { WebGLRenderer } from './lib/threejs/renderers/WebGLRenderer';
 import { Scene } from './lib/threejs/scenes/Scene';
@@ -108,10 +109,10 @@ class Game {
 
 		this.sun = (function ( self ) {
 
-			let sun = new DirectionalLight( 0xffffff, 2 );
+			let sun = new DirectionalLight( 0xffffff, 1 );
 
 			sun.position.set( ~self.field.width >> 2, 100, self.field.height >> 2 );
-			sun.target  = self.scene;
+			sun.target = self.scene;
 
 			return sun;
 
@@ -122,7 +123,7 @@ class Game {
 
 			for ( let i = 0; i < n; ++i ) {
 
-				stars.push( new PointLight( 0xffffff, 0.4 ) );
+				stars.push( new PointLight( 0xffffff, 0.5 ) );
 
 			}
 
@@ -156,24 +157,29 @@ class Game {
 		this.gameObjects.length = 0;
 
 		/* Build the scene */
-		this.scene.add( function ( self ) {
+		this.scene.add( function () {
 
 			let bgMesh = new Mesh(
-				new PlaneGeometry( 6 * WIDTH, 6 * WIDTH ),
+
+				new PlaneGeometry( 10 * WIDTH, 8 * WIDTH ),
 				new MeshBasicMaterial()
+
 			);
 
 			let loader = new TextureLoader();
+			let texture = loader.load( './resources/bg/game_scene_bg.jpg' );
+			texture.wrapS = THREE.RepeatWrapping;
+			texture.wrapT = THREE.RepeatWrapping;
+			texture.repeat.multiplyScalar( 7 );
 
 			bgMesh.rotateX( -Math.PI / 6 );
-			bgMesh.position.set( 0, -40, HEIGHT / -2 );
+			bgMesh.position.set( 0, -20, HEIGHT / -2 );
 
-			bgMesh.material.depthWrite = false;
-			bgMesh.material.map = loader.load('./resources/bg/game_scene_bg.jpg');
+			bgMesh.material.map = texture;
 
 			return bgMesh;
 
-		}( this ));
+		}());
 
 		this.field.children.forEach( function ( b ) {
 
@@ -464,13 +470,17 @@ class Game {
 				/* Toggle wireframe of the objects in the scene */
 				case Keyboard.KEY_W:
 
-					this.scene.traverse( function( node ) {
+					this.gameObjects.forEach( function( obj ) {
 
-						if ( node.isMesh ) {
+						obj.traverse( function ( node ) {
 
-							node.material.wireframe = !node.material.wireframe;
+							if ( node.isMesh ) {
 
-						}
+								node.material.wireframe = !node.material.wireframe;
+
+							}
+							
+						});
 
 					});
 
