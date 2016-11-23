@@ -13,9 +13,9 @@
   ],
   "scripts": {
 		"prep:dev": "mkdir -p dev && cp -r src/img src/dev.html src/resources dev/",
-		"prep:dist": "cp -r src/img src/index.html src/resources dev/invaders.js dist/",
-    "dev": "rollup -c -w",
-    "dist": "rollup -c && uglifyjs dist/invaders.js -cm > dist/invaders.min.js",
+		"prep:dist": "npm run prep:dev && cp -r src/img src/index.html src/resources dev/invaders.js dist/",
+    "dev": "npm run prep:dev && rollup -c -w",
+    "dist": "npm run prep:dist && rollup -c && uglifyjs dist/invaders.js -cm > dist/invaders.min.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
