@@ -56,6 +56,8 @@ class GameHUD extends Scene {
 
 			ship.rotateY( Math.PI / 2 );
 			ship.scale.multiplyScalar( 0.6 );
+			ship.material.depthTest = false;
+			ship.material.depthWrite = false;
 
 			this.ships.push( ship );
 			this.add( this.ships[i] );
