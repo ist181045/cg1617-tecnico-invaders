@@ -58,7 +58,7 @@ class PlayerShip extends Entity {
 
 			spotlight.position.set( 0, 20, -30 );
 			spotlight.target.position.copy( spotlight.position );
-			spotlight.target.position.add( new Vector3( 0, 0, -11 ) );
+			spotlight.target.position.add( new Vector3( 0, 0, -1 ) );
 
 			spotlight.visible = false;
 			self.add( spotlight, spotlight.target );
