@@ -188,6 +188,7 @@ class Game {
 		}, this );
 
 		this.field.changeMaterial( 0 );
+		this.field.visible = false;
 		this.scene.add( this.field );
 
 		this.playerShip = new PlayerShip( 0, 0, ( this.field.height >> 1 ) - 50,
@@ -479,10 +480,17 @@ class Game {
 								node.material.wireframe = !node.material.wireframe;
 
 							}
-							
+
 						});
 
 					});
+
+					break;
+
+				/* Toggle field visibility */
+				case Keyboard.KEY_9:
+
+					this.field.visible = !this.field.visible;
 
 					break;
 
