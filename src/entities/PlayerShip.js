@@ -54,13 +54,11 @@ class PlayerShip extends Entity {
 
 		this.flashlight = (function ( self ) {
 
-			let spotlight = new SpotLight( 0xffffff, 4 );
+			let spotlight = new SpotLight( 0xffffff, 4, 400, Math.PI / 3, 0.4 );
 
-			spotlight.distance = 450;
-			spotlight.angle = Math.PI / 3;
-			spotlight.penumbra = 0.4;
-			spotlight.position.add( new Vector3( 0, 40, 60 ) );
-			spotlight.target.position.add( self.position.clone().negate() );
+			spotlight.position.set( 0, 0, -30 );
+			spotlight.target.position.copy( spotlight.position );
+			spotlight.target.position.add( new Vector3( 0, 0, -1 ) );
 
 			spotlight.visible = false;
 			self.add( spotlight, spotlight.target );
