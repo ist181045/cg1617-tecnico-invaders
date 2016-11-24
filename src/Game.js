@@ -168,7 +168,7 @@ class Game {
 			);
 
 			let loader = new TextureLoader();
-			let texture = loader.load( './resources/bg/game_scene_bg.jpg' );
+			let texture = loader.load( './resources/img/bg/game_scene_bg.jpg' );
 			texture.wrapS = THREE.RepeatWrapping;
 			texture.wrapT = THREE.RepeatWrapping;
 			texture.repeat.multiplyScalar( 7 );
