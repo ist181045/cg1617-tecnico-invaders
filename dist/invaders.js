@@ -390,6 +390,13 @@ var _Math = {
 
 };
 
+/**
+ * @author mikael emtinger / http://gomo.se/
+ * @author alteredq / http://alteredqualia.com/
+ * @author WestLangley / http://github.com/WestLangley
+ * @author bhouston / http://clara.io
+ */
+
 function Quaternion( x, y, z, w ) {
 
 	this._x = x || 0;
@@ -968,6 +975,15 @@ Object.assign( Quaternion, {
 	}
 
 } );
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author *kile / http://kile.stravaganza.org/
+ * @author philogb / http://blog.thejit.org/
+ * @author mikael emtinger / http://gomo.se/
+ * @author egraether / http://egraether.com/
+ * @author WestLangley / http://github.com/WestLangley
+ */
 
 function Vector3( x, y, z ) {
 
@@ -1724,6 +1740,19 @@ Vector3.prototype = {
 	}
 
 };
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author supereggbert / http://www.paulbrunt.co.uk/
+ * @author philogb / http://blog.thejit.org/
+ * @author jordi_ros / http://plattsoft.com
+ * @author D1plo1d / http://github.com/D1plo1d
+ * @author alteredq / http://alteredqualia.com/
+ * @author mikael emtinger / http://gomo.se/
+ * @author timknip / http://www.floorplanner.com/
+ * @author bhouston / http://clara.io
+ * @author WestLangley / http://github.com/WestLangley
+ */
 
 function Matrix4() {
 
@@ -3273,6 +3302,12 @@ Vector2.prototype = {
 
 };
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ * @author szimek / https://github.com/szimek/
+ */
+
 function Texture( image, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding ) {
 
 	Object.defineProperty( this, 'id', { value: TextureIdCount() } );
@@ -3551,6 +3586,10 @@ Object.assign( Texture.prototype, EventDispatcher.prototype );
 
 var count = 0;
 function TextureIdCount() { return count++; }
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
 
 function CubeTexture( images, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding ) {
 
@@ -5136,6 +5175,10 @@ Vector4.prototype = {
 
 };
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
+
 function Color( r, g, b ) {
 
 	if ( g === undefined && b === undefined ) {
@@ -5653,6 +5696,10 @@ var ColorKeywords = { 'aliceblue': 0xF0F8FF, 'antiquewhite': 0xFAEBD7, 'aqua': 0
 'springgreen': 0x00FF7F, 'steelblue': 0x4682B4, 'tan': 0xD2B48C, 'teal': 0x008080, 'thistle': 0xD8BFD8, 'tomato': 0xFF6347, 'turquoise': 0x40E0D0,
 'violet': 0xEE82EE, 'wheat': 0xF5DEB3, 'white': 0xFFFFFF, 'whitesmoke': 0xF5F5F5, 'yellow': 0xFFFF00, 'yellowgreen': 0x9ACD32 };
 
+/**
+ * Uniforms library for shared webgl shaders
+ */
+
 var UniformsLib = {
 
 	common: {
@@ -5806,6 +5853,12 @@ var UniformsLib = {
 	}
 
 };
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ * @author mrdoob / http://mrdoob.com/
+ * @author mikael emtinger / http://gomo.se/
+ */
 
 var ShaderLib = {
 
@@ -6029,6 +6082,10 @@ ShaderLib.physical = {
 	fragmentShader: ShaderChunk.meshphysical_frag
 
 };
+
+/**
+ * @author bhouston / http://clara.io
+ */
 
 function Box2( min, max ) {
 
@@ -6262,6 +6319,11 @@ Box2.prototype = {
 	}
 
 };
+
+/**
+ * @author mikael emtinger / http://gomo.se/
+ * @author alteredq / http://alteredqualia.com/
+ */
 
 function LensFlarePlugin( renderer, flares ) {
 
@@ -6641,6 +6703,11 @@ function LensFlarePlugin( renderer, flares ) {
 
 }
 
+/**
+ * @author mikael emtinger / http://gomo.se/
+ * @author alteredq / http://alteredqualia.com/
+ */
+
 function SpritePlugin( renderer, sprites ) {
 
 	var gl = renderer.context;
@@ -7010,6 +7077,17 @@ function SpritePlugin( renderer, sprites ) {
 
 }
 
+/**
+ * @author szimek / https://github.com/szimek/
+ * @author alteredq / http://alteredqualia.com/
+ * @author Marius Kintel / https://github.com/kintel
+ */
+
+/*
+ In options, we can specify:
+ * Texture parameters for an auto-generated target texture
+ * depthBuffer/stencilBuffer: Booleans to indicate if we should generate these buffers
+*/
 function WebGLRenderTarget( width, height, options ) {
 
 	this.uuid = _Math.generateUUID();
@@ -7084,6 +7162,11 @@ Object.assign( WebGLRenderTarget.prototype, EventDispatcher.prototype, {
 	}
 
 } );
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ */
 
 function Material() {
 
@@ -7421,6 +7504,27 @@ Object.assign( Material.prototype, EventDispatcher.prototype );
 var count$1 = 0;
 function MaterialIdCount() { return count$1++; }
 
+/**
+ * @author alteredq / http://alteredqualia.com/
+ *
+ * parameters = {
+ *  defines: { "label" : "value" },
+ *  uniforms: { "parameter1": { value: 1.0 }, "parameter2": { value2: 2 } },
+ *
+ *  fragmentShader: <string>,
+ *  vertexShader: <string>,
+ *
+ *  wireframe: <boolean>,
+ *  wireframeLinewidth: <float>,
+ *
+ *  lights: <bool>,
+ *
+ *  skinning: <bool>,
+ *  morphTargets: <bool>,
+ *  morphNormals: <bool>
+ * }
+ */
+
 function ShaderMaterial( parameters ) {
 
 	Material.call( this );
@@ -7522,6 +7626,29 @@ ShaderMaterial.prototype.toJSON = function ( meta ) {
 
 };
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ * @author bhouston / https://clara.io
+ * @author WestLangley / http://github.com/WestLangley
+ *
+ * parameters = {
+ *
+ *  opacity: <float>,
+ *
+ *  map: new THREE.Texture( <Image> ),
+ *
+ *  alphaMap: new THREE.Texture( <Image> ),
+ *
+ *  displacementMap: new THREE.Texture( <Image> ),
+ *  displacementScale: <float>,
+ *  displacementBias: <float>,
+ *
+ *  wireframe: <boolean>,
+ *  wireframeLinewidth: <float>
+ * }
+ */
+
 function MeshDepthMaterial( parameters ) {
 
 	Material.call( this );
@@ -7579,6 +7706,11 @@ MeshDepthMaterial.prototype.copy = function ( source ) {
 	return this;
 
 };
+
+/**
+ * @author bhouston / http://clara.io
+ * @author WestLangley / http://github.com/WestLangley
+ */
 
 function Box3( min, max ) {
 
@@ -8052,6 +8184,11 @@ Box3.prototype = {
 
 };
 
+/**
+ * @author bhouston / http://clara.io
+ * @author mrdoob / http://mrdoob.com/
+ */
+
 function Sphere( center, radius ) {
 
 	this.center = ( center !== undefined ) ? center : new Vector3();
@@ -8221,6 +8358,13 @@ Sphere.prototype = {
 	}
 
 };
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ * @author WestLangley / http://github.com/WestLangley
+ * @author bhouston / http://clara.io
+ * @author tschw
+ */
 
 function Matrix3() {
 
@@ -8526,6 +8670,10 @@ Matrix3.prototype = {
 
 };
 
+/**
+ * @author bhouston / http://clara.io
+ */
+
 function Plane( normal, constant ) {
 
 	this.normal = ( normal !== undefined ) ? normal : new Vector3( 1, 0, 0 );
@@ -8754,6 +8902,12 @@ Plane.prototype = {
 	}
 
 };
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ * @author bhouston / http://clara.io
+ */
 
 function Frustum( p0, p1, p2, p3, p4, p5 ) {
 
@@ -9396,6 +9550,10 @@ function WebGLShadowMap( _renderer, _lights, _objects, capabilities ) {
 
 }
 
+/**
+ * @author bhouston / http://clara.io
+ */
+
 function Ray( origin, direction ) {
 
 	this.origin = ( origin !== undefined ) ? origin : new Vector3();
@@ -9928,6 +10086,12 @@ Ray.prototype = {
 
 };
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author WestLangley / http://github.com/WestLangley
+ * @author bhouston / http://clara.io
+ */
+
 function Euler( x, y, z, order ) {
 
 	this._x = x || 0;
@@ -10296,6 +10460,14 @@ Layers.prototype = {
 	}
 
 };
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author mikael emtinger / http://gomo.se/
+ * @author alteredq / http://alteredqualia.com/
+ * @author WestLangley / http://github.com/WestLangley
+ * @author elephantatwork / www.elephantatwork.ch
+ */
 
 function Object3D() {
 
@@ -11012,6 +11184,10 @@ Object.assign( Object3D.prototype, EventDispatcher.prototype, {
 var count$2 = 0;
 function Object3DIdCount() { return count$2++; }
 
+/**
+ * @author bhouston / http://clara.io
+ */
+
 function Line3( start, end ) {
 
 	this.start = ( start !== undefined ) ? start : new Vector3();
@@ -11134,6 +11310,11 @@ Line3.prototype = {
 	}
 
 };
+
+/**
+ * @author bhouston / http://clara.io
+ * @author mrdoob / http://mrdoob.com/
+ */
 
 function Triangle( a, b, c ) {
 
@@ -11386,6 +11567,11 @@ Triangle.prototype = {
 
 };
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ */
+
 function Face3( a, b, c, normal, color, materialIndex ) {
 
 	this.a = a;
@@ -11440,6 +11626,39 @@ Face3.prototype = {
 	}
 
 };
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ *
+ * parameters = {
+ *  color: <hex>,
+ *  opacity: <float>,
+ *  map: new THREE.Texture( <Image> ),
+ *
+ *  aoMap: new THREE.Texture( <Image> ),
+ *  aoMapIntensity: <float>
+ *
+ *  specularMap: new THREE.Texture( <Image> ),
+ *
+ *  alphaMap: new THREE.Texture( <Image> ),
+ *
+ *  envMap: new THREE.TextureCube( [posx, negx, posy, negy, posz, negz] ),
+ *  combine: THREE.Multiply,
+ *  reflectivity: <float>,
+ *  refractionRatio: <float>,
+ *
+ *  shading: THREE.SmoothShading,
+ *  depthTest: <bool>,
+ *  depthWrite: <bool>,
+ *
+ *  wireframe: <boolean>,
+ *  wireframeLinewidth: <float>,
+ *
+ *  skinning: <bool>,
+ *  morphTargets: <bool>
+ * }
+ */
 
 function MeshBasicMaterial( parameters ) {
 
@@ -11513,6 +11732,10 @@ MeshBasicMaterial.prototype.copy = function ( source ) {
 	return this;
 
 };
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
 
 function BufferAttribute( array, itemSize, normalized ) {
 
@@ -11833,13 +12056,20 @@ BufferAttribute.prototype = {
 
 };
 
-//
-
 function Float32Attribute( array, itemSize ) {
 
 	return new BufferAttribute( new Float32Array( array ), itemSize );
 
 }
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author kile / http://kile.stravaganza.org/
+ * @author alteredq / http://alteredqualia.com/
+ * @author mikael emtinger / http://gomo.se/
+ * @author zz85 / http://www.lab4games.net/zz85/blog
+ * @author bhouston / http://clara.io
+ */
 
 function Geometry() {
 
@@ -13098,6 +13328,10 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 var count$3 = 0;
 function GeometryIdCount() { return count$3++; }
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
+
 function DirectGeometry() {
 
 	Object.defineProperty( this, 'id', { value: GeometryIdCount() } );
@@ -13380,6 +13614,11 @@ Object.assign( DirectGeometry.prototype, EventDispatcher.prototype, {
 	}
 
 } );
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ * @author mrdoob / http://mrdoob.com/
+ */
 
 function BufferGeometry() {
 
@@ -14407,6 +14646,13 @@ Object.assign( BufferGeometry.prototype, EventDispatcher.prototype, {
 
 BufferGeometry.MaxIndex = 65535;
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ * @author mikael emtinger / http://gomo.se/
+ * @author jonobr1 / http://jonobr1.com/
+ */
+
 function Mesh( geometry, material ) {
 
 	Object3D.call( this );
@@ -14742,6 +14988,10 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 } );
 
+/**
+ * @author Mugen87 / https://github.com/Mugen87
+ */
+
 function BoxBufferGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) {
 
 	BufferGeometry.call( this );
@@ -14933,6 +15183,11 @@ function BoxBufferGeometry( width, height, depth, widthSegments, heightSegments,
 BoxBufferGeometry.prototype = Object.create( BufferGeometry.prototype );
 BoxBufferGeometry.prototype.constructor = BoxBufferGeometry;
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Plane.as
+ */
+
 function PlaneBufferGeometry( width, height, widthSegments, heightSegments ) {
 
 	BufferGeometry.call( this );
@@ -15025,6 +15280,12 @@ function PlaneBufferGeometry( width, height, widthSegments, heightSegments ) {
 PlaneBufferGeometry.prototype = Object.create( BufferGeometry.prototype );
 PlaneBufferGeometry.prototype.constructor = PlaneBufferGeometry;
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author mikael emtinger / http://gomo.se/
+ * @author WestLangley / http://github.com/WestLangley
+*/
+
 function Camera() {
 
 	Object3D.call( this );
@@ -15089,6 +15350,13 @@ Camera.prototype.copy = function ( source ) {
 	return this;
 
 };
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author greggman / http://games.greggman.com/
+ * @author zz85 / http://www.lab4games.net/zz85/blog
+ * @author tschw
+ */
 
 function PerspectiveCamera( fov, aspect, near, far ) {
 
@@ -15302,6 +15570,11 @@ PerspectiveCamera.prototype = Object.assign( Object.create( Camera.prototype ), 
 	}
 
 } );
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ * @author arose / http://github.com/arose
+ */
 
 function OrthographicCamera( left, right, top, bottom, near, far ) {
 
@@ -19109,6 +19382,14 @@ function WebGLClipping() {
 
 }
 
+/**
+ * @author supereggbert / http://www.paulbrunt.co.uk/
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ * @author szimek / https://github.com/szimek/
+ * @author tschw
+ */
+
 function WebGLRenderer( parameters ) {
 
 	console.log( 'THREE.WebGLRenderer', REVISION );
@@ -21907,6 +22188,10 @@ function WebGLRenderer( parameters ) {
 
 }
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
+
 function Scene () {
 
 	Object3D.call( this );
@@ -21950,6 +22235,11 @@ Scene.prototype.toJSON = function ( meta ) {
 	return data;
 
 };
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ */
 
 function Light( color, intensity ) {
 
@@ -22003,6 +22293,10 @@ Light.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 } );
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
+
 function LightShadow( camera ) {
 
 	this.camera = camera;
@@ -22055,6 +22349,10 @@ Object.assign( LightShadow.prototype, {
 
 } );
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
+
 function DirectionalLightShadow( light ) {
 
 	LightShadow.call( this, new OrthographicCamera( - 5, 5, 5, - 5, 0.5, 500 ) );
@@ -22066,6 +22364,11 @@ DirectionalLightShadow.prototype = Object.assign( Object.create( LightShadow.pro
 	constructor: DirectionalLightShadow
 
 } );
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ */
 
 function DirectionalLight( color, intensity ) {
 
@@ -22101,6 +22404,11 @@ DirectionalLight.prototype = Object.assign( Object.create( Light.prototype ), {
 	}
 
 } );
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
+
 
 function PointLight( color, intensity, distance, decay ) {
 
@@ -22220,6 +22528,11 @@ Clock.prototype = {
 	}
 
 };
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Plane.as
+ */
 
 function PlaneGeometry( width, height, widthSegments, heightSegments ) {
 
@@ -22355,6 +22668,10 @@ function LoadingManager( onLoad, onProgress, onError ) {
 }
 
 var DefaultLoadingManager = new LoadingManager();
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
 
 function XHRLoader( manager ) {
 
@@ -22570,6 +22887,10 @@ Object.assign( XHRLoader.prototype, {
 
 } );
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
+
 function ImageLoader( manager ) {
 
 	this.manager = ( manager !== undefined ) ? manager : DefaultLoadingManager;
@@ -22642,6 +22963,10 @@ Object.assign( ImageLoader.prototype, {
 	}
 
 } );
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
 
 function TextureLoader( manager ) {
 
@@ -22725,6 +23050,44 @@ var WINDOW_WIDTH = function WINDOW_WIDTH() {
 var WINDOW_HEIGHT = function WINDOW_HEIGHT() {
   return window.innerHeight;
 };
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ *
+ * parameters = {
+ *  color: <hex>,
+ *  opacity: <float>,
+ *
+ *  map: new THREE.Texture( <Image> ),
+ *
+ *  lightMap: new THREE.Texture( <Image> ),
+ *  lightMapIntensity: <float>
+ *
+ *  aoMap: new THREE.Texture( <Image> ),
+ *  aoMapIntensity: <float>
+ *
+ *  emissive: <hex>,
+ *  emissiveIntensity: <float>
+ *  emissiveMap: new THREE.Texture( <Image> ),
+ *
+ *  specularMap: new THREE.Texture( <Image> ),
+ *
+ *  alphaMap: new THREE.Texture( <Image> ),
+ *
+ *  envMap: new THREE.TextureCube( [posx, negx, posy, negy, posz, negz] ),
+ *  combine: THREE.Multiply,
+ *  reflectivity: <float>,
+ *  refractionRatio: <float>,
+ *
+ *  wireframe: <boolean>,
+ *  wireframeLinewidth: <float>,
+ *
+ *  skinning: <bool>,
+ *  morphTargets: <bool>,
+ *  morphNormals: <bool>
+ * }
+ */
 
 function MeshLambertMaterial( parameters ) {
 
@@ -22812,6 +23175,56 @@ MeshLambertMaterial.prototype.copy = function ( source ) {
 	return this;
 
 };
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ *
+ * parameters = {
+ *  color: <hex>,
+ *  specular: <hex>,
+ *  shininess: <float>,
+ *  opacity: <float>,
+ *
+ *  map: new THREE.Texture( <Image> ),
+ *
+ *  lightMap: new THREE.Texture( <Image> ),
+ *  lightMapIntensity: <float>
+ *
+ *  aoMap: new THREE.Texture( <Image> ),
+ *  aoMapIntensity: <float>
+ *
+ *  emissive: <hex>,
+ *  emissiveIntensity: <float>
+ *  emissiveMap: new THREE.Texture( <Image> ),
+ *
+ *  bumpMap: new THREE.Texture( <Image> ),
+ *  bumpScale: <float>,
+ *
+ *  normalMap: new THREE.Texture( <Image> ),
+ *  normalScale: <Vector2>,
+ *
+ *  displacementMap: new THREE.Texture( <Image> ),
+ *  displacementScale: <float>,
+ *  displacementBias: <float>,
+ *
+ *  specularMap: new THREE.Texture( <Image> ),
+ *
+ *  alphaMap: new THREE.Texture( <Image> ),
+ *
+ *  envMap: new THREE.TextureCube( [posx, negx, posy, negy, posz, negz] ),
+ *  combine: THREE.Multiply,
+ *  reflectivity: <float>,
+ *  refractionRatio: <float>,
+ *
+ *  wireframe: <boolean>,
+ *  wireframeLinewidth: <float>,
+ *
+ *  skinning: <bool>,
+ *  morphTargets: <bool>,
+ *  morphNormals: <bool>
+ * }
+ */
 
 function MeshPhongMaterial( parameters ) {
 
@@ -22924,6 +23337,10 @@ MeshPhongMaterial.prototype.copy = function ( source ) {
 
 };
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
+
 function SpotLightShadow() {
 
 	LightShadow.call( this, new PerspectiveCamera( 50, 1, 0.5, 500 ) );
@@ -22956,6 +23373,10 @@ SpotLightShadow.prototype = Object.assign( Object.create( LightShadow.prototype 
 	}
 
 } );
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ */
 
 function SpotLight( color, intensity, distance, angle, penumbra, decay ) {
 
@@ -23014,6 +23435,17 @@ SpotLight.prototype = Object.assign( Object.create( Light.prototype ), {
 	}
 
 } );
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ *
+ * parameters = {
+ *  opacity: <float>,
+ *
+ *  wireframe: <boolean>,
+ *  wireframeLinewidth: <float>
+ * }
+ */
 
 function MeshNormalMaterial( parameters ) {
 
@@ -23317,7 +23749,11 @@ var GameObject = function (_Object3D) {
 		value: function changeMaterial(index) {
 
 			var newMaterial = this.materials[index];
+
+			newMaterial.visible = this.material.visible;
 			newMaterial.wireframe = this.material.wireframe;
+			newMaterial.depthTest = this.material.depthTest;
+			newMaterial.depthWrite = this.material.depthWrite;
 
 			this.children.forEach(function (child) {
 
@@ -23397,7 +23833,7 @@ var Collidable = function (_GameObject) {
 		}
 	}, {
 		key: 'handleCollision',
-		value: function handleCollision(other, dt) {
+		value: function handleCollision(other) {
 
 			return;
 		}
@@ -23524,6 +23960,10 @@ var Entity = function (_Collidable) {
 	}]);
 	return Entity;
 }(Collidable);
+
+/**
+ * @author Mugen87 / https://github.com/Mugen87
+ */
 
 function PolyhedronBufferGeometry( vertices, indices, radius, detail ) {
 
@@ -23819,6 +24259,10 @@ function PolyhedronBufferGeometry( vertices, indices, radius, detail ) {
 PolyhedronBufferGeometry.prototype = Object.create( BufferGeometry.prototype );
 PolyhedronBufferGeometry.prototype.constructor = PolyhedronBufferGeometry;
 
+/**
+ * @author Mugen87 / https://github.com/Mugen87
+ */
+
 function IcosahedronBufferGeometry( radius, detail ) {
 
 	var t = ( 1 + Math.sqrt( 5 ) ) / 2;
@@ -23849,6 +24293,10 @@ function IcosahedronBufferGeometry( radius, detail ) {
 
 IcosahedronBufferGeometry.prototype = Object.create( PolyhedronBufferGeometry.prototype );
 IcosahedronBufferGeometry.prototype.constructor = IcosahedronBufferGeometry;
+
+/**
+ * @author timothypratley / https://github.com/timothypratley
+ */
 
 function IcosahedronGeometry( radius, detail ) {
 
@@ -23934,7 +24382,7 @@ var EnemyShip = function (_Entity) {
 		}
 	}, {
 		key: 'handleCollision',
-		value: function handleCollision(other, dt) {
+		value: function handleCollision(other) {
 
 			switch (other.type) {
 
@@ -23948,21 +24396,37 @@ var EnemyShip = function (_Entity) {
 					break;
 
 				case 'EnemyShip':
+					{
 
-					this.direction.negate();
-					this.velocity.negate();
-					this.update(dt);
+						var offset = new Vector3();
 
-					other.direction.negate();
-					other.velocity.negate();
-					other.update(dt);
+						var dist = this.position.distanceTo(other.position);
+						var distThis = Math.abs(dist - this.boundingSphere.radius);
+						var distOther = Math.abs(dist - other.boundingSphere.radius);
 
-					break;
+						this.direction.negate();
+						this.velocity.negate();
+
+						offset.copy(this.direction).multiplyScalar(distThis);
+						this.position.add(offset);
+						this.boundingBox.translate(offset);
+						this.boundingSphere.translate(offset);
+
+						other.direction.negate();
+						other.velocity.negate();
+
+						offset.copy(other.direction).multiplyScalar(distOther);
+						other.position.add(offset);
+						other.boundingBox.translate(offset);
+						other.boundingSphere.translate(offset);
+
+						break;
+					}
 
 				case 'Barrier':
 
 					/* Delegate to barrier */
-					other.handleCollision(this, dt);
+					other.handleCollision(this);
 
 					break;
 
@@ -23985,6 +24449,11 @@ var EnemyShip = function (_Entity) {
 }(Entity);
 
 EnemyShip.count = 0;
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Cube.as
+ */
 
 function BoxGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) {
 
@@ -24104,7 +24573,7 @@ var PlayerShip = function (_Entity) {
 
 			if (camera !== undefined && camera.isCamera) {
 
-				camera.position.add(new Vector3(0, 30, 75));
+				camera.position.set(0, 40, 90);
 				camera.lookAt(self.position.clone().negate());
 
 				camera.updateProjectionMatrix();
@@ -24119,9 +24588,9 @@ var PlayerShip = function (_Entity) {
 
 		_this.flashlight = function (self) {
 
-			var spotlight = new SpotLight(0xffffff, 4, 400, Math.PI / 3, 0.4);
+			var spotlight = new SpotLight(0xffffff, 3, 400, Math.PI / 3, 0.4);
 
-			spotlight.position.set(0, 0, -30);
+			spotlight.position.set(0, 20, -30);
 			spotlight.target.position.copy(spotlight.position);
 			spotlight.target.position.add(new Vector3(0, 0, -1));
 
@@ -24226,7 +24695,7 @@ var PlayerShip = function (_Entity) {
 				case 'Barrier':
 
 					/* Delegate to barrier */
-					other.handleCollision(this, dt);
+					other.handleCollision(this);
 
 					break;
 
@@ -24304,6 +24773,8 @@ var GameHUD = function (_Scene) {
 
 				ship.rotateY(Math.PI / 2);
 				ship.scale.multiplyScalar(0.6);
+				ship.material.depthTest = false;
+				ship.material.depthWrite = false;
 
 				this.ships.push(ship);
 				this.add(this.ships[_i]);
@@ -24326,6 +24797,140 @@ var GameHUD = function (_Scene) {
 		}
 	}]);
 	return GameHUD;
+}(Scene);
+
+/**
+ * CG Space Invaders
+ * CG45179 16'17
+ *
+ * @author: Rui Ventura ( ist181045 )
+ * @author: Diogo Freitas ( ist181586 )
+ * @author: Sara Azinhal ( ist181700 )
+ */
+
+var GameBanner = function (_Scene) {
+	inherits(GameBanner, _Scene);
+
+	function GameBanner(renderer, width, height) {
+		classCallCheck(this, GameBanner);
+
+		var _this = possibleConstructorReturn(this, (GameBanner.__proto__ || Object.getPrototypeOf(GameBanner)).call(this));
+
+		_this.renderer = renderer;
+
+		_this.width = width;
+		_this.height = height;
+
+		_this.camera = function (self) {
+
+			var camera = new OrthographicCamera(self.width / -2, self.width / 2, self.height / 2, self.height / -2, -10, 10);
+
+			camera.position.set(0, 1, 0);
+			camera.lookAt(self.position);
+
+			camera.updateProjectionMatrix();
+
+			return camera;
+		}(_this);
+
+		_this.screens = function () {
+
+			var screens = new Array();
+			var loader = new TextureLoader();
+
+			screens.push(loader.load('./resources/img/screens/pause.png'));
+			screens.push(loader.load('./resources/img/screens/game_won.png'));
+			screens.push(loader.load('./resources/img/screens/game_over.png'));
+
+			return screens;
+		}();
+
+		_this.banner = function (self) {
+
+			var mesh = void 0;
+
+			var geo = new PlaneGeometry(self.width, self.height);
+			var mat = new MeshBasicMaterial();
+
+			mat.transparent = true;
+			mat.depthTest = false;
+			mat.depthWrite = false;
+
+			mesh = new Mesh(geo, mat);
+			mesh.rotateX(Math.PI / -2);
+
+			return mesh;
+		}(_this);
+
+		_this.add(_this.banner);
+		_this.visible = false;
+		_this.flicker = 0;
+
+		return _this;
+	}
+
+	createClass(GameBanner, [{
+		key: 'toggleVisibility',
+		value: function toggleVisibility() {
+			var shipAlive = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+			var gameOver = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+
+			if (!this.visible) {
+
+				if (gameOver) {
+
+					this.banner.material.map = shipAlive ? this.screens[1] : this.screens[2];
+				} else {
+
+					this.banner.material.map = this.screens[0];
+				}
+
+				this.flicker = 0;
+				this.update();
+			}
+
+			this.visible = !this.visible;
+		}
+	}, {
+		key: 'update',
+		value: function update() {
+
+			this.renderer.setViewport(0, 0, WINDOW_WIDTH(), WINDOW_HEIGHT());
+
+			if (this.visible) {
+
+				this.banner.material.opacity = Math.min(1, Math.cos(this.flicker) + 1);
+
+				this.flicker += 0.07;
+			}
+
+			this.renderer.render(this, this.camera);
+		}
+	}, {
+		key: 'resize',
+		value: function resize() {
+
+			var ratio = WINDOW_WIDTH() / WINDOW_HEIGHT();
+
+			if (ratio > this.width / this.height) {
+
+				this.camera.left = this.height * ratio / -2;
+				this.camera.right = this.height * ratio / 2;
+				this.camera.top = this.height / 2;
+				this.camera.bottom = this.height / -2;
+			} else {
+
+				this.camera.left = this.width / -2;
+				this.camera.right = this.width / 2;
+				this.camera.top = this.width / ratio / 2;
+				this.camera.bottom = this.width / ratio / -2;
+			}
+
+			this.camera.updateProjectionMatrix();
+		}
+	}]);
+	return GameBanner;
 }(Scene);
 
 /**
@@ -24376,18 +24981,25 @@ var Barrier = function (_Collidable) {
 		}
 	}, {
 		key: 'handleCollision',
-		value: function handleCollision(other, dt) {
+		value: function handleCollision(other) {
+
+			var offset = new Vector3();
+			offset.subVectors(this.boundingBox.max, this.boundingBox.min);
+			offset.multiply(this.normal).multiplyScalar(0.5);
+
+			if (other.type === 'PlayerShip' || other.type === 'EnemyShip') {
+
+				other.position.add(offset);
+				other.boundingBox.translate(offset);
+				other.boundingSphere.translate(offset);
+			}
 
 			switch (other.type) {
 
 				case 'PlayerShip':
 
 					other.direction.negate();
-					other.velocity.negate();
-					other.update(dt);
-
-					other.moving = false;
-					other.velocity.multiplyScalar(0.3);
+					other.velocity.multiplyScalar(-0.4);
 
 					break;
 
@@ -24395,7 +25007,6 @@ var Barrier = function (_Collidable) {
 
 					other.direction.reflect(this.normal);
 					other.velocity.reflect(this.normal);
-					other.update(dt);
 
 					break;
 
@@ -24438,9 +25049,9 @@ var Field = function (_GameObject) {
 		_this.width = w;
 		_this.height = h;
 
-		_this.add(new Barrier((x - w >> 1) + 2, y, z, 4, 10, h, new Vector3(-1, 0, 0)));
+		_this.add(new Barrier((x - w >> 1) + 2, y, z, 4, 10, h, new Vector3(1, 0, 0)));
 
-		_this.add(new Barrier((x + w >> 1) - 2, y, z, 4, 10, h, new Vector3(1, 0, 0)));
+		_this.add(new Barrier((x + w >> 1) - 2, y, z, 4, 10, h, new Vector3(-1, 0, 0)));
 
 		_this.add(new Barrier(x, y, (z - h >> 1) + 2, w, 10, 4, new Vector3(0, 0, 1)));
 
@@ -24490,7 +25101,7 @@ var KEY_3 = 51;
 
 
 
-
+var KEY_9 = 57;
 
 var KEY_A = 65;
 var KEY_B = 66;
@@ -24544,8 +25155,6 @@ var Game = function () {
 
 		this.gameClock = new Clock(false);
 
-		this.field = new Field(0, 0, 0, WIDTH - 10, HEIGHT - 10);
-
 		this.cameras = function (self) {
 
 			var cameras = new Array();
@@ -24553,7 +25162,7 @@ var Game = function () {
 			/* Ortho camera (bird's eye) */
 			cameras.push(function () {
 
-				var camera = new OrthographicCamera(~WIDTH >> 1, WIDTH >> 1, HEIGHT >> 1, ~HEIGHT >> 1, 1, 200);
+				var camera = new OrthographicCamera(WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 2000);
 
 				camera.position.set(0, 100, 0);
 				camera.lookAt(self.scene.position);
@@ -24568,7 +25177,7 @@ var Game = function () {
 
 				var camera = new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000);
 
-				camera.position.set(0, 250, (self.field.height >> 1) + 150);
+				camera.position.set(0, 250, HEIGHT / 2 + 150);
 				camera.lookAt(self.scene.position);
 
 				camera.updateProjectionMatrix();
@@ -24582,15 +25191,19 @@ var Game = function () {
 
 		this.gameObjects = new Array();
 
-		this.playerShip = new PlayerShip(0, 0, (this.field.height >> 1) - 50, new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000));
+		this.field = new Field(0, 0, 0, WIDTH - 10, HEIGHT - 10);
 
-		this.HUD = new GameHUD(this.renderer, this.playerShip.MAX_LIVES);
+		this.playerShip = new PlayerShip(0, 0, this.field.height / 2 - 50, new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000));
 
+		this.gameHUD = new GameHUD(this.renderer, this.playerShip.MAX_LIVES);
+		this.gameBanner = new GameBanner(this.renderer, 1920, 1080);
+
+		this.lightsOn = false;
 		this.sun = function (self) {
 
-			var sun = new DirectionalLight(0xffffff, 2);
+			var sun = new DirectionalLight(0xffffff, 1);
 
-			sun.position.set(~self.field.width >> 2, 100, self.field.height >> 2);
+			sun.position.set(self.field.width / -4, 100, self.field.height / 4);
 			sun.target = self.scene;
 
 			return sun;
@@ -24601,13 +25214,11 @@ var Game = function () {
 
 			for (var i = 0; i < n; ++i) {
 
-				stars.push(new PointLight(0xffffff, 0.4));
+				stars.push(new PointLight(0xffffff, 0.5));
 			}
 
 			return stars;
 		}(this, 6);
-
-		this.lightsOn = false;
 
 		this.gameOver = false;
 
@@ -24634,19 +25245,23 @@ var Game = function () {
 			this.gameObjects.length = 0;
 
 			/* Build the scene */
-			this.scene.add(function (self) {
+			this.scene.add(function () {
 
-				var bgMesh = new Mesh(new PlaneGeometry(4 * WIDTH, 6 * HEIGHT), new MeshBasicMaterial());
+				var bgMesh = new Mesh(new PlaneGeometry(10 * WIDTH, 8 * WIDTH), new MeshBasicMaterial());
 
 				var loader = new TextureLoader();
+				var texture = loader.load('./resources/img/bg/game_scene_bg.jpg');
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.repeat.multiplyScalar(7);
 
-				bgMesh.rotateX(-Math.PI / 3);
-				bgMesh.position.set(0, -200, -200);
+				bgMesh.rotateX(-Math.PI / 6);
+				bgMesh.position.set(0, -20, HEIGHT / -2);
 
-				bgMesh.material.map = loader.load('./resources/bg/game_scene_bg.jpg');
+				bgMesh.material.map = texture;
 
 				return bgMesh;
-			}(this));
+			}());
 
 			this.field.children.forEach(function (b) {
 
@@ -24654,15 +25269,17 @@ var Game = function () {
 			}, this);
 
 			this.field.changeMaterial(0);
+			this.field.visible = false;
 			this.scene.add(this.field);
 
-			this.playerShip = new PlayerShip(0, 0, (this.field.height >> 1) - 50, new PerspectiveCamera(75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000));
-
-			this.HUD.setup();
+			this.playerShip = new PlayerShip(0, 0, this.field.height / 2 - 50, this.playerShip.camera);
 
 			this.cameras.length > 2 && this.cameras.pop();
 			this.cameras.push(this.playerShip.camera);
 			this.camera = this.cameras[0];
+
+			this.gameHUD.setup();
+			this.gameBanner.toggleVisibility();
 
 			this.gameObjects.push(this.playerShip);
 			this.scene.add(this.playerShip);
@@ -24670,7 +25287,7 @@ var Game = function () {
 			var nx = 5,
 			    nz = 2;
 			var segX = (this.field.width - 120) / nx,
-			    segZ = (this.field.height - 120 >> 1) / nz;
+			    segZ = (this.field.height - 120) / 2 / nz;
 
 
 			for (var i = 0; i < nz; ++i) {
@@ -24705,6 +25322,8 @@ var Game = function () {
 		key: 'update',
 		value: function update() {
 
+			this.renderer.clear();
+
 			if (this.gameClock.running) {
 
 				var dt = this.gameClock.getDelta();
@@ -24713,6 +25332,8 @@ var Game = function () {
 
 					this.gameOver = true;
 					this.gameClock.stop();
+					this.gameHUD.setVisibility();
+					this.gameBanner.toggleVisibility(this.playerShip.alive, this.gameOver);
 				} else {
 
 					if (this.playerShip.shooting) {
@@ -24736,7 +25357,7 @@ var Game = function () {
 
 							var o2 = this.gameObjects[j];
 
-							o1.intersect(o2) && o1.handleCollision(o2, dt);
+							o1.intersect(o2) && o1.handleCollision(o2);
 						}
 
 						if (o1.isEntity && !o1.alive) {
@@ -24746,19 +25367,19 @@ var Game = function () {
 						}
 					}
 
-					if (this.playerShip.lives < this.HUD.lives) {
+					if (this.playerShip.lives < this.gameHUD.lives) {
 
-						--this.HUD.lives;
-						this.HUD.setVisibility();
+						--this.gameHUD.lives;
+						this.gameHUD.setVisibility();
 					}
 				}
 			}
 
-			this.renderer.clear();
 			this.renderer.setViewport(0, 0, WINDOW_WIDTH(), WINDOW_HEIGHT());
 			this.renderer.render(this.scene, this.camera);
 
-			this.HUD.update();
+			this.gameHUD.update();
+			this.gameBanner.visible && this.gameBanner.update();
 
 			window.requestAnimationFrame(this.update.bind(this));
 		}
@@ -24788,21 +25409,23 @@ var Game = function () {
 
 				if (ratio > WIDTH / HEIGHT) {
 
-					this.camera.left = ~(HEIGHT * ratio) >> 1;
-					this.camera.right = HEIGHT * ratio >> 1;
-					this.camera.top = HEIGHT >> 1;
-					this.camera.bottom = ~HEIGHT >> 1;
+					this.camera.left = HEIGHT * ratio / -2;
+					this.camera.right = HEIGHT * ratio / 2;
+					this.camera.top = HEIGHT / 2;
+					this.camera.bottom = HEIGHT / -2;
 				} else {
 
-					this.camera.left = ~WIDTH >> 1;
-					this.camera.right = WIDTH >> 1;
-					this.camera.top = WIDTH / ratio >> 1;
-					this.camera.bottom = ~(WIDTH / ratio) >> 1;
+					this.camera.left = WIDTH / -2;
+					this.camera.right = WIDTH / 2;
+					this.camera.top = WIDTH / ratio / 2;
+					this.camera.bottom = WIDTH / ratio / -2;
 				}
 			} else {
 
 				this.camera.aspect = ratio;
 			}
+
+			this.gameBanner.visible && this.gameBanner.resize();
 
 			this.camera.updateProjectionMatrix();
 		}
@@ -24816,6 +25439,7 @@ var Game = function () {
 				if (event.keyCode === KEY_R) {
 
 					this.gameOver = false;
+					this.gameBanner.toggleVisibility();
 					this.setup();
 				}
 			} else {
@@ -24904,19 +25528,30 @@ var Game = function () {
 					case KEY_S:
 
 						this.gameClock.running ? this.gameClock.stop() : this.gameClock.start();
+						this.gameBanner.toggleVisibility();
 
 						break;
 
 					/* Toggle wireframe of the objects in the scene */
 					case KEY_W:
 
-						this.scene.traverse(function (node) {
+						this.gameObjects.forEach(function (obj) {
 
-							if (node.isMesh) {
+							obj.traverse(function (node) {
 
-								node.material.wireframe = !node.material.wireframe;
-							}
+								if (node.isMesh) {
+
+									node.material.wireframe = !node.material.wireframe;
+								}
+							});
 						});
+
+						break;
+
+					/* Toggle field visibility */
+					case KEY_9:
+
+						this.field.visible = !this.field.visible;
 
 						break;
 
