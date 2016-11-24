@@ -258,7 +258,7 @@ class Game {
 
 				this.gameOver = true;
 				this.gameClock.stop();
-				this.HUD.setVisibility;
+				this.HUD.setVisibility();
 
 			} else {
 
@@ -285,7 +285,7 @@ class Game {
 
 						let o2 = this.gameObjects[j];
 
-						o1.intersect( o2 ) && o1.handleCollision( o2, dt );
+						o1.intersect( o2 ) && o1.handleCollision( o2 );
 
 					}
 
