@@ -69,7 +69,7 @@ class EnemyShip extends Entity {
 
 	}
 
-	handleCollision ( other, dt ) {
+	handleCollision ( other ) {
 
 		switch ( other.type ) {
 
@@ -83,22 +83,39 @@ class EnemyShip extends Entity {
 
 				break;
 
-			case 'EnemyShip':
+			case 'EnemyShip': {
+
+				let offset = new Vector3();
+
+				let dist = this.position.distanceTo( other.position );
+				let distThis = Math.abs( dist - this.boundingSphere.radius );
+				let distOther = Math.abs( dist - other.boundingSphere.radius );
 
 				this.direction.negate();
 				this.velocity.negate();
-				this.update( dt );
+
+				offset.copy( this.direction ).multiplyScalar( distThis );
+				this.position.add( offset );
+				this.boundingBox.translate( offset );
+				this.boundingSphere.translate( offset );
+
 
 				other.direction.negate();
 				other.velocity.negate();
-				other.update( dt );
+
+				offset.copy( other.direction ).multiplyScalar( distOther );
+				other.position.add( offset );
+				other.boundingBox.translate( offset );
+				other.boundingSphere.translate( offset );
 
 				break;
+
+			}
 
 			case 'Barrier':
 
 				/* Delegate to barrier */
-				other.handleCollision( this, dt );
+				other.handleCollision( this );
 
 				break;
 
