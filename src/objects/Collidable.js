@@ -66,7 +66,7 @@ class Collidable extends GameObject {
 
 	}
 
-	handleCollision ( other, dt ) {
+	handleCollision ( other ) {
 
 		return;
 
