@@ -7,6 +7,8 @@
  * @author: Sara Azinhal ( ist181700 )
  */
 
+import { Vector3 } from '../lib/threejs/math/Vector3';
+
 import { Mesh } from '../lib/threejs/objects/Mesh';
 import { BoxGeometry } from '../lib/threejs/geometries/BoxGeometry';
 import { MeshLambertMaterial } from '../lib/threejs/materials/MeshLambertMaterial';
@@ -51,18 +53,26 @@ class Barrier extends Collidable {
 
 	}
 
-	handleCollision ( other, dt ) {
+	handleCollision ( other ) {
+
+		let offset = new Vector3();
+		offset.subVectors( this.boundingBox.max, this.boundingBox.min );
+		offset.multiply( this.normal ).multiplyScalar( 0.5 );
+
+		if ( other.type === 'PlayerShip' || other.type === 'EnemyShip' ) {
+
+			other.position.add( offset );
+			other.boundingBox.translate( offset );
+			other.boundingSphere.translate( offset );
+
+		}
 
 		switch ( other.type ) {
 
 			case 'PlayerShip':
 
 				other.direction.negate();
-				other.velocity.negate();
-				other.update( dt );
-
-				other.moving = false;
-				other.velocity.multiplyScalar( 0.3 );
+				other.velocity.multiplyScalar( -0.4 );
 
 				break;
 
@@ -70,7 +80,6 @@ class Barrier extends Collidable {
 
 				other.direction.reflect( this.normal );
 				other.velocity.reflect( this.normal );
-				other.update( dt );
 
 				break;
 
