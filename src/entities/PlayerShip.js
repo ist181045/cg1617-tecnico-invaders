@@ -192,7 +192,7 @@ class PlayerShip extends Entity {
 			case 'Barrier':
 
 				/* Delegate to barrier */
-				other.handleCollision( this, dt );
+				other.handleCollision( this );
 
 				break;
 
