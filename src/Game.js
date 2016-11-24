@@ -258,6 +258,7 @@ class Game {
 
 				this.gameOver = true;
 				this.gameClock.stop();
+				this.HUD.setVisibility;
 
 			} else {
 
