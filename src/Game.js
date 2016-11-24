@@ -192,12 +192,10 @@ class Game {
 		this.scene.add( this.field );
 
 		this.playerShip = new PlayerShip( 0, 0, ( this.field.height / 2 ) - 50,
-			new PerspectiveCamera( 75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000 ) );
+			this.playerShip.camera );
 
 		this.HUD.setup();
 
-		this.cameras.length > 2 && this.cameras.pop();
-		this.cameras.push( this.playerShip.camera );
 		this.camera = this.cameras[0];
 
 		this.gameObjects.push( this.playerShip );
