@@ -105,7 +105,7 @@ class Game {
 		this.playerShip = new PlayerShip( 0, 0, ( this.field.height / 2 ) - 50,
 			new PerspectiveCamera( 75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000 ) );
 
-		this.HUD = new GameHUD( this.renderer, this.playerShip.MAX_LIVES );
+		this.gameHUD = new GameHUD( this.renderer, this.playerShip.MAX_LIVES );
 
 		this.sun = (function ( self ) {
 
@@ -194,7 +194,7 @@ class Game {
 		this.playerShip = new PlayerShip( 0, 0, ( this.field.height / 2 ) - 50,
 			this.playerShip.camera );
 
-		this.HUD.setup();
+		this.gameHUD.setup();
 
 		this.camera = this.cameras[0];
 
@@ -256,7 +256,7 @@ class Game {
 
 				this.gameOver = true;
 				this.gameClock.stop();
-				this.HUD.setVisibility();
+				this.gameHUD.setVisibility();
 
 			} else {
 
@@ -296,10 +296,10 @@ class Game {
 
 				}
 
-				if ( this.playerShip.lives < this.HUD.lives ) {
+				if ( this.playerShip.lives < this.gameHUD.lives ) {
 
-					--this.HUD.lives;
-					this.HUD.setVisibility();
+					--this.gameHUD.lives;
+					this.gameHUD.setVisibility();
 
 				}
 
@@ -311,7 +311,7 @@ class Game {
 		this.renderer.setViewport( 0, 0, WINDOW_WIDTH(), WINDOW_HEIGHT() );
 		this.renderer.render( this.scene, this.camera );
 
-		this.HUD.update();
+		this.gameHUD.update();
 
 		window.requestAnimationFrame( this.update.bind( this ) );
 
