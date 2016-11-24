@@ -24,10 +24,10 @@ class Field extends GameObject {
 		this.height = h;
 
 		this.add( new Barrier( ( ( x - w ) >> 1 ) + 2, y, z, 4, 10, h,
-			new Vector3( -1, 0,  0 ) ) );
+			new Vector3(  1, 0,  0 ) ) );
 
 		this.add( new Barrier( ( ( x + w ) >> 1 ) - 2, y, z, 4, 10, h,
-			new Vector3(  1, 0,  0 ) ) );
+			new Vector3( -1, 0,  0 ) ) );
 
 		this.add( new Barrier( x, y, ( ( z - h ) >> 1 ) + 2, w, 10, 4,
 			new Vector3(  0, 0,  1 ) ) );
