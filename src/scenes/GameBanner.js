@@ -45,18 +45,18 @@ class GameBanner extends Scene {
 
 		}( this ));
 
-		/*this.screens = (function () {
+		this.screens = (function () {
 
 			let screens = new Array();
 			let loader = new TextureLoader();
 
-			screens.push( loader.load( './resources/img/screens/pause.jpg' ) );
-			screens.push( loader.load( './resources/img/screens/game_won.jpg' ) );
-			screens.push( loader.load( './resources/img/screens/game_over.jpg' ) );
+			screens.push( loader.load( './resources/img/screens/pause.png' ) );
+			screens.push( loader.load( './resources/img/screens/game_won.png' ) );
+			screens.push( loader.load( './resources/img/screens/game_over.png' ) );
 
 			return screens;
 
-		}());*/
+		}());
 
 		this.banner = (function ( self ) {
 
@@ -66,7 +66,6 @@ class GameBanner extends Scene {
 			let mat = new MeshBasicMaterial();
 
 			mat.transparent = true;
-			mat.opacity = 0.7;
 			mat.depthTest = false;
 			mat.depthWrite = false;
 
@@ -79,6 +78,7 @@ class GameBanner extends Scene {
 
 		this.add( this.banner );
 		this.visible = false;
+		this.flicker = 0;
 
 	}
 
@@ -86,16 +86,17 @@ class GameBanner extends Scene {
 
 		if ( !this.visible ) {
 
-			/*if ( gameOver ) {
+			if ( gameOver ) {
 
-				this.banner.material.map = shipAlive ? this.screens[1] : this.screens[0];
+				this.banner.material.map = shipAlive ? this.screens[1] : this.screens[2];
 
 			} else {
 
 				this.banner.material.map = this.screens[0];
 
-			}*/
+			}
 
+			this.flicker = 0;
 			this.update();
 
 		}
@@ -107,6 +108,15 @@ class GameBanner extends Scene {
 	update () {
 
 		this.renderer.setViewport( 0, 0, WINDOW_WIDTH(), WINDOW_HEIGHT() );
+
+		if ( this.visible ) {
+
+			this.banner.material.opacity = Math.min(1, Math.cos( this.flicker ) + 1 );
+
+			this.flicker += 0.07;
+
+		}
+
 		this.renderer.render( this, this.camera );
 
 	}
