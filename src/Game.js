@@ -67,7 +67,7 @@ class Game {
 			cameras.push( function () {
 
 				let camera = new OrthographicCamera(
-					~WIDTH >> 1, WIDTH >> 1, HEIGHT >> 1, ~HEIGHT >> 1, 1, 2000
+					WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 2000
 				);
 
 				camera.position.set( 0, 100, 0 );
@@ -86,7 +86,7 @@ class Game {
 					75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000
 				);
 
-				camera.position.set( 0, 250, ( self.field.height >> 1 ) + 150 );
+				camera.position.set( 0, 250, ( self.field.height / 2 ) + 150 );
 				camera.lookAt( self.scene.position );
 
 				camera.updateProjectionMatrix();
@@ -102,7 +102,7 @@ class Game {
 
 		this.gameObjects = new Array();
 
-		this.playerShip = new PlayerShip( 0, 0, ( this.field.height >> 1 ) - 50,
+		this.playerShip = new PlayerShip( 0, 0, ( this.field.height / 2 ) - 50,
 			new PerspectiveCamera( 75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000 ) );
 
 		this.HUD = new GameHUD( this.renderer, this.playerShip.MAX_LIVES );
@@ -111,7 +111,7 @@ class Game {
 
 			let sun = new DirectionalLight( 0xffffff, 1 );
 
-			sun.position.set( ~self.field.width >> 2, 100, self.field.height >> 2 );
+			sun.position.set( self.field.width / -4, 100, self.field.height / 4 );
 			sun.target = self.scene;
 
 			return sun;
@@ -191,7 +191,7 @@ class Game {
 		this.field.visible = false;
 		this.scene.add( this.field );
 
-		this.playerShip = new PlayerShip( 0, 0, ( this.field.height >> 1 ) - 50,
+		this.playerShip = new PlayerShip( 0, 0, ( this.field.height / 2 ) - 50,
 			new PerspectiveCamera( 75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000 ) );
 
 		this.HUD.setup();
@@ -206,7 +206,7 @@ class Game {
 		let [ nx, nz ] = [ 5, 2 ];
 		let [ segX, segZ ] = [
 			( this.field.width - 120 ) / nx,
-			( ( this.field.height - 120 ) >> 1 ) / nz
+			( ( this.field.height - 120 ) / 2 ) / nz
 		];
 
 		for ( let i = 0; i < nz; ++i ) {
@@ -344,17 +344,17 @@ class Game {
 
 			if ( ratio > ( WIDTH / HEIGHT ) ) {
 
-				this.camera.left   = ~( HEIGHT * ratio ) >> 1;
-				this.camera.right  = ( HEIGHT * ratio ) >> 1;
-				this.camera.top    = HEIGHT >> 1;
-				this.camera.bottom = ~HEIGHT >> 1;
+				this.camera.left   = ( HEIGHT * ratio ) / -2;
+				this.camera.right  = ( HEIGHT * ratio ) /  2;
+				this.camera.top    = HEIGHT /  2;
+				this.camera.bottom = HEIGHT / -2;
 
 			} else {
 
-				this.camera.left   = ~WIDTH >> 1;
-				this.camera.right  = WIDTH >> 1;
-				this.camera.top    = ( WIDTH / ratio ) >> 1;
-				this.camera.bottom = ~( WIDTH / ratio ) >> 1;
+				this.camera.left   = WIDTH / -2;
+				this.camera.right  = WIDTH /  2;
+				this.camera.top    = ( WIDTH / ratio ) /  2;
+				this.camera.bottom = ( WIDTH / ratio ) / -2;
 
 			}
 
