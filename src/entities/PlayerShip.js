@@ -37,7 +37,7 @@ class PlayerShip extends Entity {
 
 			if ( camera !== undefined && camera.isCamera ) {
 
-				camera.position.addVectors( self.position, new Vector3( 0, 30, 75 ) );
+				camera.position.set( 0, 40, 90 );
 				camera.lookAt( self.position.clone().negate() );
 
 				camera.updateProjectionMatrix();
