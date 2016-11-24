@@ -31,6 +31,7 @@ import { WIDTH, HEIGHT } from './Constants';
 import { WINDOW_PIXEL_RATIO, WINDOW_WIDTH, WINDOW_HEIGHT } from './Constants';
 
 import GameHUD from './scenes/GameHUD';
+import GameBanner from './scenes/GameBanner';
 
 import Field from './objects/Field';
 import EnemyShip from './entities/EnemyShip';
@@ -56,8 +57,6 @@ class Game {
 		this.scene = new Scene();
 
 		this.gameClock = new Clock( false );
-
-		this.field = new Field( 0, 0, 0, WIDTH - 10, HEIGHT - 10 );
 
 		this.cameras = (function ( self ) {
 
@@ -86,7 +85,7 @@ class Game {
 					75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000
 				);
 
-				camera.position.set( 0, 250, ( self.field.height / 2 ) + 150 );
+				camera.position.set( 0, 250, ( HEIGHT / 2 ) + 150 );
 				camera.lookAt( self.scene.position );
 
 				camera.updateProjectionMatrix();
@@ -102,11 +101,15 @@ class Game {
 
 		this.gameObjects = new Array();
 
+		this.field = new Field( 0, 0, 0, WIDTH - 10, HEIGHT - 10 );
+
 		this.playerShip = new PlayerShip( 0, 0, ( this.field.height / 2 ) - 50,
 			new PerspectiveCamera( 75, WINDOW_WIDTH() / WINDOW_HEIGHT(), 1, 1000 ) );
 
 		this.gameHUD = new GameHUD( this.renderer, this.playerShip.MAX_LIVES );
+		this.gameBanner = new GameBanner( this.renderer, 1920, 1080 );
 
+		this.lightsOn = false;
 		this.sun = (function ( self ) {
 
 			let sun = new DirectionalLight( 0xffffff, 1 );
@@ -130,8 +133,6 @@ class Game {
 			return stars;
 
 		}( this, 6 ));
-
-		this.lightsOn = false;
 
 		this.gameOver = false;
 
@@ -194,9 +195,12 @@ class Game {
 		this.playerShip = new PlayerShip( 0, 0, ( this.field.height / 2 ) - 50,
 			this.playerShip.camera );
 
-		this.gameHUD.setup();
-
+		this.cameras.length > 2 && this.cameras.pop();
+		this.cameras.push( this.playerShip.camera );
 		this.camera = this.cameras[0];
+
+		this.gameHUD.setup();
+		this.gameBanner.toggleVisibility();
 
 		this.gameObjects.push( this.playerShip );
 		this.scene.add( this.playerShip );
@@ -248,6 +252,8 @@ class Game {
 
 	update () {
 
+		this.renderer.clear();
+
 		if ( this.gameClock.running ) {
 
 			let dt = this.gameClock.getDelta();
@@ -257,6 +263,7 @@ class Game {
 				this.gameOver = true;
 				this.gameClock.stop();
 				this.gameHUD.setVisibility();
+				this.gameBanner.toggleVisibility( this.playerShip.alive, this.gameOver );
 
 			} else {
 
@@ -307,11 +314,11 @@ class Game {
 
 		}
 
-		this.renderer.clear();
 		this.renderer.setViewport( 0, 0, WINDOW_WIDTH(), WINDOW_HEIGHT() );
 		this.renderer.render( this.scene, this.camera );
 
 		this.gameHUD.update();
+		this.gameBanner.visible && this.gameBanner.update();
 
 		window.requestAnimationFrame( this.update.bind( this ) );
 
@@ -362,6 +369,8 @@ class Game {
 
 		}
 
+		this.gameBanner.visible && this.gameBanner.resize();
+
 		this.camera.updateProjectionMatrix();
 
 	}
@@ -374,6 +383,7 @@ class Game {
 			if ( event.keyCode === Keyboard.KEY_R ) {
 
 				this.gameOver = false;
+				this.gameBanner.toggleVisibility();
 				this.setup();
 
 			}
@@ -464,6 +474,7 @@ class Game {
 				case Keyboard.KEY_S:
 
 					this.gameClock.running ? this.gameClock.stop() : this.gameClock.start();
+					this.gameBanner.toggleVisibility();
 
 					break;
 
