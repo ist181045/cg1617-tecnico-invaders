@@ -10,9 +10,9 @@ lançado em 1978. O jogador controla uma nave que tenta destruir ondas de
 alienígenas com o objectivo de ganhar o maior número de pontos possível.
 
 O objectivo [era] recriar este clássico numa versão 3D simplificada, recorrendo
-a [**three.js**](https://github.com/mrdoob/three.js). A ideia [seria] manter a
-jogabilidade original, alterando a perspectiva gráfica para que os vários
-elementos do jogo tenham um aspecto tridimensional.
+a [**three.js**](https://github.com/mrdoob/three.js). A ideia [primeiramente
+foi] manter a jogabilidade original, alterando a perspectiva gráfica para que os
+vários elementos do jogo tenham um aspecto tridimensional.
 
 O trabalho está dividido em quatro partes.
 
@@ -21,7 +21,7 @@ no repositório a partir da [segunda entrega][stage2] para a frente.
 
 ---
 
-Mais informação nos Enunciados do Projectos:
+Mais informação nos Enunciados do Projecto:
 
 1. [Cena Simples Interativa com Câmara Fixa](statements/statement_01.pdf)
 2. [Cena Simples Interativa com Câmara Móvel e Colisões](statements/statement_02.pdf)
