@@ -1,6 +1,6 @@
 {
   "name": "tecnico-invaders",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Space Invaders with a twist, powered by three.js r82",
   "main": "dist/invaders.js",
   "files": [
