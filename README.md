@@ -28,4 +28,4 @@ Mais informação nos Enunciados do Projectos:
 3. [Cena Interativa com Materiais e Luzes](statements/statement_03.pdf)
 4. [Cena Interativa com Luzes Dinâmicas e Texturas](statements/statement_04.pdf)
 
-[stage2]: https://github.com/rgcv/cg1617-tecnico-invaders/tree/stage1
+[stage2]: https://github.com/rgcv/cg1617-tecnico-invaders/tree/stage2
