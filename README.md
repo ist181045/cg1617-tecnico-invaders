@@ -22,7 +22,7 @@ no repositório a partir da segunda entrega (a identificar) para a frente.
 ---
 
 Mais informação nos Enunciados do Projectos:
-1. [Cena Simples Interativa com Câmara Fixa](statement_01.pdf)
-2. [Cena Simples Interativa com Câmara Móvel e Colisões](statement_02.pdf)
-3. [Cena Interativa com Materiais e Luzes](statement_03.pdf)
-4. [Cena Interativa com Luzes Dinâmicas e Texturas](statement_04.pdf)
+1. [Cena Simples Interativa com Câmara Fixa](statements/statement_01.pdf)
+2. [Cena Simples Interativa com Câmara Móvel e Colisões](statements/statement_02.pdf)
+3. [Cena Interativa com Materiais e Luzes](statements/statement_03.pdf)
+4. [Cena Interativa com Luzes Dinâmicas e Texturas](statements/statement_04.pdf)
